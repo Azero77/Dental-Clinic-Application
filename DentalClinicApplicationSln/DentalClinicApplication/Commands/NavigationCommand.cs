@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DentalClinicApp.Services;
+using DentalClinicApp.ViewModels;
+using DentalClinicApplication.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +11,9 @@ namespace DentalClinicApp.Commands
 {
     public class NavigationCommand : CommandBase
     {
-        public NavigationService NavigationService { get; }
+        public INavigationService NavigationService { get; }
 
-        public NavigationCommand(NavigationService navigationService)
+        public NavigationCommand(INavigationService navigationService)
         {
             NavigationService = navigationService;
         }

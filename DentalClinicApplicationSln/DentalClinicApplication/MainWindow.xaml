@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DentalClinicApplication"
-        xmlns:vms ="clr-namespace:DentalClinicApp.ViewModels"
-        xmlns:views="clr-namespace:DentalClinicApplication.Views"
+        xmlns:vms ="clr-namespace:DentalClinicApplication.ViewModels"
+        xmlns:views="clr-namespace:DentalClinicApplication.Views" xmlns:components="clr-namespace:DentalClinicApplication.Components"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
@@ -13,9 +13,18 @@
             <DataTemplate DataType="{x:Type vms:ClientsListingViewModel}">
                 <views:ClientsListingView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vms:NavigationBarViewModel}">
+                <components:NavigationBarView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vms:ClientsManipulationViewModel}">
+                <views:ClientsManipulationView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vms:LayoutViewModel}">
+                <components:LayoutView/>
+            </DataTemplate>
         </Grid.Resources>
-
-        <ContentControl Content="{Binding CurrentViewModel}">
+        <ContentControl
+            Content="{Binding CurrentViewModel}">
 
         </ContentControl>
     </Grid>

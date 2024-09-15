@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataProvider
@@ -21,6 +22,7 @@ namespace DentalClinicApplication.Services.DataProvider
         public async Task<IEnumerable<Client>> GetClients()
         {
             string sql = "SELECT * FROM Clients";
+            await Task.Delay(3000);
             IEnumerable<ClientDTO> ClientsDTO = await DataContext.RunAsync(async (conn) => 
             {
                 return await conn.QueryAsync<ClientDTO>(sql);
