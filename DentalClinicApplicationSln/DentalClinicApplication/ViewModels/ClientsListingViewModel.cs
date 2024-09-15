@@ -1,5 +1,9 @@
-﻿using DentalClinicApp.Models;
+﻿using DentalClinicApp.Commands;
+using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
+using DentalClinicApplication.Commands;
+using DentalClinicApplication.Services;
+using DentalClinicApplication.Services.DataManiplator;
 using DentalClinicApplication.Services.DataProvider;
 using System;
 using System.Collections.Generic;
@@ -7,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DentalClinicApplication.ViewModels
 {
@@ -15,10 +20,21 @@ namespace DentalClinicApplication.ViewModels
         public IClientsProvider DbClientsProvider { get; }
         public ObservableCollection<Client> Clients { get; set; } = new();
 
-        public ClientsListingViewModel(IClientsProvider dbClientsProvider)
+
+        #region Commands
+        public ICommand NavigateToEditClientView { get; }
+        public ClientsManipulationCommand DeleteClientCommand { get; }
+        #endregion
+
+        public ClientsListingViewModel(IClientsProvider dbClientsProvider,
+            INavigationService<ClientsManipulationViewModel> navigationService,
+            IDataManipulator dataDeleter
+            )
         {
             DbClientsProvider = dbClientsProvider;
-
+            NavigateToEditClientView = new NavigationCommand(navigationService);
+            DeleteClientCommand = new ClientsDeleteCommand(dataDeleter);
+            DeleteClientCommand.DataManipulated += Clients_CollectionChanged;
             Load();
         }
 
@@ -33,9 +49,10 @@ namespace DentalClinicApplication.ViewModels
 
         }
 
-        private void Clients_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Clients_CollectionChanged()
         {
             OnPropertyChanged(nameof(Clients));
+            Load();
         }
     }
 }

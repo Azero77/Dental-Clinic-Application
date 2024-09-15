@@ -8,7 +8,7 @@ using System.Text;
 
 namespace DentalClinicApp.Services
 {
-    public class NavigationService<TViewModel> : INavigationService
+    public class NavigationService<TViewModel> : INavigationService<TViewModel>
         where TViewModel : ViewModelBase
     {
         public NavigationStore NavigationStore { get; }

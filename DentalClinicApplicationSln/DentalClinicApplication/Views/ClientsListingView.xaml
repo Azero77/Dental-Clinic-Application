@@ -14,7 +14,29 @@
                 </DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding FirstName}"></DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Email}"></DataGridTextColumn>
-
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Command="{Binding DataContext.NavigateToEditClientView,
+                                RelativeSource= {RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding}">
+                                Edit
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.DeleteClientCommand,
+                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}">
+                                Delete
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

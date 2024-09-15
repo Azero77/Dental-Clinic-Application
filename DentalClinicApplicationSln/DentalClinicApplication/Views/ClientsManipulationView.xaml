@@ -6,7 +6,34 @@
              xmlns:local="clr-namespace:DentalClinicApplication.Views"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <StackPanel>
+        <StackPanel>
+            <Label>FirstName</Label>
+            <TextBox Text="{Binding FirstName}"></TextBox>
+        </StackPanel>
+        <StackPanel>
+            <Label>LastName</Label>
+            <TextBox Text="{Binding LastName}"></TextBox>
+        </StackPanel>
+        <StackPanel>
+            <Label>Email</Label>
+            <TextBox Text="{Binding Email}"></TextBox>
+        </StackPanel>
+        <StackPanel>
+            <Label>Gender</Label>
+            <TextBox Text="{Binding Gender}"></TextBox>
+        </StackPanel>
+        <StackPanel>
+            <Label>Age</Label>
+            <TextBox Text="{Binding Age}"></TextBox>
+        </StackPanel>
 
-    </Grid>
+        <Button Command="{Binding CancelCommand}">
+            Cancel
+        </Button>
+        <Button Command="{Binding SubmitCommand}"
+                CommandParameter="{Binding Client}">
+            Submit
+        </Button>
+    </StackPanel>
 </UserControl>

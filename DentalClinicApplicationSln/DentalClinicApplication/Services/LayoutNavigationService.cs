@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace DentalClinicApplication.Services
 {
     public class LayoutNavigationService<TViewModel>
-        : INavigationService
+        : INavigationService<TViewModel>
         where TViewModel : ViewModelBase
     {
         public LayoutNavigationService(
