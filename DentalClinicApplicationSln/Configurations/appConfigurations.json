@@ -1,0 +1,9 @@
+{
+  "ClinicName": "",
+  "ConnectionStrings": {
+    "ClientsConnectionString": "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=E:\\WPF\\DentalClinic\\DentalClinicApplicationSln\\Configurations\\Database\\DentalClinicDB.accdb;Persist Security Info=True"
+  },
+  "NavigationBarColor": "",
+  "BackgroundColor": "",
+  "Language": "en-US"
+}
