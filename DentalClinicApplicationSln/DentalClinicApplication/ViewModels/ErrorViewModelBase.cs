@@ -96,6 +96,11 @@ namespace DentalClinicApplication.ViewModels
             base.OnPropertyChanged(nameof(IsModelValid));
         }
 
+        /// <summary>
+        /// Banded To Behavior in the view and listens to the view Validation.Error event
+        /// through built in behavior
+        /// </summary>
+
         public ICommand ValidationErrorCommand { get; }
         public void OnValidatoinError(ValidationErrorEventArgs validationErrorEventArgs)
         {

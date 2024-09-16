@@ -6,6 +6,7 @@ using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataManiplator;
 using DentalClinicApplication.Services.DataProvider;
+using DentalClinicApplication.Stores;
 using DentalClinicApplication.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,16 +34,18 @@ namespace DentalClinicApplication
                 {
                     sc.AddSingleton<DbContext>();
                     sc.AddTransient<IClientsProvider, DbClientsProvider>();
+                    sc.AddSingleton<ClientsStore>();
                     sc.AddSingleton<NavigationStore>();
                     sc.AddSingleton<DataCreator>();
                     sc.AddSingleton<DataEditor>();
                     sc.AddSingleton<DataDeleter>();
                     sc.AddTransient<ClientsListingViewModel>(sp =>
-                    new ClientsListingViewModel(
-                        sp.GetRequiredService<IClientsProvider>(),
-                        MakeLayoutNavigationService<ClientsManipulationViewModel>(sp),
-                        sp.GetRequiredService<DataDeleter>()
-                        )) ;
+                        ClientsListingViewModel.GetClientsListingViewModel
+                        (sp.GetRequiredService<IClientsProvider>(),
+                        sp.GetRequiredService<INavigationService<ClientsManipulationViewModel>>(),
+                        sp.GetRequiredService<DataDeleter>(),
+                        sp.GetRequiredService<ClientsStore>())
+                    ) ;
                     //Default is Insert 
                     sc.AddTransient<ClientsManipulationViewModel>(sp => new ClientsManipulationViewModel(
                         sp.GetRequiredService<INavigationService>(),
