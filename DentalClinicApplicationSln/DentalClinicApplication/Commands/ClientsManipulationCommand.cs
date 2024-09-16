@@ -19,15 +19,20 @@ namespace DentalClinicApplication.Commands
         {
             DataManipulator = dataManipulator;
             NavigationService = navigationService;
+            
         }
+
 
         public IDataManipulator DataManipulator { get; }
         public INavigationService? NavigationService { get; }
+
+
 
         public event Action? DataManipulated;
         public void OnDataManipulated()
         {
             DataManipulated?.Invoke();
         }
+
     }
 }

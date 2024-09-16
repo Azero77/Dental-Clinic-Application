@@ -20,9 +20,11 @@ namespace DentalClinicApplication.Views
     /// </summary>
     public partial class ClientsManipulationView : UserControl
     {
+
         public ClientsManipulationView()
         {
             InitializeComponent();
         }
+
     }
 }

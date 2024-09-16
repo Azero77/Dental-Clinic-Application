@@ -4,16 +4,18 @@ using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataManiplator;
+using DentalClinicApplication.Validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace DentalClinicApplication.ViewModels
 {
-    public class ClientsManipulationViewModel : ViewModelBase
+    public class ClientsManipulationViewModel : ErrorViewModelBase
     {
 		//update Client Constructor
         public ClientsManipulationViewModel(Client client,INavigationService navigationService, IDataManipulator editDataManipulator)
@@ -27,11 +29,12 @@ namespace DentalClinicApplication.ViewModels
 
 			CancelCommand = new NavigationCommand(navigationService);
 			SubmitCommand = new ClientsEditCommand(editDataManipulator, navigationService);
+            
         }
 
         //Insert Client Constructor
         public ClientsManipulationViewModel(INavigationService navigationService,IDataManipulator InsertDataManipulator)
-        {
+		{
             CancelCommand = new NavigationCommand(navigationService);
 			SubmitCommand = new ClientsEditCommand(InsertDataManipulator, navigationService);
 
@@ -55,6 +58,7 @@ namespace DentalClinicApplication.ViewModels
 				}
 			}
 			private string _firstName = string.Empty;
+			[Required("First Name is required")]
 			public string FirstName
 			{
 				get
@@ -69,6 +73,7 @@ namespace DentalClinicApplication.ViewModels
 			}
 
 			private string _lastName = string.Empty;
+			[Required("Last Name is required")]
 			public string LastName
 			{
 				get
@@ -146,7 +151,11 @@ namespace DentalClinicApplication.ViewModels
 			base.OnPropertyChanged(propertyName);
 			base.OnPropertyChanged(nameof(Client));
 		}
-		
+        public void OnValidatoinError(ValidationErrorEventArgs validationErrorEventArgs)
+        {
+			var e = _errors;
+        }
+
     }
 
 

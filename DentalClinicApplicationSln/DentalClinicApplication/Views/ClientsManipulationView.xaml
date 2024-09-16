@@ -3,13 +3,56 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:DentalClinicApplication.Views"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             Name="UserControl"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" xmlns:behaviors="clr-namespace:DentalClinicApplication.Behaviors"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <AdornedElementPlaceholder/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <StackPanel>
+                            <Border
+                                BorderBrush="Black"
+                                BorderThickness="1"
+                                >
+                                <ScrollViewer x:Name="PART_ContentHost"/>
+
+                            </Border>
+                            <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Foreground="Red"
+                                            Text="{Binding ErrorContent}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <i:Interaction.Behaviors>
+        <behaviors:ValidationErrorBehavior Command="{Binding ValidationErrorCommand}"/>
+    </i:Interaction.Behaviors>
     <StackPanel>
         <StackPanel>
             <Label>FirstName</Label>
-            <TextBox Text="{Binding FirstName}"></TextBox>
+            <TextBox Text="{Binding FirstName,NotifyOnValidationError=True}"></TextBox>
+
         </StackPanel>
         <StackPanel>
             <Label>LastName</Label>
@@ -25,14 +68,23 @@
         </StackPanel>
         <StackPanel>
             <Label>Age</Label>
-            <TextBox Text="{Binding Age}"></TextBox>
+            <TextBox>
+                <Binding Path="Age"
+                         NotifyOnValidationError="True"
+                         
+                         >
+                </Binding>
+            </TextBox>
         </StackPanel>
 
         <Button Command="{Binding CancelCommand}">
             Cancel
         </Button>
-        <Button Command="{Binding SubmitCommand}"
-                CommandParameter="{Binding Client}">
+        <Button
+            IsEnabled="{Binding IsModelValid}"
+            Command="{Binding SubmitCommand}"
+            CommandParameter="{Binding Client}"
+            >
             Submit
         </Button>
     </StackPanel>
