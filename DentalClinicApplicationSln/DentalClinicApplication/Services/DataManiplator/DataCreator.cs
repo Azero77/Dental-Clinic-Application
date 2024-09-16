@@ -4,6 +4,8 @@ using DentalClinicApp.Models;
 using DentalClinicApplication.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -11,16 +13,15 @@ using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataManiplator
 {
-    internal class DataCreator : IDataManipulator
+    internal class DataCreator : DataManipulator
     {
-        public DbContext DbContext { get; }
 
-        public DataCreator(DbContext dbContext)
+        public DataCreator(DbContext dbContext) : base(dbContext)
         {
-            DbContext = dbContext;
         }
 
-        public async Task Manipulate(Client client)
+
+        public async override Task Manipulate(Client client)
         {
             ClientDTO clientDTO = ClientDTO.CreateClientDTO(client);
             string sql = "INSERT INTO Clients " +
@@ -38,7 +39,10 @@ namespace DentalClinicApplication.Services.DataManiplator
             {
                 int result = await conn.ExecuteAsync(sql, param);
                 if (result == 1)
+                {
+                    OnDataManipulated();
                     return result;
+                }
                 throw new InvalidDataContractException();
             });
         }

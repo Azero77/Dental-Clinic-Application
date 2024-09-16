@@ -11,16 +11,14 @@ using System.Windows;
 
 namespace DentalClinicApplication.Services.DataManiplator
 {
-    public class DataDeleter : IDataManipulator
+    public class DataDeleter : DataManipulator
     {
-        public DbContext DbContext { get; }
 
-        public DataDeleter(DbContext dbContext)
+        public DataDeleter(DbContext dbContext) : base(dbContext)
         {
-            DbContext = dbContext;
         }
 
-        public async Task Manipulate(Client client)
+        public async override Task Manipulate(Client client)
         {
             string sql = "DELETE FROM Clients WHERE Id = @id";
             object param = new { id = client.Id };
@@ -29,7 +27,10 @@ namespace DentalClinicApplication.Services.DataManiplator
                 int result;
                 result = await conn.ExecuteAsync(sql,param);
                 if (result == 1)
-                    return result;
+                {
+                    OnDataManipulated();
+                    return result; 
+                }
                 throw new InvalidDataException();
             });
             MessageBox.Show("Deleted Successfully",

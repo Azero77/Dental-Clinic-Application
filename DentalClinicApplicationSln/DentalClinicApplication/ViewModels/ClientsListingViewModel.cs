@@ -51,19 +51,8 @@ namespace DentalClinicApplication.ViewModels
             ClientsStore = clientsStore;
             NavigateToEditClientView = new NavigationCommand(navigationService);
             DeleteClientCommand = new ClientsDeleteCommand(dataDeleter);
-            DeleteClientCommand.DataManipulated += Clients_CollectionChanged;
-            //Load();
         }
 
-        public async Task Load()
-        {
-            var result = await DbClientsProvider.GetClients();
-            Clients.Clear();
-            foreach (Client client in result)
-            {
-                Clients.Add(client);
-            }
-        }
         public static ClientsListingViewModel GetClientsListingViewModel(
             IClientsProvider dbClientsProvider,
             INavigationService<ClientsManipulationViewModel> navigationService,
@@ -81,10 +70,5 @@ namespace DentalClinicApplication.ViewModels
             return viewModel;
         }
         
-        private void Clients_CollectionChanged()
-        {
-            OnPropertyChanged(nameof(Clients));
-            Load();
-        }
     }
 }

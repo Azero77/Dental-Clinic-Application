@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
@@ -33,12 +34,19 @@ namespace DentalClinicApplication
                 .ConfigureServices((sc) => 
                 {
                     sc.AddSingleton<DbContext>();
-                    sc.AddTransient<IClientsProvider, DbClientsProvider>();
+                    sc.AddSingleton<IClientsProvider, DbClientsProvider>();
+                   
                     sc.AddSingleton<ClientsStore>();
                     sc.AddSingleton<NavigationStore>();
                     sc.AddSingleton<DataCreator>();
                     sc.AddSingleton<DataEditor>();
                     sc.AddSingleton<DataDeleter>();
+
+                    sc.AddSingleton<ManipulationNotifierService>(
+                       sp => new ManipulationNotifierService(
+                           GetManipulators(sp)
+                           )
+                       );
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
                         (sp.GetRequiredService<IClientsProvider>(),
@@ -86,6 +94,8 @@ namespace DentalClinicApplication
                 .Build();
         }
 
+        
+
         protected override void OnStartup(StartupEventArgs e)
         {
             _host.Start();
@@ -111,6 +121,23 @@ namespace DentalClinicApplication
                 sp.GetRequiredService<Func<object?,TViewModel>>(),
                 (obj) => sp.GetRequiredService<NavigationBarViewModel>()
                 );
+        }
+
+        private IEnumerable<IDataManipulator> GetManipulators(IServiceProvider sp)
+        {
+            List<IDataManipulator> dataManipulators = new();
+            var allManipulatorsTypes =
+                Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .Where(type => !type.IsAbstract
+                            &&
+                            typeof(IDataManipulator).IsAssignableFrom(type));
+            foreach (Type type in allManipulatorsTypes)
+            {
+                dataManipulators.Add((IDataManipulator) sp.GetRequiredService(type));
+            }
+            return dataManipulators;
         }
     }
 }

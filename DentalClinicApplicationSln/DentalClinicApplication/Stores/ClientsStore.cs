@@ -1,4 +1,5 @@
 ﻿using DentalClinicApp.Models;
+using DentalClinicApplication.Services.DataManiplator;
 using DentalClinicApplication.Services.DataProvider;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,20 @@ namespace DentalClinicApplication.Stores
     {
         public ObservableCollection<Client> Clients { get; set; } = new();
         public IClientsProvider ClientsProvider { get; }
-        private readonly Lazy<Task> _initialize;
 
-        public ClientsStore(IClientsProvider clientProvider)
+        private Lazy<Task> _initialize;
+
+        public ClientsStore(IClientsProvider clientProvider,
+            ManipulationNotifierService manipulationNotifierService)
         {
             ClientsProvider = clientProvider;
+            manipulationNotifierService.DataManipulated += OnDataManipulated;
+            _initialize = new Lazy<Task>(Initialize);
+        }
+
+        private void OnDataManipulated()
+        {
+            //reloading clients
             _initialize = new Lazy<Task>(Initialize);
         }
 

@@ -12,5 +12,6 @@ namespace DentalClinicApplication.Services.DataManiplator
     {
         DbContext DbContext { get; }
         Task Manipulate(Client client);
+        event Action? DataManipulated;
     }
 }

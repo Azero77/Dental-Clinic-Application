@@ -12,16 +12,14 @@ using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataManiplator
 {
-    public class DataEditor : IDataManipulator
+    public class DataEditor : DataManipulator
     {
-        public DataEditor(DbContext dbContext)
+        public DataEditor(DbContext dbContext) : base(dbContext)
         {
-            DbContext = dbContext;
         }
 
-        public DbContext DbContext { get; }
 
-        public async Task Manipulate(Client client)
+        public async override Task Manipulate(Client client)
         {
             ClientDTO clientDTO = ClientDTO.CreateClientDTO(client);
             string sql = "UPDATE Clients SET FirstName = @firstName, LastName = @lastName, Email = @email, Gender=@gender  WHERE Id = @id";
@@ -37,7 +35,10 @@ namespace DentalClinicApplication.Services.DataManiplator
             {
                 int result = await conn.ExecuteAsync(sql,param);
                 if (result == 1)
+                {
+                    OnDataManipulated();
                     return result;
+                }
                 throw new InvalidDataContractException();
             });
 
