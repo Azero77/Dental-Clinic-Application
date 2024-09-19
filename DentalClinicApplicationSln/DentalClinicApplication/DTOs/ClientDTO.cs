@@ -14,7 +14,7 @@ namespace DentalClinicApplication.DTOs
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Gender { get; set; } = "Undefined";
-        public byte Age { get; set; }
+        public int Age { get; set; }
 
         public static ClientDTO CreateClientDTO(Client client)
         {

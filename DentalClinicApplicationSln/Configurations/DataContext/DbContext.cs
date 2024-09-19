@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Data.OleDb;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,15 +21,17 @@ namespace Configurations.DataContext
             Configuration = new ConfigurationBuilder()
                 .AddJsonFile("appConfigurations.json")
                 .Build();
+            char.IsDigit('3');
             CONNECTION_STRING = Configuration["ConnectionStrings:ClientsConnectionString"];
         }
 
-        private OleDbConnection GetConnection()
+
+        private DbConnection GetConnection()
         {
             try
             {
                 #pragma warning disable CA1416
-                OleDbConnection connection = new OleDbConnection(CONNECTION_STRING);
+                DbConnection connection = new SQLiteConnection(CONNECTION_STRING);
                 return connection;
             }
             catch (Exception)
@@ -35,9 +40,9 @@ namespace Configurations.DataContext
             }
         }
 
-        public T Run<T>(Func<OleDbConnection,T> func)
+        public T Run<T>(Func<DbConnection,T> func)
         {
-            OleDbConnection connection = GetConnection();
+            DbConnection connection = GetConnection();
             connection.Open();
             T? result = default;
             try
@@ -55,9 +60,9 @@ namespace Configurations.DataContext
             return result;
         }
 
-        public async Task<T> RunAsync<T>(Func<OleDbConnection,Task<T>> func)
+        public async Task<T> RunAsync<T>(Func<DbConnection,Task<T>> func)
         {
-            OleDbConnection connection = GetConnection();
+            DbConnection connection = GetConnection();
             await connection.OpenAsync();
             T? result = default;
             try

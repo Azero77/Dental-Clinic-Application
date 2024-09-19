@@ -28,7 +28,6 @@ namespace DentalClinicApplication.Services.DataManiplator
                 result = await conn.ExecuteAsync(sql,param);
                 if (result == 1)
                 {
-                    OnDataManipulated();
                     return result; 
                 }
                 throw new InvalidDataException();
@@ -36,7 +35,9 @@ namespace DentalClinicApplication.Services.DataManiplator
             MessageBox.Show("Deleted Successfully",
                 "Ok",
                 MessageBoxButton.OK);
-            
+            OnDataManipulated();
+
+
         }
     }
 }

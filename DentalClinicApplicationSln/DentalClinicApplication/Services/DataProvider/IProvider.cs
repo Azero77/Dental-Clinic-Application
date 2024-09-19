@@ -1,14 +1,11 @@
 ﻿using DentalClinicApp.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataProvider
 {
-    public interface IClientsProvider
+    public interface IProvider<T>
     {
-        Task<IEnumerable<Client>> GetClients();
+        Task<IEnumerable<T>> GetItems();
     }
 }

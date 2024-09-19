@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="DentalClinicApplication.Components.VirtualizedCollectionComponent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:DentalClinicApplication.Components"
+             Name="root"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label>Page Size:</Label>
+            <TextBox Width="20" Text="{Binding PageSize}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label>Search:</Label>
+            <TextBox Width="200"/>
+        </StackPanel>
+        <DataGrid
+            Height="200"
+            ItemsSource="{Binding Path = Collection, ElementName=root}">
+
+        </DataGrid>
+        <ListBox ItemsSource="{Binding PagesIndexers}" Height="40">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding}"
+                            Command="{Binding DataContext.Move, ElementName=root}"
+                            CommandParameter="{Binding}"></Button>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+        <Button Command="{Binding DataContext.MovePrevious,ElementName=root}"
+                CommandParameter="{Binding CurrentPageIndex}">
+            Previous
+        </Button>
+        <Button Command="{Binding DataContext.MoveNext,ElementName=root}"
+                CommandParameter="{Binding CurrentPageIndex}">
+            Next
+        </Button>
+        <TextBlock Text="{Binding CurrentPageIndex, StringFormat='Page Number : {0}'}"/>
+        <TextBlock Text="{Binding PagesCount, StringFormat='Number of Pages {0}'}"/>
+        <TextBlock Text="{Binding PageSize, StringFormat='Page Size {0}'}"/>
+    </StackPanel>
+</UserControl>

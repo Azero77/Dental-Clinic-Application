@@ -18,9 +18,9 @@ namespace DentalClinicApplication.ViewModels
 {
     public class ClientsListingViewModel : ViewModelBase
     {
-        public IClientsProvider DbClientsProvider { get; }
-        public ClientsStore ClientsStore { get; }
-        public ObservableCollection<Client> Clients => ClientsStore.Clients;
+        public IProvider<Client> DbClientsProvider { get; }
+        public ICollectionStore<Client> ClientsStore { get; }
+        public IEnumerable<Client> Clients => ClientsStore.Collection;
 
         private bool _isLoading = false;
         public bool IsLoading
@@ -41,23 +41,29 @@ namespace DentalClinicApplication.ViewModels
         #endregion
 
         public ClientsListingViewModel(
-            IClientsProvider dbClientsProvider,
+            IProvider<Client> dbClientsProvider,
             INavigationService<ClientsManipulationViewModel> navigationService,
             IDataManipulator dataDeleter,
-            ClientsStore clientsStore
+            ICollectionStore<Client> clientsStore
             )
         {
             DbClientsProvider = dbClientsProvider;
             ClientsStore = clientsStore;
+            ClientsStore.CollectionChanged += ClientsStore_CollectionChanged;
             NavigateToEditClientView = new NavigationCommand(navigationService);
             DeleteClientCommand = new ClientsDeleteCommand(dataDeleter);
         }
 
+        private void ClientsStore_CollectionChanged()
+        {
+            OnPropertyChanged(nameof(Clients));
+        }
+
         public static ClientsListingViewModel GetClientsListingViewModel(
-            IClientsProvider dbClientsProvider,
+            IProvider<Client> dbClientsProvider,
             INavigationService<ClientsManipulationViewModel> navigationService,
             IDataManipulator dataDeleter,
-            ClientsStore clientsStore
+            ICollectionStore<Client> clientsStore
             )
         {
             ClientsListingViewModel viewModel = new ClientsListingViewModel
@@ -65,7 +71,7 @@ namespace DentalClinicApplication.ViewModels
                 navigationService,
                 dataDeleter,
                 clientsStore);
-            ICommand LoadClients = new LoadClientsCommand(viewModel, clientsStore);
+            ICommand LoadClients = new LoadCommand<Client>(viewModel, clientsStore);
             LoadClients.Execute(null);
             return viewModel;
         }

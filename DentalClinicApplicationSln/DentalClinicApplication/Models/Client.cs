@@ -13,7 +13,7 @@ namespace DentalClinicApp.Models
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public Gender Gender { get; set; } = Gender.Undefinded;
-        public byte Age { get; set; }
+        public int Age { get; set; }
         public IEnumerable<Appointment>? Appointments { get; } = Enumerable.Empty<Appointment>();
 
         public static Client ToClient(ClientDTO clientDTO)

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataProvider
 {
-    public class DbClientsProvider : IClientsProvider
+    public class DbClientsProvider : IProvider<Client>
     {
         public DbContext DataContext { get; }
 
@@ -19,10 +19,10 @@ namespace DentalClinicApplication.Services.DataProvider
         {
             DataContext = dataContext;
         }
-        public async Task<IEnumerable<Client>> GetClients()
+        public async Task<IEnumerable<Client>> GetItems()
         {
             string sql = "SELECT * FROM Clients";
-            await Task.Delay(3000);
+            //await Task.Delay(3000);
             IEnumerable<ClientDTO> ClientsDTO = await DataContext.RunAsync(async (conn) => 
             {
                 return await conn.QueryAsync<ClientDTO>(sql);

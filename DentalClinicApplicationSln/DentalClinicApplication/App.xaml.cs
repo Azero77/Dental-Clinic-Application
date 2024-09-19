@@ -1,4 +1,5 @@
 ﻿using Configurations.DataContext;
+using DentalClinicApplication.VirtualizationCollections;
 using DentalClinicApp.Models;
 using DentalClinicApp.Services;
 using DentalClinicApp.Stores;
@@ -34,9 +35,15 @@ namespace DentalClinicApplication
                 .ConfigureServices((sc) => 
                 {
                     sc.AddSingleton<DbContext>();
-                    sc.AddSingleton<IClientsProvider, DbClientsProvider>();
-                   
-                    sc.AddSingleton<ClientsStore>();
+                    sc.AddSingleton<IProvider<Client>, VirtualizedClientsProvider>();
+                    sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedClientsProvider>();
+                    sc.AddTransient<VirtualizationCollection<Client>>(
+                        sp =>
+                        new VirtualizationCollection<Client>(
+                            sp.GetRequiredService<IVirtualizationItemsProvider<Client>>()
+                            )
+                        ) ;
+                    sc.AddSingleton<ICollectionStore<Client>,VirtualizedCollectionStore<Client>>();
                     sc.AddSingleton<NavigationStore>();
                     sc.AddSingleton<DataCreator>();
                     sc.AddSingleton<DataEditor>();
@@ -49,10 +56,10 @@ namespace DentalClinicApplication
                        );
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
-                        (sp.GetRequiredService<IClientsProvider>(),
+                        (sp.GetRequiredService<IProvider<Client>>(),
                         sp.GetRequiredService<INavigationService<ClientsManipulationViewModel>>(),
                         sp.GetRequiredService<DataDeleter>(),
-                        sp.GetRequiredService<ClientsStore>())
+                        sp.GetRequiredService<ICollectionStore<Client>>())
                     ) ;
                     //Default is Insert 
                     sc.AddTransient<ClientsManipulationViewModel>(sp => new ClientsManipulationViewModel(

@@ -14,33 +14,40 @@ namespace DentalClinicApplication.Stores
     /// <summary>
     /// Stores the collection of the client for the application lifecycle
     /// </summary>
-    public class ClientsStore
+    public class ClientsStore : ICollectionStore<Client>
     {
-        public ObservableCollection<Client> Clients { get; set; } = new();
-        public IClientsProvider ClientsProvider { get; }
+        public IEnumerable<Client> Collection { get; set; }
+        public IProvider<Client> Provider { get; }
 
         private Lazy<Task> _initialize;
 
-        public ClientsStore(IClientsProvider clientProvider,
+        public ClientsStore(
+            IProvider<Client> clientProvider,
             ManipulationNotifierService manipulationNotifierService)
         {
-            ClientsProvider = clientProvider;
+            Provider = clientProvider;
             manipulationNotifierService.DataManipulated += OnDataManipulated;
             _initialize = new Lazy<Task>(Initialize);
+            //Collection = new VirtualizationCollection<Client>( (IVirtualizationItemsProvider<Client>) Provider);
         }
 
-        private void OnDataManipulated()
+        public void OnDataManipulated()
         {
             //reloading clients
             _initialize = new Lazy<Task>(Initialize);
+            Load().ConfigureAwait(false);
         }
 
         public async Task Initialize()
         {
-            var result = await ClientsProvider.GetClients();
-            Clients.Clear();
-            foreach (var item in result)
-                Clients.Add(item);
+            Collection = await Provider.GetItems();
+            OnCollectionChanged();
+        }
+
+        public event Action? CollectionChanged;
+        private void OnCollectionChanged()
+        {
+            CollectionChanged?.Invoke();
         }
 
         public async Task Load()

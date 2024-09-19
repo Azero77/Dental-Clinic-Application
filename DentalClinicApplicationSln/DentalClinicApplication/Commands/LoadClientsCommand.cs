@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Commands
 {
-    public class LoadClientsCommand : AsyncCommandBase
+    public class LoadCommand<T> : AsyncCommandBase
     {
-        public LoadClientsCommand(ClientsListingViewModel clientsListingViewModel,
-            ClientsStore clientsStore)
+        public LoadCommand(ClientsListingViewModel clientsListingViewModel,
+            ICollectionStore<T> clientsStore)
         {
             ClientsListingViewModel = clientsListingViewModel;
             ClientsStore = clientsStore;
         }
 
         public ClientsListingViewModel ClientsListingViewModel { get; }
-        public ClientsStore ClientsStore { get; }
+        public ICollectionStore<T> ClientsStore { get; }
 
         public override async Task ExecuteAsync(object? parameter)
         {

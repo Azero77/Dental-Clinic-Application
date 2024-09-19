@@ -114,8 +114,8 @@ namespace DentalClinicApplication.ViewModels
 				}
 			}
 
-			private byte _age;
-			public byte Age
+			private int _age;
+			public int Age
 			{
 				get
 				{

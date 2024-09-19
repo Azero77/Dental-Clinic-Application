@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DentalClinicApplication"
         xmlns:vms ="clr-namespace:DentalClinicApplication.ViewModels"
         xmlns:views="clr-namespace:DentalClinicApplication.Views" xmlns:components="clr-namespace:DentalClinicApplication.Components"
+        xmlns:cvms="clr-namespace:DentalClinicApplication.ComponentsViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>

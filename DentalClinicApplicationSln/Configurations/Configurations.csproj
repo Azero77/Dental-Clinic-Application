@@ -7,13 +7,6 @@
 
   <ItemGroup>
     <None Remove="appConfigurations.json" />
-    <None Remove="Database\DentalClinicDB.accdb" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Database\DentalClinicDB.accdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +18,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="System.Data.OleDb" Version="5.0.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Database\DentalClinic.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
