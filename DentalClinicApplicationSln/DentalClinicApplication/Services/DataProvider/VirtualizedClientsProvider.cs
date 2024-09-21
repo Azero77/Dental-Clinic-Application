@@ -22,13 +22,8 @@ namespace DentalClinicApplication.Services.DataProvider
         {
             DataContext = dataContext;
         }
-       
-        public override async Task<IList<Client>> FetchRange(int start, int size)
-        {
-            return (await GetClients(start, size)).ToList();
-        }
 
-        public async Task<IEnumerable<Client>> GetClients(int start,int size)
+        public override async Task<IEnumerable<Client>> GetItems(int start,int size)
         {
 
             string sql = "SELECT * FROM Clients LIMIT @size OFFSET @start;";

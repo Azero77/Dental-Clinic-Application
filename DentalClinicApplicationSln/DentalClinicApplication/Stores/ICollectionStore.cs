@@ -30,6 +30,10 @@ namespace DentalClinicApplication.Stores
         /// </summary>
         void OnDataManipulated();
 
+        /// <summary>
+        /// Changing provider for searching and sorting or grouping
+        /// </summary>
+        void ChangeProvider(IProvider<T> newProvider);
 
         Task Load();
     }

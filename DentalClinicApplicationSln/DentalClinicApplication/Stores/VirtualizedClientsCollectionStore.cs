@@ -48,11 +48,18 @@ namespace DentalClinicApplication.Stores
             await _initialize.Value;
         }
 
+        public void ChangeProvider(IProvider<T> newProvider)
+        {
+            Provider = newProvider;
+            OnDataManipulated();
+
+        }
+
         private Lazy<Task> _initialize;
 
 
 
-        public IProvider<T> Provider { get; }
+        public IProvider<T> Provider { get; set; }
 
         private VirtualizationCollection<T> _collection;
         public IEnumerable<T> Collection => _collection;

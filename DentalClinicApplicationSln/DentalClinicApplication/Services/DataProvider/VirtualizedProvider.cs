@@ -39,12 +39,17 @@ namespace DentalClinicApplication.Services.DataProvider
             return await _initializeCount.Value;
         }
 
-        public abstract Task<IList<T>> FetchRange(int start, int size);
+        public async Task<IList<T>> FetchRange(int start, int size)
+        {
+            return (await GetItems(start, size)).ToList();
+        }
         
 
         public async Task<IEnumerable<T>> GetItems()
         {
             return await FetchRange(0, 20);
         }
+
+        public abstract Task<IEnumerable<T>> GetItems(int start, int size);
     }
 }
