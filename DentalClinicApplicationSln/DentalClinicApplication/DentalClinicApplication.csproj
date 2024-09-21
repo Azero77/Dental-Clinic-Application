@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Configurations\Configurations.csproj" />
+    <ProjectReference Include="..\QueryGenerator\QueryGenerator.csproj" />
   </ItemGroup>
 
 </Project>

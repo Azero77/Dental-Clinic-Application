@@ -13,37 +13,19 @@ namespace DentalClinicApplication.Services.DataProvider
 {
     internal class VirtualizedClientsProvider
         :
-        IVirtualizationItemsProvider<Client>
+        VirtualizedProvider<Client>
     {
         public DbContext DataContext { get; }
-        Lazy<Task<int>> _initializeCount;
 
         public VirtualizedClientsProvider(DbContext dataContext)
+            : base(dataContext,"","Clients")
         {
             DataContext = dataContext;
-            _initializeCount = new(InitializeCount);
         }
-        private async Task<int> InitializeCount()
-        {
-            string sql = "SELECT COUNT(*) FROM Clients;";
-            return await DataContext.RunAsync<int>(async conn =>
-            {
-                return await conn.ExecuteScalarAsync<int>(sql);
-            });
-        }
-        public async Task<int> FetchCount()
-        {
-            return await _initializeCount.Value;
-        }
-
-        public async Task<IList<Client>> FetchRange(int start, int size)
+       
+        public override async Task<IList<Client>> FetchRange(int start, int size)
         {
             return (await GetClients(start, size)).ToList();
-        }
-
-        public Task<IEnumerable<Client>> GetItems()
-        {
-            return GetClients(0,20);
         }
 
         public async Task<IEnumerable<Client>> GetClients(int start,int size)

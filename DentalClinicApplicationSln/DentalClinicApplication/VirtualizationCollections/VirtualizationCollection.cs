@@ -221,7 +221,7 @@ namespace DentalClinicApplication.VirtualizationCollections
         {
             if (moveValue == MoveValue.Next)
             {
-                return newPageNumber < PagesCount;
+                return newPageNumber < PagesCount - 1;
             }
             else if (moveValue == MoveValue.Previous)
             {

@@ -1,0 +1,1 @@
+This Class Library is for Micro ORM packages to suppport delegation search without loading much in memory

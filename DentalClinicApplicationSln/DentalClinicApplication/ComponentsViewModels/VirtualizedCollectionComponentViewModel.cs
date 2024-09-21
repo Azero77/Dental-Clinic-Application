@@ -111,7 +111,7 @@ namespace DentalClinicApplication.ComponentsViewModels
         private List<int> MakePageIndexers()
         {
             List<int> result = new();
-            for (int i = 1; i <= PagesCount; i++)
+            for (int i = 1; i < PagesCount; i++)
             {
                 result.Add(i);
             }
