@@ -17,7 +17,7 @@ namespace DentalClinicApplication.Stores
     public class ClientsStore : ICollectionStore<Client>
     {
         public IEnumerable<Client> Collection { get; set; }
-        public IProvider<Client> Provider { get; }
+        public IProvider<Client> Provider { get; set; }
 
         private Lazy<Task> _initialize;
 
@@ -53,6 +53,12 @@ namespace DentalClinicApplication.Stores
         public async Task Load()
         {
             await _initialize.Value;
+        }
+
+        public void ChangeProvider(IProvider<Client> newProvider)
+        {
+            Provider = newProvider;
+            OnDataManipulated();
         }
     }
 }

@@ -7,6 +7,7 @@
         xmlns:vms ="clr-namespace:DentalClinicApplication.ViewModels"
         xmlns:views="clr-namespace:DentalClinicApplication.Views" xmlns:components="clr-namespace:DentalClinicApplication.Components"
         xmlns:cvms="clr-namespace:DentalClinicApplication.ComponentsViewModels"
+        xmlns:converters ="clr-namespace:DentalClinicApplication.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
@@ -23,6 +24,7 @@
             <DataTemplate DataType="{x:Type vms:LayoutViewModel}">
                 <components:LayoutView/>
             </DataTemplate>
+
         </Grid.Resources>
         <ContentControl
             Content="{Binding CurrentViewModel}">

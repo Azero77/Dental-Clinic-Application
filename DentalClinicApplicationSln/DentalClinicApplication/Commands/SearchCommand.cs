@@ -1,4 +1,6 @@
-﻿using DentalClinicApplication.Services.DataProvider;
+﻿using DentalClinicApplication.DTOs;
+using DentalClinicApplication.Services;
+using DentalClinicApplication.Services.DataProvider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +11,28 @@ namespace DentalClinicApplication.Commands
 {
     public class SearchCommand<T> : AsyncCommandBase
     {
-        public IProvider<T> DataProvider { get; }
-        public string PropertyName { get; }
+        public ProviderChangerService<T> ProviderChangerService { get; }
 
-        public SearchCommand(IProvider<T> dataProvider, string propertyName)
+        public SearchCommand(ProviderChangerService<T> providerChangerService)
         {
-            DataProvider = dataProvider;
-            PropertyName = propertyName;
+            ProviderChangerService = providerChangerService;
+            
         }
 
-        public override Task ExecuteAsync(object? parameter)
+        public override async Task ExecuteAsync(object? parameter)
         {
-            throw new NotImplementedException();
+            //parameter is a wrapper for the propertyName and the value for seacrh
+
+            //get the provider
+            object[]? list = parameter as object[];
+            if (list is null)
+            {
+                throw new InvalidCastException("Search is not supported");
+            }
+            object value = list[0];
+            string propertyName = (string) list[1];
+
+            await ProviderChangerService.Change(propertyName, value);
         }
     }
 }

@@ -21,5 +21,13 @@ namespace DentalClinicApplication.Services.DataProvider
         /// <param name="size"></param>
         /// <returns></returns>
         Task<IList<T>> FetchRange(int start, int size);
+
+        /// <summary>
+        /// Method for getting new provider and adding whereClause for searching
+        /// </summary>
+        /// <param name="sqlFetchCount"></param>
+        /// <param name="sqlFetchRange"></param>
+        /// <returns></returns>
+        
     }
 }

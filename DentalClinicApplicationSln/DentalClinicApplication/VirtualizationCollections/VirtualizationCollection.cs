@@ -53,12 +53,11 @@ namespace DentalClinicApplication.VirtualizationCollections
         public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            Reload();
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (int i = 0; i < PageSize; i++)
+            for (int i = 0; i < _pages[CurrentPageIndex].Count; i++)
             {
                 yield return _pages[CurrentPageIndex][i];
             }
@@ -70,7 +69,15 @@ namespace DentalClinicApplication.VirtualizationCollections
         }
 
         #region properties
-        public IVirtualizationItemsProvider<T> ItemsProvider {get;}
+        public IVirtualizationItemsProvider<T> ItemsProvider { get; private set; }
+        public async void ChangeProvider(IVirtualizationItemsProvider<T> newProvider)
+        {
+            ItemsProvider = newProvider;
+            CurrentPageIndex = 0;
+            _pages = new();
+            _pagesTimeout = new();
+            await Load();
+        }
         private int _pageSize = 20;
         public int PageSize
         {
@@ -83,6 +90,7 @@ namespace DentalClinicApplication.VirtualizationCollections
                 _pageSize = value;
                 OnPropertyChanged(nameof(PagesCount));
                 OnPropertyChanged(nameof(PageSize));
+                PageSizeChanged();
             }
         }
         private int _pageTimeout = 2000;
@@ -188,12 +196,6 @@ namespace DentalClinicApplication.VirtualizationCollections
             }
         }
 
-        public async Task Reload()
-        {
-            await RenderPage(CurrentPageIndex);
-
-            OnCollectionReset();
-        }
         #endregion
 
         #region Virtualization View
@@ -217,7 +219,7 @@ namespace DentalClinicApplication.VirtualizationCollections
             Previous,
             Undefined
         }
-        public bool CanMoveToPage(int newPageNumber,MoveValue moveValue = MoveValue.Undefined)
+        public bool CanMoveToPage(int newPageNumber, MoveValue moveValue = MoveValue.Undefined)
         {
             if (moveValue == MoveValue.Next)
             {
@@ -230,7 +232,23 @@ namespace DentalClinicApplication.VirtualizationCollections
             return true;
         }
         #endregion
+        #region LazyLoading
+        public async Task Load()
+        {
+            await LoadCount();
+            await RenderPage(CurrentPageIndex);
+            OnPropertyChanged(string.Empty);
+            OnCollectionReset();
+        }
 
+        public async Task PageSizeChanged()
+        {
+            if (CurrentPageIndex > PagesCount)
+                CurrentPageIndex = 0;
+            await RenderPage(CurrentPageIndex);
+            OnCollectionReset();
+        }
+        #endregion
     }
 }
 #pragma warning restore

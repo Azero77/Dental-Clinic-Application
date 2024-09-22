@@ -38,9 +38,7 @@ namespace DentalClinicApplication.Stores
 
         private async Task Initialize()
         {
-            await _collection.Reload();
-            await _collection.LoadCount();
-            await _collection.RenderPage(_collection.CurrentPageIndex);
+            await _collection.Load();
             OnCollectionChanged();
         }
         public async Task Load()
@@ -50,7 +48,11 @@ namespace DentalClinicApplication.Stores
 
         public void ChangeProvider(IProvider<T> newProvider)
         {
-            Provider = newProvider;
+            if (newProvider is not IVirtualizationItemsProvider<T>)
+            {
+                throw new InvalidCastException();
+            }
+            _collection.ChangeProvider((IVirtualizationItemsProvider<T>) newProvider);
             OnDataManipulated();
 
         }

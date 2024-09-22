@@ -18,8 +18,11 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using System.Windows;
 using System.Windows.Navigation;
+using DentalClinicApplication.DTOs;
+using DentalClinicApplication.AutoMapperProfiles;
 
 namespace DentalClinicApplication
 {
@@ -34,9 +37,10 @@ namespace DentalClinicApplication
             _host = Host.CreateDefaultBuilder()
                 .ConfigureServices((sc) => 
                 {
+                    AddMapper(sc);
                     sc.AddSingleton<DbContext>();
-                    sc.AddSingleton<IProvider<Client>, VirtualizedClientsProvider>();
-                    sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedClientsProvider>();
+                    sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
+                    sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddTransient<VirtualizationCollection<Client>>(
                         sp =>
                         new VirtualizationCollection<Client>(
@@ -145,6 +149,14 @@ namespace DentalClinicApplication
                 dataManipulators.Add((IDataManipulator) sp.GetRequiredService(type));
             }
             return dataManipulators;
+        }
+        private void AddMapper(IServiceCollection sc)
+        {
+            MapperConfiguration config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(typeof(ClientProfile));
+            });
+            sc.AddSingleton(config.CreateMapper());
         }
     }
 }

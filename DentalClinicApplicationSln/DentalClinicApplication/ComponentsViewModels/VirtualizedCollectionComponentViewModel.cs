@@ -64,6 +64,13 @@ namespace DentalClinicApplication.ComponentsViewModels
             MovePrevious = new RelayCommand<int>(
                 async (n) => await _collection!.MoveToPage(VirtualizationCollection<T>.MoveValue.Previous),
                 (p) => _collection!.CanMoveToPage(p, VirtualizationCollection<T>.MoveValue.Previous));
+            SearchCommand = new SearchCommand<T>(
+                new Services.ProviderChangerService<T>(_collection!,_collection!.ItemsProvider));
+            ReloadPropertyChanged();
+        }
+
+        private void ReloadPropertyChanged()
+        {
             OnPropertyChanged(nameof(Collection));
             OnPropertyChanged(nameof(Move));
             OnPropertyChanged(nameof(MoveNext));
@@ -74,6 +81,7 @@ namespace DentalClinicApplication.ComponentsViewModels
         public ICommand? Move { get; set; }
         public ICommand? MoveNext { get; set; }
         public ICommand? MovePrevious { get; set; }
+        public ICommand? SearchCommand { get; set; }
         private int? _currentPageIndex;
         public int? CurrentPageIndex
         {
@@ -105,13 +113,16 @@ namespace DentalClinicApplication.ComponentsViewModels
             }
         }
         public int? PagesCount => _collection?.PagesCount;
+        public IEnumerable<string> Properties => typeof(T).GetProperties().Select(p => p.Name);
+        public string? FirstProperty => Properties.FirstOrDefault();
         public List<int> PagesIndexers =>
             MakePageIndexers();
+
 
         private List<int> MakePageIndexers()
         {
             List<int> result = new();
-            for (int i = 1; i < PagesCount; i++)
+            for (int i = 0; i < PagesCount; i++)
             {
                 result.Add(i);
             }
