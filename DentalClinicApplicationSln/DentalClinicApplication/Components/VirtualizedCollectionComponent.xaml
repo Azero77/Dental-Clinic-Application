@@ -3,12 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:DentalClinicApplication.Components" xmlns:converters="clr-namespace:DentalClinicApplication.Converters"
+             xmlns:local="clr-namespace:DentalClinicApplication.Components" xmlns:converters="clr-namespace:DentalClinicApplication.Converters" xmlns:loadingspinnercontrol="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
              Name="root"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:MutliBindingConverter x:Key="MutliBindingConverter"/>
+        <converters:InverseBooleanToVisibiltyConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </UserControl.Resources>
     <StackPanel>
         <StackPanel Orientation="Horizontal">
@@ -33,24 +34,30 @@
                 </Button.CommandParameter>
             </Button>
         </StackPanel>
-        <DataGrid
-            Height="200"
-            ItemsSource="{Binding Path = Collection, ElementName=root}">
+        <Grid>
+            <loadingspinnercontrol:LoadingSpinner
+                IsLoading="{Binding IsLoading}"
+                />
+            <DataGrid
+                Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                Height="200"
+                ItemsSource="{Binding Path = Collection}">
 
-        </DataGrid>
+            </DataGrid>
+        </Grid>
         <ListBox ItemsSource="{Binding PagesIndexers}" Height="40">
+            <!--<ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>-->
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Button Content="{Binding}"
                             Command="{Binding DataContext.Move, ElementName=root}"
-                            CommandParameter="{Binding}"></Button>
+                            CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
         </ListBox>
         <Button Command="{Binding DataContext.MovePrevious,ElementName=root}"
                 CommandParameter="{Binding CurrentPageIndex}">

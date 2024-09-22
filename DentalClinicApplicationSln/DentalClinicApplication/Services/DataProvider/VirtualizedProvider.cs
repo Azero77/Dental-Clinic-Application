@@ -43,16 +43,8 @@ namespace DentalClinicApplication.Services.DataProvider
         {
             return await DbContext.RunAsync<int>(async conn =>
             {
-                try
-                {
-
                     return await conn.ExecuteScalarAsync<int>(sql);
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
+                
             });
         }
 

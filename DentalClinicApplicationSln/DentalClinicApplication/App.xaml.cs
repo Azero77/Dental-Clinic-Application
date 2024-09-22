@@ -23,6 +23,7 @@ using System.Windows;
 using System.Windows.Navigation;
 using DentalClinicApplication.DTOs;
 using DentalClinicApplication.AutoMapperProfiles;
+using DentalClinicApplication.ComponentsViewModels;
 
 namespace DentalClinicApplication
 {
@@ -41,6 +42,7 @@ namespace DentalClinicApplication
                     sc.AddSingleton<DbContext>();
                     sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
+                    
                     sc.AddTransient<VirtualizationCollection<Client>>(
                         sp =>
                         new VirtualizationCollection<Client>(
@@ -53,17 +55,20 @@ namespace DentalClinicApplication
                     sc.AddSingleton<DataEditor>();
                     sc.AddSingleton<DataDeleter>();
 
+
                     sc.AddSingleton<ManipulationNotifierService>(
                        sp => new ManipulationNotifierService(
                            GetManipulators(sp)
                            )
                        );
+                    sc.AddTransient<VirtualizedClientsComponentViewModel>();
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
                         (sp.GetRequiredService<IProvider<Client>>(),
                         sp.GetRequiredService<INavigationService<ClientsManipulationViewModel>>(),
                         sp.GetRequiredService<DataDeleter>(),
-                        sp.GetRequiredService<ICollectionStore<Client>>())
+                        sp.GetRequiredService<ICollectionStore<Client>>(),
+                        sp.GetRequiredService<VirtualizedClientsComponentViewModel>())
                     ) ;
                     //Default is Insert 
                     sc.AddTransient<ClientsManipulationViewModel>(sp => new ClientsManipulationViewModel(

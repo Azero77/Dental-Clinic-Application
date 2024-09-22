@@ -29,7 +29,7 @@ namespace DentalClinicApplication.Components
         }
     }
 
-    /// <summary>
+  /*  /// <summary>
     /// Interaction logic for VirtualizedCollectionComponent.xaml
     /// </summary>
     public partial class VirtualizedCollectionComponent<T> : VirtualizedCollectionComponent
@@ -65,5 +65,5 @@ namespace DentalClinicApplication.Components
         public ClientVirtualizedCollectionComponent()
         {
         }
-    }
+    }*/
 }

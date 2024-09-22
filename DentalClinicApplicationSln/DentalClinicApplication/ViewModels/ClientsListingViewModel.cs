@@ -2,14 +2,17 @@
 using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
+using DentalClinicApplication.ComponentsViewModels;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataManiplator;
 using DentalClinicApplication.Services.DataProvider;
 using DentalClinicApplication.Stores;
+using DentalClinicApplication.VirtualizationCollections;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -20,6 +23,8 @@ namespace DentalClinicApplication.ViewModels
     {
         public IProvider<Client> DbClientsProvider { get; }
         public ICollectionStore<Client> ClientsStore { get; }
+        public VirtualizedClientsComponentViewModel VirtualizedClientsComponentViewModel { get; set; }
+
         public IEnumerable<Client> Clients => ClientsStore.Collection;
 
         private bool _isLoading = false;
@@ -44,7 +49,8 @@ namespace DentalClinicApplication.ViewModels
             IProvider<Client> dbClientsProvider,
             INavigationService<ClientsManipulationViewModel> navigationService,
             IDataManipulator dataDeleter,
-            ICollectionStore<Client> clientsStore
+            ICollectionStore<Client> clientsStore,
+            VirtualizedClientsComponentViewModel virtualizedClientsComponentViewModel
             )
         {
             DbClientsProvider = dbClientsProvider;
@@ -52,6 +58,7 @@ namespace DentalClinicApplication.ViewModels
             ClientsStore.CollectionChanged += ClientsStore_CollectionChanged;
             NavigateToEditClientView = new NavigationCommand(navigationService);
             DeleteClientCommand = new ClientsDeleteCommand(dataDeleter);
+            VirtualizedClientsComponentViewModel = virtualizedClientsComponentViewModel;
         }
 
         private void ClientsStore_CollectionChanged()
@@ -63,16 +70,20 @@ namespace DentalClinicApplication.ViewModels
             IProvider<Client> dbClientsProvider,
             INavigationService<ClientsManipulationViewModel> navigationService,
             IDataManipulator dataDeleter,
-            ICollectionStore<Client> clientsStore
+            ICollectionStore<Client> clientsStore,
+            VirtualizedClientsComponentViewModel virtualizedClientsComponentViewModel
             )
         {
             ClientsListingViewModel viewModel = new ClientsListingViewModel
                 (dbClientsProvider,
                 navigationService,
                 dataDeleter,
-                clientsStore);
-            ICommand LoadClients = new LoadCommand<Client>(viewModel, clientsStore);
-            LoadClients.Execute(null);
+                clientsStore,
+                virtualizedClientsComponentViewModel);
+            //Change hereeeee
+            //virtualizedClientsComponentViewModel.Load();
+            ICommand LoadCommand = new LoadVirtualizationCollectionCommand<Client>(virtualizedClientsComponentViewModel, clientsStore);
+            LoadCommand.Execute(null);
             return viewModel;
         }
         

@@ -1,10 +1,20 @@
 ﻿using DentalClinicApp.Commands;
+using System;
 using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Commands
 {
     public abstract class AsyncCommandBase : CommandBase
     {
+        private Action<Exception>? _onException = null;
+        public AsyncCommandBase()
+        {
+            
+        }
+        public AsyncCommandBase(Action<Exception> onException)
+        {
+            _onException = onException;
+        }
         private bool _isExecuting;
         private bool IsExecuting
         {
@@ -22,7 +32,20 @@ namespace DentalClinicApplication.Commands
         public override async void Execute(object? parameter)
         {
             IsExecuting = true;
-            await ExecuteAsync(parameter);
+            try
+            {
+                await ExecuteAsync(parameter);
+
+            }
+            catch (Exception e)
+            {
+                if (_onException is not null)
+                {
+                    _onException.Invoke(e);
+                }
+                else
+                    throw e;
+            }
             IsExecuting = false;
         }
 

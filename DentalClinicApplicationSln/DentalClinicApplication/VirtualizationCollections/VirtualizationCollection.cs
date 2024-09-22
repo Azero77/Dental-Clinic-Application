@@ -57,6 +57,9 @@ namespace DentalClinicApplication.VirtualizationCollections
 
         public IEnumerator<T> GetEnumerator()
         {
+            if (!_pages.ContainsKey(CurrentPageIndex))
+                yield break;
+            
             for (int i = 0; i < _pages[CurrentPageIndex].Count; i++)
             {
                 yield return _pages[CurrentPageIndex][i];
@@ -221,6 +224,7 @@ namespace DentalClinicApplication.VirtualizationCollections
         }
         public bool CanMoveToPage(int newPageNumber, MoveValue moveValue = MoveValue.Undefined)
         {
+
             if (moveValue == MoveValue.Next)
             {
                 return newPageNumber < PagesCount - 1;

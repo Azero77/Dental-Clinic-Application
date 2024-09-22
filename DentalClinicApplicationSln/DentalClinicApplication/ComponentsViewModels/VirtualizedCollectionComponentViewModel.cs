@@ -1,5 +1,7 @@
-﻿using DentalClinicApp.ViewModels;
+﻿using DentalClinicApp.Models;
+using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
+using DentalClinicApplication.Stores;
 using DentalClinicApplication.VirtualizationCollections;
 using System;
 using System.Collections;
@@ -30,7 +32,32 @@ namespace DentalClinicApplication.ComponentsViewModels
             }
         }
 
-        private void OnCollectionReset()
+        private bool _isLoading = false;
+        #region loading
+        public bool IsLoading
+        {
+            get
+            {
+                return _isLoading;
+            }
+            set
+            {
+                _isLoading = value;
+                OnPropertyChanged(nameof(IsLoading));
+            }
+        }
+        public Task Load()
+        {
+            return _collection!.Load();
+        }
+        #endregion
+
+        public VirtualizedCollectionComponentViewModel(VirtualizationCollection<T> collection)
+        {
+            Collection = collection;
+        }
+        #region events
+        public void OnCollectionReset()
         {
             if (_collection is not null)
             {
@@ -55,19 +82,35 @@ namespace DentalClinicApplication.ComponentsViewModels
 
         private void ReloadButtons()
         {
-            Move = new RelayCommand<int>
-                (async (p) => await _collection!.MoveToPage(p),
+            Move = new AsyncRelayCommand<int>
+                ((p) => MoveCommandDelegate(p),
                 (p) => _collection!.CanMoveToPage(p));
 
-            MoveNext = new RelayCommand<int>(async (n) => await _collection!.MoveToPage(VirtualizationCollection<T>.MoveValue.Next),
-                                             (p) => _collection!.CanMoveToPage(p, VirtualizationCollection<T>.MoveValue.Next));
-            MovePrevious = new RelayCommand<int>(
-                async (n) => await _collection!.MoveToPage(VirtualizationCollection<T>.MoveValue.Previous),
+            MoveNext = new AsyncRelayCommand<int>((p) => MoveCommandDelegate(VirtualizationCollection<T>.MoveValue.Next),
+                (p) => _collection!.CanMoveToPage(p));
+            MovePrevious = new AsyncRelayCommand<int>(
+               (p) => MoveCommandDelegate(VirtualizationCollection<T>.MoveValue.Previous),
                 (p) => _collection!.CanMoveToPage(p, VirtualizationCollection<T>.MoveValue.Previous));
             SearchCommand = new SearchCommand<T>(
-                new Services.ProviderChangerService<T>(_collection!,_collection!.ItemsProvider));
+                new Services.ProviderChangerService<T>(_collection!, _collection!.ItemsProvider));
             ReloadPropertyChanged();
         }
+
+        private async Task MoveCommandDelegate(
+            VirtualizationCollection<T>.MoveValue moveValue)
+        {
+            IsLoading = true;
+            await _collection!.MoveToPage(moveValue);
+            IsLoading = false;
+        }
+        private async Task MoveCommandDelegate(
+            int pageNumber)
+        {
+            IsLoading = true;
+            await _collection!.MoveToPage(pageNumber);
+            IsLoading = false;
+        }
+        #endregion
 
         private void ReloadPropertyChanged()
         {
@@ -77,11 +120,12 @@ namespace DentalClinicApplication.ComponentsViewModels
             OnPropertyChanged(nameof(MovePrevious));
             OnPropertyChanged(nameof(CurrentPageIndex));
         }
-
+        #region commands
         public ICommand? Move { get; set; }
         public ICommand? MoveNext { get; set; }
         public ICommand? MovePrevious { get; set; }
         public ICommand? SearchCommand { get; set; }
+
         private int? _currentPageIndex;
         public int? CurrentPageIndex
         {
@@ -117,7 +161,7 @@ namespace DentalClinicApplication.ComponentsViewModels
         public string? FirstProperty => Properties.FirstOrDefault();
         public List<int> PagesIndexers =>
             MakePageIndexers();
-
+        #endregion
 
         private List<int> MakePageIndexers()
         {
@@ -136,15 +180,30 @@ namespace DentalClinicApplication.ComponentsViewModels
         /// </summary>
         /// <param name="collection"></param>
         /// <returns></returns>
-        public static VirtualizedCollectionComponentViewModel<T> GetVirtualizedCollectionComponentViewModel(
-            IEnumerable collection)
+
+
+        public static TVM LoadVirtualizedCollectionComponentViewModel<TVM>(
+            VirtualizationCollection<T> collection,
+            ICollectionStore<T>? collectionStore
+            )
+            where TVM : VirtualizedCollectionComponentViewModel<T>, new()
         {
-            
-            VirtualizedCollectionComponentViewModel<T> vm = new();
-            vm.Collection = collection;
-            
+            TVM vm = new()
+            {
+                Collection = collection
+            };
+            ICommand loadCommand = new LoadVirtualizationCollectionCommand<T>(vm, collectionStore);
+            loadCommand.Execute(null);
             return vm;
         }
-        
+
+    }
+    public class VirtualizedClientsComponentViewModel : VirtualizedCollectionComponentViewModel<Client>
+    {
+        public VirtualizedClientsComponentViewModel(VirtualizationCollection<Client> virtualizedCollectionComponentViewModel)
+            : base(virtualizedCollectionComponentViewModel)
+        {
+
+        }
     }
 }

@@ -6,7 +6,6 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
-        <components:ClientVirtualizedCollectionComponent
-            Collection="{Binding DataContext.Clients, RelativeSource= {RelativeSource AncestorType=UserControl}}"></components:ClientVirtualizedCollectionComponent>
+        <ContentControl Content="{Binding VirtualizedClientsComponentViewModel}"></ContentControl>
     </StackPanel>
 </UserControl>
