@@ -1,4 +1,5 @@
-﻿using DentalClinicApplication.DTOs;
+﻿using DentalClinicApplication.ComponentsViewModels;
+using DentalClinicApplication.DTOs;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataProvider;
 using System;
@@ -11,12 +12,14 @@ namespace DentalClinicApplication.Commands
 {
     public class SearchCommand<T> : AsyncCommandBase
     {
-        public ProviderChangerService<T> ProviderChangerService { get; }
+        private readonly VirtualizedCollectionComponentViewModel<T> _viewModel;
 
-        public SearchCommand(ProviderChangerService<T> providerChangerService)
+        public ProviderChangerService<T> ProviderChangerService { get; }
+        public SearchCommand(ProviderChangerService<T> providerChangerService,
+            VirtualizedCollectionComponentViewModel<T> viewModel)
         {
             ProviderChangerService = providerChangerService;
-            
+            _viewModel = viewModel;
         }
 
         public override async Task ExecuteAsync(object? parameter)
@@ -32,7 +35,9 @@ namespace DentalClinicApplication.Commands
             object value = list[0];
             string propertyName = (string) list[1];
 
+            _viewModel.IsLoading = true;
             await ProviderChangerService.Change(propertyName, value);
+            _viewModel.IsLoading = false;
         }
     }
 }

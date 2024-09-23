@@ -73,7 +73,7 @@ namespace DentalClinicApplication.VirtualizationCollections
 
         #region properties
         public IVirtualizationItemsProvider<T> ItemsProvider { get; private set; }
-        public async void ChangeProvider(IVirtualizationItemsProvider<T> newProvider)
+        public async Task ChangeProvider(IVirtualizationItemsProvider<T> newProvider)
         {
             ItemsProvider = newProvider;
             CurrentPageIndex = 0;

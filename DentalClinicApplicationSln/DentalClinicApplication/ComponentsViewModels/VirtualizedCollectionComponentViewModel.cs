@@ -92,7 +92,7 @@ namespace DentalClinicApplication.ComponentsViewModels
                (p) => MoveCommandDelegate(VirtualizationCollection<T>.MoveValue.Previous),
                 (p) => _collection!.CanMoveToPage(p, VirtualizationCollection<T>.MoveValue.Previous));
             SearchCommand = new SearchCommand<T>(
-                new Services.ProviderChangerService<T>(_collection!, _collection!.ItemsProvider));
+                new Services.ProviderChangerService<T>(_collection!, _collection!.ItemsProvider),this);
             ReloadPropertyChanged();
         }
 

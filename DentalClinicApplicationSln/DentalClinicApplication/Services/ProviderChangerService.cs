@@ -65,7 +65,7 @@ namespace DentalClinicApplication.Services
             IProvider<T> newProvider = GenerateProvider(sql);
             if (Collection is VirtualizationCollection<T> virtualizationCollection)
             {
-                virtualizationCollection.ChangeProvider((IVirtualizationItemsProvider<T>)newProvider);
+                await virtualizationCollection.ChangeProvider((IVirtualizationItemsProvider<T>)newProvider);
                 return;
             }
             Collection = await newProvider.GetItems();
