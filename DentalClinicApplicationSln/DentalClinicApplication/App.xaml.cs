@@ -42,7 +42,8 @@ namespace DentalClinicApplication
                     sc.AddSingleton<DbContext>();
                     sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
-                    
+                    sc.AddSingleton<MessageStore>();
+                    sc.AddSingleton<MessageService>();
                     sc.AddTransient<VirtualizationCollection<Client>>(
                         sp =>
                         new VirtualizationCollection<Client>(
@@ -82,6 +83,9 @@ namespace DentalClinicApplication
                     );
                     sc.AddSingleton<Func<object?, NavigationBarViewModel>>(
                         sp => obj => sp.GetRequiredService<NavigationBarViewModel>());
+                    sc.AddSingleton<Func<object?, MessageViewModel>>(sp => 
+                    obj => sp.GetRequiredService<MessageViewModel>());
+                    sc.AddSingleton<MessageViewModel>();
                     sc.AddSingleton<Func<object?, ClientsManipulationViewModel>>(sp =>
                     (obj) =>
                     {
@@ -135,7 +139,8 @@ namespace DentalClinicApplication
                 (
                 sp.GetRequiredService<NavigationStore>(),
                 sp.GetRequiredService<Func<object?,TViewModel>>(),
-                (obj) => sp.GetRequiredService<NavigationBarViewModel>()
+                (obj) => sp.GetRequiredService<NavigationBarViewModel>(),
+                (obj) => sp.GetRequiredService<MessageViewModel>()
                 );
         }
 

@@ -3,8 +3,10 @@ using Configurations.DataContext;
 using Dapper;
 using DentalClinicApp.Models;
 using DentalClinicApplication.DTOs;
+using DentalClinicApplication.Stores;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,16 +17,20 @@ namespace DentalClinicApplication.Services.DataProvider
         : IVirtualizationItemsProvider<T>
     {
         public DbContext DbContext { get; }
+        public MessageService MessageService { get; }
+
         public readonly IMapper _mapper;
         protected string? whereClause = string.Empty;
         Lazy<Task<int>> _initializeCount;
         public VirtualizedProvider(DbContext dbContext,
                                     IMapper mapper,
+                                    MessageService messageService,
                                     string? whereClause = "")
         {
             _initializeCount = new Lazy<Task<int>>(InitializeCount);
             DbContext = dbContext;
             _mapper = mapper;
+            MessageService = messageService;
             this.whereClause = whereClause;
             //if the sql was not provided then the provider will the table of T and get all items virtualized
         }
@@ -43,8 +49,16 @@ namespace DentalClinicApplication.Services.DataProvider
         {
             return await DbContext.RunAsync<int>(async conn =>
             {
+                try
+                {
                     return await conn.ExecuteScalarAsync<int>(sql);
-                
+                }
+                catch (SQLiteException)
+                {
+                    MessageService.SetMessage("Search Schema is not availabe",
+                        MessageType.Error);
+                    return 0;
+                }
             });
         }
 
@@ -80,19 +94,18 @@ namespace DentalClinicApplication.Services.DataProvider
             };
             IEnumerable<TDTO> typeDTOs = await DbContext.RunAsync<IEnumerable<TDTO>>(async conn =>
             {
-                return await conn.QueryAsync<TDTO>(sql, param);
+                try
+                {
+                    return await conn.QueryAsync<TDTO>(sql, param);
+                }
+                catch (SQLiteException)
+                {
+                    MessageService.SetMessage("Search Schema is not allowed",
+                        MessageType.Error);
+                    return Enumerable.Empty<TDTO>();
+                }
             });
             return typeDTOs.Select(cDTO => _mapper.Map<T>(cDTO));
-        }
-
-        public IProvider<T> GetNewVirtualizationItemsProvider
-            (string newPredicate)
-        {
-            IProvider<T> newProvider = new VirtualizedProvider<T,TDTO>(
-                this.DbContext,
-                this._mapper
-                );
-            return newProvider;
         }
         public IProvider<T> ChangeProvider
             (string whereClause)
@@ -100,6 +113,7 @@ namespace DentalClinicApplication.Services.DataProvider
             return new VirtualizedProvider<T, TDTO>(
                 this.DbContext,
                 this._mapper,
+                this.MessageService,
                 whereClause
                 );
         }

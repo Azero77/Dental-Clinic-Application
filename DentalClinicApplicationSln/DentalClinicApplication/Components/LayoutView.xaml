@@ -18,6 +18,9 @@
             Content="{Binding NavigationBarViewModel}"></ContentControl>
         <ContentControl
             Grid.Row="1"
+            Content="{Binding MessageViewModel}"></ContentControl>
+        <ContentControl
+            Grid.Row="2"
             Content="{Binding ContentViewModel}">
 
         </ContentControl>

@@ -26,6 +26,9 @@
             <DataTemplate DataType="{x:Type cvms:VirtualizedClientsComponentViewModel}">
                 <components:VirtualizedCollectionComponent/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type cvms:MessageViewModel}">
+                <components:MessageView/>
+            </DataTemplate>
         </Grid.Resources>
         <ContentControl
             Content="{Binding CurrentViewModel}">
