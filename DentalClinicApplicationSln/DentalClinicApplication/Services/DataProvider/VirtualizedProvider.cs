@@ -21,22 +21,25 @@ namespace DentalClinicApplication.Services.DataProvider
 
         public readonly IMapper _mapper;
         protected string? whereClause = string.Empty;
+        protected string? orderByClause = string.Empty;
         Lazy<Task<int>> _initializeCount;
         public VirtualizedProvider(DbContext dbContext,
                                     IMapper mapper,
                                     MessageService messageService,
-                                    string? whereClause = "")
+                                    string? whereClause = "",
+                                    string? orderByClause = "")
         {
             _initializeCount = new Lazy<Task<int>>(InitializeCount);
             DbContext = dbContext;
             _mapper = mapper;
             MessageService = messageService;
             this.whereClause = whereClause;
+            this.orderByClause = orderByClause;
             //if the sql was not provided then the provider will the table of T and get all items virtualized
         }
 
 
-        
+
         protected virtual async Task<int> InitializeCount()
         {
             string tableName = typeof(T).Name + "s";
@@ -81,7 +84,7 @@ namespace DentalClinicApplication.Services.DataProvider
         public virtual async Task<IEnumerable<T>> GetItems(int start, int size)
         {
             string tableName = typeof(T).Name + "s";
-            string sql = $"SELECT * FROM {tableName} {whereClause} LIMIT @size OFFSET @start;";
+            string sql = $"SELECT * FROM {tableName} {orderByClause} {whereClause} LIMIT @size OFFSET @start;";
             return await RunSqlRange(start, size, sql);
         }
 
@@ -107,14 +110,18 @@ namespace DentalClinicApplication.Services.DataProvider
             });
             return typeDTOs.Select(cDTO => _mapper.Map<T>(cDTO));
         }
+
+        //change provider for both order by or where clause depending on what is null
         public IProvider<T> ChangeProvider
-            (string whereClause)
+            (string? whereClause,
+            string? orderByClause)
         {
             return new VirtualizedProvider<T, TDTO>(
                 this.DbContext,
                 this._mapper,
                 this.MessageService,
-                whereClause
+                whereClause ?? this.whereClause,
+                orderByClause ?? this.orderByClause
                 );
         }
     }

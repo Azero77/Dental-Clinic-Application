@@ -33,7 +33,7 @@ namespace DentalClinicApplication.Services.DataProvider
             return ClientsDTO.Select(cDTo => _mapper.Map<DTO,T>(cDTo));
         }
 
-        public abstract IProvider<T> ChangeProvider(string whereClause);
+        public abstract IProvider<T> ChangeProvider(string? whereClause, string? orderClause);
         
     }
 }

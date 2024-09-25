@@ -25,15 +25,20 @@ namespace DentalClinicApplication.Commands
         public override async Task ExecuteAsync(object? parameter)
         {
             //parameter is a wrapper for the propertyName and the value for seacrh
-
-            //get the provider
-            object[]? list = parameter as object[];
-            if (list is null)
+            object? value = null;
+            string propertyName;
+            //Search Provider (property, value)
+            if (parameter is object[] list)
             {
-                throw new InvalidCastException("Search is not supported");
+                value = list[0];
+                propertyName = (string)list[1];
             }
-            object value = list[0];
-            string propertyName = (string) list[1];
+            //Order Provider
+            else
+            {
+                propertyName = parameter as string ?? throw new InvalidCastException();
+            }
+
 
             _viewModel.IsLoading = true;
             await ProviderChangerService.Change(propertyName, value);

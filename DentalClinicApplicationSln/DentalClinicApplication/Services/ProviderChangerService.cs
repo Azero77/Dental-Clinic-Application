@@ -22,16 +22,35 @@ namespace DentalClinicApplication.Services
     public class ProviderChangerService<T>
     {
         public IProvider<T> CurrentProvider { get; }
-        
-        public ProviderChangerService(IEnumerable<T> collection, IProvider<T> currentProvider)
+        public ChangeMode ChangeMode { get; }
+
+        public ProviderChangerService(IEnumerable<T> collection,
+            IProvider<T> currentProvider,
+            ChangeMode changeMode)
         {
             Collection = collection;
             CurrentProvider = currentProvider;
+            ChangeMode = changeMode;
         }
 
         public IEnumerable<T> Collection { get; set; }
 
-        public string WhereClauseGenerator(string propertyName,object value)
+
+        public async Task Change(string propertyName,object? value)
+        {
+            string sql = ChangeMode == ChangeMode.Search ?
+                WhereClauseGenerator(propertyName, value) :
+                OrderByGenerator(propertyName);
+            IProvider<T> newProvider = GenerateProvider(sql);
+            if (Collection is VirtualizationCollection<T> virtualizationCollection)
+            {
+                await virtualizationCollection.ChangeProvider((IVirtualizationItemsProvider<T>)newProvider);
+                return;
+            }
+            Collection = await newProvider.GetItems();
+        }
+
+        private string WhereClauseGenerator(string propertyName,object? value)
         {
             //see the propertyType
             //depending on the propertyType we set the sql string
@@ -55,25 +74,23 @@ namespace DentalClinicApplication.Services
             return sql;
 
         }
-
-        public async Task Change(string propertyName,object value)
+        private string OrderByGenerator(string propertyName)
         {
-            //GetSql
-            string sql = WhereClauseGenerator(propertyName, value);
-
-            //put it GenerateProvider
-            IProvider<T> newProvider = GenerateProvider(sql);
-            if (Collection is VirtualizationCollection<T> virtualizationCollection)
-            {
-                await virtualizationCollection.ChangeProvider((IVirtualizationItemsProvider<T>)newProvider);
-                return;
-            }
-            Collection = await newProvider.GetItems();
+            return $"ORDER BY {propertyName}";
         }
 
-        public IProvider<T> GenerateProvider(string whereClause)
+        private IProvider<T> GenerateProvider(string clause)
         {
-            return CurrentProvider.ChangeProvider(whereClause);
+            return ChangeMode == ChangeMode.Search ?
+             CurrentProvider.ChangeProvider(clause, null) : 
+             CurrentProvider.ChangeProvider(null, clause);
         }
+
+
+    }
+    public enum ChangeMode
+    {
+        Search = 0,
+        Order = 1
     }
 }

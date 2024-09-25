@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DentalClinicApplication.Components" xmlns:converters="clr-namespace:DentalClinicApplication.Converters" xmlns:loadingspinnercontrol="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              Name="root"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -33,6 +34,20 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock>Order By:</TextBlock>
+                <ComboBox ItemsSource="{Binding Properties}"
+                          x:Name="orderByComboBox"
+                          >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding OrderCommand}"
+                                                   CommandParameter="{Binding ElementName=orderByComboBox,Path=SelectedItem}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+            </StackPanel>
         </StackPanel>
         <Grid>
             <loadingspinnercontrol:LoadingSpinner

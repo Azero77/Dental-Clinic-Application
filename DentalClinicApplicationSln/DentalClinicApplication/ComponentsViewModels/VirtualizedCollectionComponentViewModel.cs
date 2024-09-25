@@ -1,6 +1,7 @@
 ﻿using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
+using DentalClinicApplication.Services;
 using DentalClinicApplication.Stores;
 using DentalClinicApplication.VirtualizationCollections;
 using System;
@@ -92,7 +93,9 @@ namespace DentalClinicApplication.ComponentsViewModels
                (p) => MoveCommandDelegate(VirtualizationCollection<T>.MoveValue.Previous),
                 (p) => _collection!.CanMoveToPage(p, VirtualizationCollection<T>.MoveValue.Previous));
             SearchCommand = new SearchCommand<T>(
-                new Services.ProviderChangerService<T>(_collection!, _collection!.ItemsProvider),this);
+                new ProviderChangerService<T>(_collection!, _collection!.ItemsProvider,ChangeMode.Search),this);
+            OrderCommand = new SearchCommand<T>(
+                new ProviderChangerService<T>(_collection!,_collection.ItemsProvider,ChangeMode.Order),this);
             ReloadPropertyChanged();
         }
 
@@ -125,6 +128,7 @@ namespace DentalClinicApplication.ComponentsViewModels
         public ICommand? MoveNext { get; set; }
         public ICommand? MovePrevious { get; set; }
         public ICommand? SearchCommand { get; set; }
+        public ICommand? OrderCommand { get; set; }
 
         private int? _currentPageIndex;
         public int? CurrentPageIndex

@@ -8,6 +8,7 @@ namespace DentalClinicApplication.Services.DataProvider
     {
         Task<IEnumerable<T>> GetItems();
         IProvider<T> ChangeProvider
-            (string whereClause);
+            (string? whereClause,
+            string? orderByClause);
     }
 }
