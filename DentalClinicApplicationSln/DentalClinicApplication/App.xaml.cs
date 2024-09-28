@@ -26,6 +26,7 @@ using DentalClinicApplication.AutoMapperProfiles;
 using DentalClinicApplication.ComponentsViewModels;
 using Configurations;
 using DentalClinicApplication.ViewModels.Configuration;
+using System.Collections.ObjectModel;
 
 namespace DentalClinicApplication
 {
@@ -43,7 +44,7 @@ namespace DentalClinicApplication
                     sc.AddSingleton<appConfigurationModel>();
                     AddMapper(sc);
                     sc.AddSingleton<DbContext>();
-                    sc.AddSingleton<Provider<Appointment, AppointmentDTO>>();
+                    sc.AddSingleton<Provider<Appointment, AppointmentDTO>,AppointmentsProvider>();
                     sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<MessageStore>();
@@ -67,8 +68,7 @@ namespace DentalClinicApplication
                            )
                        );
                     sc.AddSingleton<ConfigurationViewModel>();
-                    sc.AddTransient<HomePageViewModel>(sp => 
-                    new HomePageViewModel(sp.GetRequiredService<Provider<Appointment,AppointmentDTO>>()));
+                    sc.AddTransient<HomePageViewModel>(sp => GetHomePageViewModel(sp));
                     sc.AddTransient<VirtualizedClientsComponentViewModel>();
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
@@ -83,7 +83,7 @@ namespace DentalClinicApplication
                         sp.GetRequiredService<INavigationService>(),
                         sp.GetRequiredService<DataCreator>()
                         ));
-                    sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<ClientsListingViewModel>(sp));
+                    sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<HomePageViewModel>(sp));
                     sc.AddSingleton<INavigationService<ClientsManipulationViewModel>,LayoutNavigationService<ClientsManipulationViewModel>>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
@@ -109,6 +109,8 @@ namespace DentalClinicApplication
                             MakeLayoutNavigationService<ClientsListingViewModel>(sp),
                             sp.GetRequiredService<DataEditor>());
                     });
+                    sc.AddSingleton<Func<object?, HomePageViewModel>>(sp =>
+                    (obj) => sp.GetRequiredService<HomePageViewModel>());
                     sc.AddSingleton<NavigationBarViewModel>(sp =>
                         new (
                             MakeLayoutNavigationService<ClientsListingViewModel>(sp),
@@ -121,7 +123,12 @@ namespace DentalClinicApplication
                 .Build();
         }
 
-        
+
+        private HomePageViewModel GetHomePageViewModel(IServiceProvider sp)
+        {
+            return HomePageViewModel.LoadHomePageViewModel(
+                sp.GetRequiredService<Provider<Appointment, AppointmentDTO>>());
+        }
 
         protected override void OnStartup(StartupEventArgs e)
         {

@@ -13,12 +13,11 @@ namespace DentalClinicApplication.ViewModels
 {
     public abstract class CollectionViewModelBase<T> : ViewModelBase
     {
-        public CollectionViewModelBase(ObservableCollection<T> collection, IProvider<T> collectionProvider)
+        public CollectionViewModelBase(IProvider<T> collectionProvider)
         {
-            Collection = collection;
             CollectionProvider = collectionProvider;
         }
-        public ObservableCollection<T> Collection { get; }
+		public IEnumerable<T> Collection { get; set; } = Enumerable.Empty<T>();
         public IProvider<T> CollectionProvider { get; }
 
 		private bool _isLoading;

@@ -32,15 +32,22 @@ namespace DentalClinicApplication.Services.DataProvider
 
         public override async Task<IEnumerable<Appointment>> GetItems()
         {
-            string sql = $"SELECT FirstName,LastName,StartDate,EndDate,Description FROM Appointments a JOIN Clients c ON c.Id = a.ClientId {_whereClause} {_orderClause};";
+            string sql =
+                "SELECT StartDate,EndDate,Description,ClientId,c.Id,c.FirstName,c.LastName " +
+                "FROM Appointments a JOIN Clients c " +
+                "ON ClientId = c.Id " +
+                $"{_whereClause} {_orderClause};";
+                ;
+            await Task.Delay(3000);
             IEnumerable<Appointment> result = await DataContext.RunAsync<IEnumerable<Appointment>>(conn =>
             {
                     return conn.QueryAsync<AppointmentDTO, ClientDTO, Appointment>(sql,
                     (appointmentDTO,clientDTO) => 
                     {
+                        var r = _mapper.Map<ClientDTO,Client>(clientDTO);
                         return new Appointment()
                         {
-                            Client = Mapper.Map<ClientDTO, Client>(clientDTO),
+                            Client = _mapper.Map<ClientDTO, Client>(clientDTO),
                             StartDate = appointmentDTO.StartDate,
                             Duration = appointmentDTO.EndDate - appointmentDTO.StartDate,
                             Description = appointmentDTO.Description

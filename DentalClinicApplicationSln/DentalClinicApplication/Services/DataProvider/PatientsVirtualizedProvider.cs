@@ -41,7 +41,7 @@ namespace DentalClinicApplication.Services.DataProvider
                 $"{whereClause} " +
                 $"{orderByClause}" +
                 $"LIMIT @size OFFSET @start;";
-            await DataContext.RunAsync<IEnumerable<Client>>(conn =>
+            return await DataContext.RunAsync<IEnumerable<Client>>(conn =>
             {
                 return conn.QueryAsync<ClientDTO, AppointmentDTO, Client>(sql,
                     (cDTO,aDTO) => 
@@ -64,6 +64,7 @@ namespace DentalClinicApplication.Services.DataProvider
                         {
                             client?.Appointments?.Add(_mapper.Map<Appointment>(aDTO));
                         }
+                        return client;
                     },
                     param:new {  size, start},
                     splitOn:"ClientId");
