@@ -43,6 +43,7 @@ namespace DentalClinicApplication
                     sc.AddSingleton<appConfigurationModel>();
                     AddMapper(sc);
                     sc.AddSingleton<DbContext>();
+                    sc.AddSingleton<Provider<Appointment, AppointmentDTO>>();
                     sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<MessageStore>();
@@ -66,6 +67,8 @@ namespace DentalClinicApplication
                            )
                        );
                     sc.AddSingleton<ConfigurationViewModel>();
+                    sc.AddTransient<HomePageViewModel>(sp => 
+                    new HomePageViewModel(sp.GetRequiredService<Provider<Appointment,AppointmentDTO>>()));
                     sc.AddTransient<VirtualizedClientsComponentViewModel>();
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
