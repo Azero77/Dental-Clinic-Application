@@ -14,7 +14,7 @@ namespace DentalClinicApp.Models
         public string Email { get; set; } = string.Empty;
         public Gender Gender { get; set; } = Gender.Undefinded;
         public int Age { get; set; }
-        public IEnumerable<Appointment>? Appointments { get; } = Enumerable.Empty<Appointment>();
+        public IList<Appointment>? Appointments { get; set; } = Enumerable.Empty<Appointment>().ToList();
 
         public static Client ToClient(ClientDTO clientDTO)
         {

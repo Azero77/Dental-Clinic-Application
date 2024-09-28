@@ -1,5 +1,6 @@
 ﻿using DentalClinicApp.Stores;
 using DentalClinicApplication.ViewModels;
+using DentalClinicApplication.ViewModels.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,13 @@ namespace DentalClinicApp.ViewModels
     {
         public ViewModelBase CurrentViewModel => NavigationStore.CurrentViewModel;
         public NavigationStore NavigationStore { get; }
-        public NavigationBarViewModel NavigationBarViewModel { get; }
+        public ConfigurationViewModel ConfigurationViewModel { get; }
 
-        public MainViewModel(NavigationStore navigationStore, NavigationBarViewModel navigationBarViewModel)
+        public MainViewModel(NavigationStore navigationStore, ConfigurationViewModel configurationViewModel)
         {
             NavigationStore = navigationStore;
             NavigationStore.CurrentViewModelChanged += CurrentViewModelChanged;
-            NavigationBarViewModel = navigationBarViewModel;
+            ConfigurationViewModel = configurationViewModel;
         }
 
         private void CurrentViewModelChanged()

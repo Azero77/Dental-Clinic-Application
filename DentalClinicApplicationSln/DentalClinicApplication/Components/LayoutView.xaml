@@ -9,20 +9,23 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <ContentControl
-            Grid.Row="0"
-            Content="{Binding NavigationBarViewModel}"></ContentControl>
-        <ContentControl
-            Grid.Row="1"
-            Content="{Binding MessageViewModel}"></ContentControl>
-        <ContentControl
-            Grid.Row="2"
-            Content="{Binding ContentViewModel}">
-
-        </ContentControl>
+        <ContentControl Content="{Binding MessageViewModel}"
+                        Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        HorizontalAlignment="Center"/>
+        <ContentControl Content="{Binding NavigationBarViewModel}"
+                        Grid.Row="1"
+                        Grid.Column="0"/>
+        <ContentControl Content="{Binding ContentViewModel}"
+                        Grid.Row="1"
+                        Grid.Column="1"/>
     </Grid>
 </UserControl>

@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DentalClinicApplication", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Configurations", "Configurations\Configurations.csproj", "{73077344-0C03-47D2-8C1C-54C854DE1102}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceDictionariesContainer", "ResourceDictionariesContainer\ResourceDictionariesContainer.csproj", "{FD731994-C111-4D08-B66B-0CAFAED6E037}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temp", "Temp\Temp.csproj", "{1A6C4A5D-C2FC-4A53-9708-004327BA6E33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{73077344-0C03-47D2-8C1C-54C854DE1102}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73077344-0C03-47D2-8C1C-54C854DE1102}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73077344-0C03-47D2-8C1C-54C854DE1102}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD731994-C111-4D08-B66B-0CAFAED6E037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD731994-C111-4D08-B66B-0CAFAED6E037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD731994-C111-4D08-B66B-0CAFAED6E037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD731994-C111-4D08-B66B-0CAFAED6E037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A6C4A5D-C2FC-4A53-9708-004327BA6E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A6C4A5D-C2FC-4A53-9708-004327BA6E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A6C4A5D-C2FC-4A53-9708-004327BA6E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A6C4A5D-C2FC-4A53-9708-004327BA6E33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

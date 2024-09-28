@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:DentalClinicApplication"
              >
     <Application.Resources>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ResourceDictionariesContainer;component/Variables.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

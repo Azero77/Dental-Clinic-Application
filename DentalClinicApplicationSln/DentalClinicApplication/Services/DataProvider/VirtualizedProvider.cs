@@ -16,7 +16,7 @@ namespace DentalClinicApplication.Services.DataProvider
     public class VirtualizedProvider<T, TDTO>
         : IVirtualizationItemsProvider<T>
     {
-        public DbContext DbContext { get; }
+        public DbContext DataContext { get; }
         public MessageService MessageService { get; }
 
         public readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace DentalClinicApplication.Services.DataProvider
                                     string? orderByClause = "")
         {
             _initializeCount = new Lazy<Task<int>>(InitializeCount);
-            DbContext = dbContext;
+            DataContext = dbContext;
             _mapper = mapper;
             MessageService = messageService;
             this.whereClause = whereClause;
@@ -48,9 +48,9 @@ namespace DentalClinicApplication.Services.DataProvider
             return await RunSqlCount(sql);
         }
 
-        private async Task<int> RunSqlCount(string sql)
+        protected async Task<int> RunSqlCount(string sql)
         {
-            return await DbContext.RunAsync<int>(async conn =>
+            return await DataContext.RunAsync<int>(async conn =>
             {
                 try
                 {
@@ -95,7 +95,7 @@ namespace DentalClinicApplication.Services.DataProvider
                 start = start,
                 size = size
             };
-            IEnumerable<TDTO> typeDTOs = await DbContext.RunAsync<IEnumerable<TDTO>>(async conn =>
+            IEnumerable<TDTO> typeDTOs = await DataContext.RunAsync<IEnumerable<TDTO>>(async conn =>
             {
                 try
                 {
@@ -117,7 +117,7 @@ namespace DentalClinicApplication.Services.DataProvider
             string? orderByClause)
         {
             return new VirtualizedProvider<T, TDTO>(
-                this.DbContext,
+                this.DataContext,
                 this._mapper,
                 this.MessageService,
                 whereClause ?? this.whereClause,

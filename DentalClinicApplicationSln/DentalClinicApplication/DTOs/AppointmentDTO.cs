@@ -10,17 +10,10 @@ namespace DentalClinicApplication.DTOs
     public class AppointmentDTO
     {
         public int Id { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public int ClientId { get; set; }
-        public DateTime Date { get; set; }
+        public string? Description { get; set; }
 
-        public static AppointmentDTO ToAppointmentDTO(Appointment appointment)
-        {
-            return new AppointmentDTO()
-            {
-                Id = appointment.Id,
-                ClientId = appointment.ClientId,
-                Date = appointment.Date
-            };
-        }
     }
 }

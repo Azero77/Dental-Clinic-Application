@@ -1,5 +1,6 @@
 {
   "ClinicName": "",
+  "DoctorName": "",
   "ConnectionStrings": {
     "ClientsConnectionString": "Data Source=Database/DentalClinic.db;Version=3"
   },

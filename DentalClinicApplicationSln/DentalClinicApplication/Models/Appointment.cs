@@ -6,7 +6,9 @@ namespace DentalClinicApp.Models
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public DateTime Date{ get; set; }
+        public DateTime StartDate{ get; set; }
+        public TimeSpan Duration { get; set; }
+        public string? Description { get; set; }
         public Client? Client { get; set; }
     }
 }

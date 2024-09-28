@@ -24,6 +24,8 @@ using System.Windows.Navigation;
 using DentalClinicApplication.DTOs;
 using DentalClinicApplication.AutoMapperProfiles;
 using DentalClinicApplication.ComponentsViewModels;
+using Configurations;
+using DentalClinicApplication.ViewModels.Configuration;
 
 namespace DentalClinicApplication
 {
@@ -38,6 +40,7 @@ namespace DentalClinicApplication
             _host = Host.CreateDefaultBuilder()
                 .ConfigureServices((sc) => 
                 {
+                    sc.AddSingleton<appConfigurationModel>();
                     AddMapper(sc);
                     sc.AddSingleton<DbContext>();
                     sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
@@ -62,6 +65,7 @@ namespace DentalClinicApplication
                            GetManipulators(sp)
                            )
                        );
+                    sc.AddSingleton<ConfigurationViewModel>();
                     sc.AddTransient<VirtualizedClientsComponentViewModel>();
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
