@@ -24,5 +24,6 @@ namespace DentalClinicApplication.Views
         {
             InitializeComponent();
         }
+
     }
 }

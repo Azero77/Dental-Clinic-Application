@@ -35,7 +35,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <fa:FontAwesome Icon="Home" Grid.Column="0"/>
-            <RadioButton Command=""
+            <RadioButton Command="{Binding HomePageNavigationCommand}"
                          Grid.Column="1"
                          Content="HomePage"/>
         </Grid>

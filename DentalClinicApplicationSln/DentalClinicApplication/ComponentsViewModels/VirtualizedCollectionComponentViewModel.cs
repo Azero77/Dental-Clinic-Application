@@ -3,6 +3,7 @@ using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Stores;
+using DentalClinicApplication.ViewModels;
 using DentalClinicApplication.VirtualizationCollections;
 using System;
 using System.Collections;
@@ -15,10 +16,10 @@ using System.Windows.Input;
 
 namespace DentalClinicApplication.ComponentsViewModels
 {
-    public class VirtualizedCollectionComponentViewModel<T> : ViewModelBase
+    public class VirtualizedCollectionComponentViewModel<T> : CollectionViewModelBase<T>
     {
         private VirtualizationCollection<T>? _collection;
-        public IEnumerable? Collection
+        public IEnumerable? VirtualizedCollection
         {
             get => _collection;
             set
@@ -54,8 +55,9 @@ namespace DentalClinicApplication.ComponentsViewModels
         #endregion
 
         public VirtualizedCollectionComponentViewModel(VirtualizationCollection<T> collection)
+            : base(collection.ItemsProvider)
         {
-            Collection = collection;
+            VirtualizedCollection = collection;
         }
         #region events
         public void OnCollectionReset()
@@ -93,9 +95,9 @@ namespace DentalClinicApplication.ComponentsViewModels
                (p) => MoveCommandDelegate(VirtualizationCollection<T>.MoveValue.Previous),
                 (p) => _collection!.CanMoveToPage(p, VirtualizationCollection<T>.MoveValue.Previous));
             SearchCommand = new SearchCommand<T>(
-                new ProviderChangerService<T>(_collection!, _collection!.ItemsProvider,ChangeMode.Search),this);
+                new ProviderChangerService<T>(this, _collection!.ItemsProvider,ChangeMode.Search),this);
             OrderCommand = new SearchCommand<T>(
-                new ProviderChangerService<T>(_collection!,_collection.ItemsProvider,ChangeMode.Order),this);
+                new ProviderChangerService<T>(this,_collection.ItemsProvider,ChangeMode.Order),this);
             ReloadPropertyChanged();
         }
 
@@ -117,7 +119,7 @@ namespace DentalClinicApplication.ComponentsViewModels
 
         private void ReloadPropertyChanged()
         {
-            OnPropertyChanged(nameof(Collection));
+            OnPropertyChanged(nameof(VirtualizedCollection));
             OnPropertyChanged(nameof(Move));
             OnPropertyChanged(nameof(MoveNext));
             OnPropertyChanged(nameof(MovePrevious));
@@ -194,13 +196,17 @@ namespace DentalClinicApplication.ComponentsViewModels
         {
             TVM vm = new()
             {
-                Collection = collection
+                VirtualizedCollection = collection
             };
             ICommand loadCommand = new LoadVirtualizationCollectionCommand<T>(vm, collectionStore);
             loadCommand.Execute(null);
             return vm;
         }
 
+        public override Task LoadViewModel()
+        {
+            throw new NotImplementedException();
+        }
     }
     public class VirtualizedClientsComponentViewModel : VirtualizedCollectionComponentViewModel<Client>
     {

@@ -14,16 +14,13 @@ namespace DentalClinicApplication.ViewModels
 {
     public class NavigationBarViewModel : ViewModelBase
     {
-        public ICommand ClientsListingNavigation { get; }
-        public ICommand ClientsManipulationNavigation { get; }
+        public ICommand HomePageNavigationCommand { get; }
 
         public NavigationBarViewModel(
-            INavigationService clientListingNavigationService,
-            INavigationService clientManipulationNavigationService
+            INavigationService homePageNavigationCommand
             )
         {
-            ClientsListingNavigation = new NavigationCommand(clientListingNavigationService);
-            ClientsManipulationNavigation = new NavigationCommand(clientManipulationNavigationService);
+            HomePageNavigationCommand = new NavigationCommand(homePageNavigationCommand);
         }
     }
 }

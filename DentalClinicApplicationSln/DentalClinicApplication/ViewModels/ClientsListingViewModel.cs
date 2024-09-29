@@ -27,19 +27,6 @@ namespace DentalClinicApplication.ViewModels
 
         public IEnumerable<Client> Clients => ClientsStore.Collection;
 
-        private bool _isLoading = false;
-        public bool IsLoading
-        {
-            get
-            {
-                return _isLoading;
-            }
-            set
-            {
-                _isLoading = value;
-                OnPropertyChanged(nameof(IsLoading));
-            }
-        }
         #region Commands
         public ICommand NavigateToEditClientView { get; }
         public ClientsManipulationCommand DeleteClientCommand { get; }
@@ -50,8 +37,8 @@ namespace DentalClinicApplication.ViewModels
             INavigationService<ClientsManipulationViewModel> navigationService,
             IDataManipulator dataDeleter,
             ICollectionStore<Client> clientsStore,
-            VirtualizedClientsComponentViewModel virtualizedClientsComponentViewModel
-            )
+            VirtualizedClientsComponentViewModel virtualizedClientsComponentViewModel)
+            
         {
             DbClientsProvider = dbClientsProvider;
             ClientsStore = clientsStore;
@@ -86,6 +73,5 @@ namespace DentalClinicApplication.ViewModels
             LoadCommand.Execute(null);
             return viewModel;
         }
-        
     }
 }

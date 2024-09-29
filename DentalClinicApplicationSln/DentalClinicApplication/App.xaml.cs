@@ -44,7 +44,8 @@ namespace DentalClinicApplication
                     sc.AddSingleton<appConfigurationModel>();
                     AddMapper(sc);
                     sc.AddSingleton<DbContext>();
-                    sc.AddSingleton<Provider<Appointment, AppointmentDTO>,AppointmentsProvider>();
+                    sc.AddSingleton<Provider<Appointment, AppointmentDTO>,AppointmentsProvider>(sp =>
+                    GetTodayAppointmentsProvider(sp));
                     sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<MessageStore>();
@@ -113,8 +114,7 @@ namespace DentalClinicApplication
                     (obj) => sp.GetRequiredService<HomePageViewModel>());
                     sc.AddSingleton<NavigationBarViewModel>(sp =>
                         new (
-                            MakeLayoutNavigationService<ClientsListingViewModel>(sp),
-                            MakeLayoutNavigationService<ClientsManipulationViewModel>(sp)
+                            MakeLayoutNavigationService<HomePageViewModel>(sp)
                             )
                     ) ;
                     sc.AddSingleton<MainViewModel>();
@@ -123,6 +123,11 @@ namespace DentalClinicApplication
                 .Build();
         }
 
+        private AppointmentsProvider GetTodayAppointmentsProvider(IServiceProvider sp)
+        {
+            return AppointmentsProvider.AppointmentsProviderForToday(sp.GetRequiredService<DbContext>(),
+                sp.GetRequiredService<IMapper>());
+        }
 
         private HomePageViewModel GetHomePageViewModel(IServiceProvider sp)
         {

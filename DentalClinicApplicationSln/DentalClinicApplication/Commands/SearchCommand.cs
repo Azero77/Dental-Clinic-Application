@@ -2,6 +2,7 @@
 using DentalClinicApplication.DTOs;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataProvider;
+using DentalClinicApplication.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,11 @@ namespace DentalClinicApplication.Commands
 {
     public class SearchCommand<T> : AsyncCommandBase
     {
-        private readonly VirtualizedCollectionComponentViewModel<T> _viewModel;
+        private readonly CollectionViewModelBase<T> _viewModel;
 
         public ProviderChangerService<T> ProviderChangerService { get; }
         public SearchCommand(ProviderChangerService<T> providerChangerService,
-            VirtualizedCollectionComponentViewModel<T> viewModel)
+            CollectionViewModelBase<T> viewModel)
         {
             ProviderChangerService = providerChangerService;
             _viewModel = viewModel;
