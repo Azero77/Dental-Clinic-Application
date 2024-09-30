@@ -1,6 +1,8 @@
-﻿using DentalClinicApp.Models;
+﻿using DentalClinicApp.Commands;
+using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
+using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataProvider;
 using System;
 using System.Collections.Generic;
@@ -28,13 +30,16 @@ namespace DentalClinicApplication.ViewModels
             ;
         public string? FirstProperty => HomePageProperties.FirstOrDefault();
 
-        public HomePageViewModel(IProvider<Appointment> collectionProvider) : base(collectionProvider)
+        public ICommand AddAppointmentNavigationCommand { get; }
+        public HomePageViewModel(IProvider<Appointment> collectionProvider,
+            INavigationService<MakeEditAppointmentViewModel> makeEditAppointmentNavigationService) : base(collectionProvider)
         {
             SearchCommand = new SearchCommand<Appointment>(
                 new Services.ProviderChangerService<Appointment,Client>(this,CollectionProvider,Services.ChangeMode.Search),
                 this
                 );
             CollectionChagned += OnCollectionChanged;
+            AddAppointmentNavigationCommand = new NavigationCommand(makeEditAppointmentNavigationService );
         }
 
 
@@ -54,9 +59,10 @@ namespace DentalClinicApplication.ViewModels
         }
 
         public static HomePageViewModel LoadHomePageViewModel(
-            IProvider<Appointment> collectionProvider)
+            IProvider<Appointment> collectionProvider,
+            INavigationService<MakeEditAppointmentViewModel> navigationService)
         {
-            HomePageViewModel homePageViewModel = new(collectionProvider);
+            HomePageViewModel homePageViewModel = new(collectionProvider,navigationService);
             return (HomePageViewModel) LoadCollectionViewModel(homePageViewModel);
         }
     }

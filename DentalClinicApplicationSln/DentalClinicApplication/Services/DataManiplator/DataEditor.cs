@@ -1,4 +1,5 @@
-﻿using Configurations.DataContext;
+﻿using AutoMapper;
+using Configurations.DataContext;
 using Dapper;
 using DentalClinicApp.Models;
 using DentalClinicApplication.DTOs;
@@ -14,14 +15,17 @@ namespace DentalClinicApplication.Services.DataManiplator
 {
     public class DataEditor : DataManipulator
     {
-        public DataEditor(DbContext dbContext) : base(dbContext)
+        private readonly IMapper _mapper;
+
+        public DataEditor(DbContext dbContext,IMapper mapper) : base(dbContext)
         {
+            _mapper = mapper;
         }
 
 
         public async override Task Manipulate(Client client)
         {
-            ClientDTO clientDTO = ClientDTO.CreateClientDTO(client);
+            ClientDTO clientDTO = _mapper.Map<ClientDTO>(client);
             string sql = "UPDATE Clients SET FirstName = @firstName, LastName = @lastName, Email = @email, Gender=@gender  WHERE Id = @id";
             object param = new 
             {

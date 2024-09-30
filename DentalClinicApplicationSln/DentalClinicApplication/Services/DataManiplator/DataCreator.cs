@@ -1,4 +1,5 @@
-﻿using Configurations.DataContext;
+﻿using AutoMapper;
+using Configurations.DataContext;
 using Dapper;
 using DentalClinicApp.Models;
 using DentalClinicApplication.DTOs;
@@ -15,25 +16,27 @@ namespace DentalClinicApplication.Services.DataManiplator
 {
     internal class DataCreator : DataManipulator
     {
+        private readonly IMapper _mapper;
 
-        public DataCreator(DbContext dbContext) : base(dbContext)
+        public DataCreator(DbContext dbContext,IMapper mapper) : base(dbContext)
         {
+            _mapper = mapper;
         }
 
 
         public async override Task Manipulate(Client client)
         {
-            ClientDTO clientDTO = ClientDTO.CreateClientDTO(client);
+            ClientDTO clientDTO = _mapper.Map<ClientDTO>(client);
             string sql = "INSERT INTO Clients " +
-                "(FirstName,LastName,Email,Gender,Age) " +
-                "VALUES (@firstName,@lastName,@email,@gender,@age)";
+                "(FirstName,LastName,Email,Gender,DateOfBirth) " +
+                "VALUES (@firstName,@lastName,@email,@gender,@dateOfBirth)";
             object param = new
             {
                 firstName = clientDTO.FirstName,
                 lastName = clientDTO.LastName,
                 email = clientDTO.Email,
                 gender = clientDTO.Gender,
-                age=clientDTO.Age,
+                dateOfBirth=clientDTO.DateOfBirth
             };
             await DbContext.RunAsync<int>(async conn =>
             {

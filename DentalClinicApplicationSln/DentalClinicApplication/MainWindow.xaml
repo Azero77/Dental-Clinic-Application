@@ -32,6 +32,10 @@
             <DataTemplate DataType="{x:Type vms:HomePageViewModel}">
                 <views:HomePageView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vms:MakeEditAppointmentViewModel}"
+                          >
+                <views:MakeEditAppointmentView/>
+            </DataTemplate>
         </Grid.Resources>
         <ContentControl
             Content="{Binding CurrentViewModel}">

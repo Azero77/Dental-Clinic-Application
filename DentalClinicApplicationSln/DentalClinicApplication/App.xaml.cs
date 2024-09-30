@@ -68,6 +68,7 @@ namespace DentalClinicApplication
                            GetManipulators(sp)
                            )
                        );
+                    
                     sc.AddSingleton<ConfigurationViewModel>();
                     sc.AddTransient<HomePageViewModel>(sp => GetHomePageViewModel(sp));
                     sc.AddTransient<VirtualizedClientsComponentViewModel>();
@@ -84,11 +85,17 @@ namespace DentalClinicApplication
                         sp.GetRequiredService<INavigationService>(),
                         sp.GetRequiredService<DataCreator>()
                         ));
+                    sc.AddTransient<MakeEditAppointmentViewModel>();
                     sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<HomePageViewModel>(sp));
                     sc.AddSingleton<INavigationService<ClientsManipulationViewModel>,LayoutNavigationService<ClientsManipulationViewModel>>();
+                    sc.AddSingleton<INavigationService<MakeEditAppointmentViewModel>,
+                        LayoutNavigationService<MakeEditAppointmentViewModel>>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
                     );
+                    sc.AddSingleton<Func<object?, MakeEditAppointmentViewModel>>(sp => 
+                    obj => sp.GetRequiredService<MakeEditAppointmentViewModel>());
+
                     sc.AddSingleton<Func<object?, NavigationBarViewModel>>(
                         sp => obj => sp.GetRequiredService<NavigationBarViewModel>());
                     sc.AddSingleton<Func<object?, MessageViewModel>>(sp => 
@@ -132,7 +139,8 @@ namespace DentalClinicApplication
         private HomePageViewModel GetHomePageViewModel(IServiceProvider sp)
         {
             return HomePageViewModel.LoadHomePageViewModel(
-                sp.GetRequiredService<Provider<Appointment, AppointmentDTO>>());
+                sp.GetRequiredService<Provider<Appointment, AppointmentDTO>>(),
+                sp.GetRequiredService<INavigationService<MakeEditAppointmentViewModel>>());
         }
 
         protected override void OnStartup(StartupEventArgs e)

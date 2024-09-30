@@ -25,7 +25,7 @@ namespace DentalClinicApplication.ViewModels
 			LastName = client.LastName;
 			Email = client.Email;
 			Gender = client.Gender;
-			Age = client.Age;
+			DateOfBirth = client.DateOfBirth;
 
 			CancelCommand = new NavigationCommand(navigationService);
 			SubmitCommand = new ClientsEditCommand(editDataManipulator, navigationService);
@@ -114,22 +114,22 @@ namespace DentalClinicApplication.ViewModels
 				}
 			}
 
-			private int _age;
-			public int Age
+		private DateTime _dateOfBirth;
+		public DateTime DateOfBirth
+		{
+			get
 			{
-				get
-				{
-					return _age;
-				}
-				set
-				{
-					_age = value;
-					OnPropertyChanged(nameof(Age));
-				}
+				return _dateOfBirth;
 			}
+			set
+			{
+				_dateOfBirth = value;
+				OnPropertyChanged(nameof(DateOfBirth));
+			}
+		}
 
-        #endregion
-        #region commands
+		#endregion
+		#region commands
 		public ICommand CancelCommand { get; }
 		public ICommand SubmitCommand { get; }
         #endregion
@@ -142,7 +142,7 @@ namespace DentalClinicApplication.ViewModels
             LastName = LastName,
             Email = Email,
             Gender = Gender,
-            Age = Age
+			DateOfBirth = DateOfBirth
         };
 
 		//for every propertychanged we need to update the client
@@ -151,10 +151,7 @@ namespace DentalClinicApplication.ViewModels
 			base.OnPropertyChanged(propertyName);
 			base.OnPropertyChanged(nameof(Client));
 		}
-        public void OnValidatoinError(ValidationErrorEventArgs validationErrorEventArgs)
-        {
-			var e = _errors;
-        }
+        
 
     }
 

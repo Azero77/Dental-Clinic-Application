@@ -7,15 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataProvider
 {
-    class PatientsVirtualizedProvider
+    class ClientsVirtualizedProvider
         : VirtualizedProvider<Client, ClientDTO>
     {
-        public PatientsVirtualizedProvider(DbContext dbContext,
+        public ClientsVirtualizedProvider(DbContext dbContext,
                                            IMapper mapper,
                                            MessageService messageService,
                                            string? whereClause = "",
@@ -34,40 +35,39 @@ namespace DentalClinicApplication.Services.DataProvider
         }
         public override async Task<IEnumerable<Client>> GetItems(int start, int size)
         {
-            Dictionary<int, Client> clients = new();
-            string sql = "SELECT c.Id,FirstName,LastName,Email,StartDate,EndDate " +
+            string sql = "SELECT c.Id,FirstName,LastName,Email,ClientId,StartDate,EndDate " +
                 "FROM Clients c JOIN Appointments a " +
                 "ON c.Id = a.ClientId " +
                 $"{whereClause} " +
                 $"{orderByClause}" +
                 $"LIMIT @size OFFSET @start;";
-            return await DataContext.RunAsync<IEnumerable<Client>>(conn =>
+            return await DataContext.RunAsync<IEnumerable<Client>>(async conn =>
             {
-                return conn.QueryAsync<ClientDTO, AppointmentDTO, Client>(sql,
+
+                Dictionary<int, Client> clients = new();
+                await conn.QueryAsync<ClientDTO, AppointmentDTO, Client>(sql,
                     (cDTO,aDTO) => 
                     {
+                        
                         Client? client;
+                        //if client found in the dictionary the appointments only will be added
+                        //if not a new key to dictionary is added
                         if (!clients.TryGetValue(cDTO.Id, out client))
                         {
-                            client = new Client
-                            {
-                                Id = cDTO.Id,
-                                FirstName = cDTO.FirstName,
-                                LastName = cDTO.LastName,
-                                Email = cDTO.Email,
-                                Appointments = new List<Appointment>() // Initialize the appointments collection
-                            };
-
+                            client = _mapper.Map<Client>(cDTO);
+                            client.Appointments = new List<Appointment>();
                             clients.Add(client.Id, client);
                         }
                         if (aDTO is not null)
                         {
-                            client?.Appointments?.Add(_mapper.Map<Appointment>(aDTO));
+                            Appointment appointment = _mapper.Map<Appointment>(aDTO);
+                            client!.Appointments!.Add(appointment);
                         }
-                        return client;
+                        return client!;
                     },
                     param:new {  size, start},
                     splitOn:"ClientId");
+                return clients.Values;
             });
         }
     }
