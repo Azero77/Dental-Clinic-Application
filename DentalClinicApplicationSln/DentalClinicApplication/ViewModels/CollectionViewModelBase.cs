@@ -17,7 +17,7 @@ namespace DentalClinicApplication.ViewModels
         {
             CollectionProvider = collectionProvider;
         }
-		private IEnumerable<T> _collection = Enumerable.Empty<T>();
+        private IEnumerable<T> _collection = Enumerable.Empty<T>();
 		public IEnumerable<T> Collection
 		{
 			get => _collection;
@@ -34,7 +34,7 @@ namespace DentalClinicApplication.ViewModels
         }
 		public event Action? CollectionChagned;
 
-        public IProvider<T> CollectionProvider { get; }
+        public IProvider<T> CollectionProvider { get; set; }
 
 		private bool _isLoading;
 		public bool IsLoading

@@ -50,7 +50,7 @@ namespace DentalClinicApplication
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<MessageStore>();
                     sc.AddSingleton<MessageService>();
-                    sc.AddTransient<VirtualizationCollection<Client>>(
+                    sc.AddSingleton<VirtualizationCollection<Client>>(
                         sp =>
                         new VirtualizationCollection<Client>(
                             sp.GetRequiredService<IVirtualizationItemsProvider<Client>>()
@@ -71,7 +71,8 @@ namespace DentalClinicApplication
                     
                     sc.AddSingleton<ConfigurationViewModel>();
                     sc.AddTransient<HomePageViewModel>(sp => GetHomePageViewModel(sp));
-                    sc.AddTransient<VirtualizedClientsComponentViewModel>();
+                    sc.AddTransient<VirtualizedCollectionComponentViewModel<Client>>(sp => 
+                    GetVirtualizedClientComponentViewModel(sp));
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
                         (sp.GetRequiredService<IProvider<Client>>(),
@@ -128,6 +129,13 @@ namespace DentalClinicApplication
                     sc.AddSingleton<MainWindow>(sp => new MainWindow() { DataContext = sp.GetRequiredService<MainViewModel>()});
                 })
                 .Build();
+        }
+
+        private VirtualizedCollectionComponentViewModel<Client> GetVirtualizedClientComponentViewModel(IServiceProvider sp)
+        {
+            return VirtualizedClientsComponentViewModel.LoadVirtualizedCollectionComponentViewModel<VirtualizedClientsComponentViewModel>(
+                sp.GetRequiredService<VirtualizationCollection<Client>>(),
+                sp.GetRequiredService<ICollectionStore<Client>>());
         }
 
         private AppointmentsProvider GetTodayAppointmentsProvider(IServiceProvider sp)

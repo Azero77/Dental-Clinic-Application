@@ -8,57 +8,40 @@ using DentalClinicApplication.VirtualizationCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data.Entity.Migrations.Model;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 
 namespace DentalClinicApplication.ComponentsViewModels
 {
     public class VirtualizedCollectionComponentViewModel<T> : CollectionViewModelBase<T>
     {
-        private VirtualizationCollection<T>? _collection;
-        public IEnumerable? VirtualizedCollection
-        {
-            get => _collection;
-            set
-            {
-                if (value is not VirtualizationCollection<T> d)
-                {
-                    return;
-                }
-                _collection = (VirtualizationCollection<T>?)value;
-                OnCollectionReset();
-
-            }
-        }
-
-        private bool _isLoading = false;
-        #region loading
-        public bool IsLoading
-        {
-            get
-            {
-                return _isLoading;
-            }
-            set
-            {
-                _isLoading = value;
-                OnPropertyChanged(nameof(IsLoading));
-            }
-        }
+        public VirtualizationCollection<T> _collection;
+        
+        //maybe null if the collection does not have to be stored
+        public ICollectionStore<T>? CollectionStore { get; private set; }
         public Task Load()
         {
-            return _collection!.Load();
+            return _collection.Load();
         }
-        #endregion
 
-        public VirtualizedCollectionComponentViewModel(VirtualizationCollection<T> collection)
+        public VirtualizedCollectionComponentViewModel(
+            VirtualizationCollection<T> collection,
+            ICollectionStore<T>? collectionStore = null)
             : base(collection.ItemsProvider)
         {
-            VirtualizedCollection = collection;
+            _collection = collection;
+            Collection = _collection;
+            _collection.CollectionChanged += OnCollectionChanged;
+            CollectionStore = collectionStore;
+            if(CollectionStore is not null)
+                CollectionStore.CollectionChanged += OnCollectionReset;
         }
+
         #region events
         public void OnCollectionReset()
         {
@@ -119,7 +102,7 @@ namespace DentalClinicApplication.ComponentsViewModels
 
         private void ReloadPropertyChanged()
         {
-            OnPropertyChanged(nameof(VirtualizedCollection));
+            OnPropertyChanged(nameof(Collection));
             OnPropertyChanged(nameof(Move));
             OnPropertyChanged(nameof(MoveNext));
             OnPropertyChanged(nameof(MovePrevious));
@@ -188,24 +171,20 @@ namespace DentalClinicApplication.ComponentsViewModels
         /// <returns></returns>
 
 
-        public static TVM LoadVirtualizedCollectionComponentViewModel<TVM>(
+        public static VirtualizedCollectionComponentViewModel<T> LoadVirtualizedCollectionComponentViewModel<TVM>(
             VirtualizationCollection<T> collection,
-            ICollectionStore<T>? collectionStore
+            ICollectionStore<T>? collectionStore = null
             )
-            where TVM : VirtualizedCollectionComponentViewModel<T>, new()
         {
-            TVM vm = new()
-            {
-                VirtualizedCollection = collection
-            };
-            ICommand loadCommand = new LoadVirtualizationCollectionCommand<T>(vm, collectionStore);
-            loadCommand.Execute(null);
-            return vm;
+            VirtualizedCollectionComponentViewModel<T> vm = new(collection,collectionStore);
+            return (VirtualizedCollectionComponentViewModel<T>) LoadCollectionViewModel(vm);
         }
 
         public override Task LoadViewModel()
         {
-            throw new NotImplementedException();
+            if (CollectionStore is not null)
+                return CollectionStore.Load();
+            return _collection?.Load() ?? Task.CompletedTask;
         }
     }
     public class VirtualizedClientsComponentViewModel : VirtualizedCollectionComponentViewModel<Client>

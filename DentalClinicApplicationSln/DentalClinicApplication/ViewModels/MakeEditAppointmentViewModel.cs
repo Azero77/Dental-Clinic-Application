@@ -1,11 +1,16 @@
 ﻿using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
+using DentalClinicApplication.Commands;
+using DentalClinicApplication.ComponentsViewModels;
 using DentalClinicApplication.Validations;
+using DentalClinicApplication.VirtualizationCollections;
+using DentalClinicApplication.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DentalClinicApplication.ViewModels
 {
@@ -70,7 +75,14 @@ namespace DentalClinicApplication.ViewModels
 			}
 		}
         #endregion
+        #region Commands
+		public ICommand ClientSelectionCommand { get; }
+        #endregion
 
-
+        public MakeEditAppointmentViewModel(VirtualizedCollectionComponentViewModel<Client> collectionViewModel)
+        {
+			ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(
+				(obj) => new ClientSelectionWindow(collectionViewModel));
+        }
     }
 }

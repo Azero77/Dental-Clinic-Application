@@ -45,8 +45,6 @@ namespace DentalClinicApplication.Commands
 
     public class LoadCommand<T> : AsyncCommandBase
     {
-
-        //maybe null if the table does not have to be cached
         public CollectionViewModelBase<T> CollectionViewModelBase { get; }
         public LoadCommand(CollectionViewModelBase<T> collectionViewModelBase)
         {

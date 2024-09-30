@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DentalClinicApp.Models;
+using DentalClinicApplication.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +21,9 @@ namespace DentalClinicApplication.Windows
     /// </summary>
     public partial class ClientSelectionWindow : Window
     {
-        public ClientSelectionWindow()
+        public ClientSelectionWindow(CollectionViewModelBase<Client> ViewModel)
         {
+            DataContext = ViewModel;
             InitializeComponent();
         }
     }

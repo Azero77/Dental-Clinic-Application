@@ -24,6 +24,6 @@
         <TextBox Text="{Binding Description}"/>
         <Button Content="Select Client"
                 Name="ClientSelectionButton"
-                Click="ClientSelectionButton_Click"/>
+                Command="{Binding ClientSelectionCommand}"/>
     </StackPanel>
 </UserControl>

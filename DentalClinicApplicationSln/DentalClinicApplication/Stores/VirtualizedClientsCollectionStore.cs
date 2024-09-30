@@ -13,11 +13,10 @@ namespace DentalClinicApplication.Stores
     public class VirtualizedCollectionStore<T> : ICollectionStore<T>
     {
         public VirtualizedCollectionStore(
-            IVirtualizationItemsProvider<T> itemsProvider,
             VirtualizationCollection<T> collection,
             ManipulationNotifierService manipulationNotifierService)
         {
-            Provider = itemsProvider;
+            Provider = collection.ItemsProvider;
             _collection = collection;
             _initialize = new(Initialize);
             manipulationNotifierService.DataManipulated += OnDataManipulated;

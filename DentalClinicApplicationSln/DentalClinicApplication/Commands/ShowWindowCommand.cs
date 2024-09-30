@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DentalClinicApp.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,19 +9,19 @@ using System.Windows;
 namespace DentalClinicApplication.Commands
 {
     public class ShowWindowCommand<TWindow>
-        : AsyncCommandBase
+        : CommandBase
         where TWindow : Window
     {
-        public Func<object?, Task<TWindow>> _windowFactory;
+        public Func<object?,TWindow> _windowFactory;
 
-        public ShowWindowCommand(Func<object?, Task<TWindow>> windowFactory)
+        public ShowWindowCommand(Func<object?, TWindow> windowFactory)
         {
             _windowFactory = windowFactory;
         }
 
-        public override async Task ExecuteAsync(object? parameter)
+        public override void Execute(object? parameter)
         {
-            Window window = await _windowFactory(parameter);
+            Window window = _windowFactory(parameter);
             window.Show();
         }
     }
