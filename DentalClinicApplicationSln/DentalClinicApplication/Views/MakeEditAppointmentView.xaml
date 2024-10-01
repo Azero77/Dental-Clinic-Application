@@ -14,12 +14,12 @@
     </UserControl.Resources>
     <StackPanel>
         <Label Content="Date:"></Label>
-        <DatePicker SelectedDate="{Binding StartDate}"
+        <DatePicker SelectedDate="{Binding DayDate}"
                     />
-        <Label Content="Duration (Hours):"></Label>
-        <wpfx:TimePicker x:Name="timePicker" Format="Custom" FormatString="HH:mm"
-                         Value="{Binding Duration, Converter={StaticResource TimeSpanToDateTimeConverter}}"/>
-
+        <Label Content="Start at:"/>
+        <wpfx:TimePicker Value="{Binding StartDate, Converter={StaticResource TimeSpanToDateTimeConverter}}" />
+        <Label Content="Ends at:"/>
+        <wpfx:TimePicker Value="{Binding EndDate,Converter={StaticResource TimeSpanToDateTimeConverter}}"/>
         <Label Content="Description:"></Label>
         <TextBox Text="{Binding Description}"/>
         <Button Content="Select Client"
@@ -29,6 +29,8 @@
             DataContext="{Binding Client}"/>
         <Button Content="Submit"
                 Command="{Binding SubmitAppointmentCommand}"
+                IsEnabled="{Binding IsModelValid}"
+                CommandParameter="{Binding Appointment}"
                 />
     </StackPanel>
 </UserControl>

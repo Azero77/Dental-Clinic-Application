@@ -31,6 +31,7 @@ namespace DentalClinicApplication.Services.DataProvider
                orderClause ?? this._orderClause);
         }
 
+
         public override Task<IEnumerable<Client>> GetItems()
         {
             throw new NotImplementedException();

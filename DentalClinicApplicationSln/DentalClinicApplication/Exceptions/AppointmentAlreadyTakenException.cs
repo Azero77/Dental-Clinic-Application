@@ -17,12 +17,12 @@ namespace DentalClinicApplication.Exceptions
             this.ConflictedAppointment = conflictedAppointment;
         }
 
-        public AppointmentAlreadyTakenException(string? message, Appointment conflictedAppointment) : base(message)
+        public AppointmentAlreadyTakenException(Appointment conflictedAppointment, string? message) : base(message)
         {
             this.ConflictedAppointment = conflictedAppointment;
         }
 
-        public AppointmentAlreadyTakenException(string? message, Exception? innerException, Appointment conflictedAppointment) : base(message, innerException)
+        public AppointmentAlreadyTakenException(Appointment conflictedAppointment, string? message, Exception? innerException) : base(message, innerException)
         {
             this.ConflictedAppointment = conflictedAppointment;
         }

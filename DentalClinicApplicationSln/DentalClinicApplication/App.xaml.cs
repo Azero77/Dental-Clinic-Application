@@ -27,6 +27,7 @@ using DentalClinicApplication.ComponentsViewModels;
 using Configurations;
 using DentalClinicApplication.ViewModels.Configuration;
 using System.Collections.ObjectModel;
+using DentalClinicApplication.Views;
 
 namespace DentalClinicApplication
 {
@@ -51,6 +52,7 @@ namespace DentalClinicApplication
                     //provider for the home page where we need the appointment for today
                     sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
+                    sc.AddSingleton<IVirtualizationItemsProvider<Appointment>, VirtualizedProvider<Appointment, AppointmentDTO>>();
                     sc.AddSingleton<MessageStore>();
                     sc.AddSingleton<MessageService>();
                     sc.AddSingleton<VirtualizationCollection<Client>>(
@@ -59,6 +61,9 @@ namespace DentalClinicApplication
                             sp.GetRequiredService<IVirtualizationItemsProvider<Client>>()
                             )
                         ) ;
+                    sc.AddSingleton<VirtualizationCollection<Appointment>>(sp => 
+                    new VirtualizationCollection<Appointment>(
+                        sp.GetRequiredService<IVirtualizationItemsProvider<Appointment>>()));
                     sc.AddSingleton<ICollectionStore<Client>,VirtualizedCollectionStore<Client>>();
                     sc.AddSingleton<NavigationStore>();
                     sc.AddSingleton<IDataManipulator,DataManipulator>();
@@ -69,8 +74,10 @@ namespace DentalClinicApplication
                     
                     sc.AddSingleton<ConfigurationViewModel>();
                     sc.AddTransient<HomePageViewModel>(sp => GetHomePageViewModel(sp));
-                    sc.AddTransient<VirtualizedCollectionComponentViewModel<Client>>(sp => 
+                    sc.AddSingleton<VirtualizedCollectionComponentViewModel<Client>>(sp => 
                     GetVirtualizedClientComponentViewModel(sp));
+                    sc.AddSingleton<VirtualizedCollectionComponentViewModel<Appointment>>(sp =>
+                    GetVirtualizedAppointmentsComponentViewModel(sp));
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
                         (sp.GetRequiredService<IProvider<Client>>(),
@@ -85,16 +92,20 @@ namespace DentalClinicApplication
                         sp.GetRequiredService<IDataManipulator>()
                         ));
                     sc.AddTransient<MakeEditAppointmentViewModel>();
+                    sc.AddTransient<AllAppointmentsViewModel>();
                     sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<HomePageViewModel>(sp));
                     sc.AddSingleton<INavigationService<ClientsManipulationViewModel>,LayoutNavigationService<ClientsManipulationViewModel>>();
                     sc.AddSingleton<INavigationService<MakeEditAppointmentViewModel>,
                         LayoutNavigationService<MakeEditAppointmentViewModel>>();
+                    sc.AddSingleton<INavigationService<HomePageViewModel>, LayoutNavigationService<HomePageViewModel>>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
                     );
                     sc.AddSingleton<Func<object?, MakeEditAppointmentViewModel>>(sp => 
                     obj => sp.GetRequiredService<MakeEditAppointmentViewModel>());
 
+                    sc.AddSingleton<Func<object?, AllAppointmentsViewModel>>(sp =>
+                    obj => sp.GetRequiredService<AllAppointmentsViewModel>());
                     sc.AddSingleton<Func<object?, NavigationBarViewModel>>(
                         sp => obj => sp.GetRequiredService<NavigationBarViewModel>());
                     sc.AddSingleton<Func<object?, MessageViewModel>>(sp => 
@@ -119,8 +130,9 @@ namespace DentalClinicApplication
                     sc.AddSingleton<Func<object?, HomePageViewModel>>(sp =>
                     (obj) => sp.GetRequiredService<HomePageViewModel>());
                     sc.AddSingleton<NavigationBarViewModel>(sp =>
-                        new (
-                            MakeLayoutNavigationService<HomePageViewModel>(sp)
+                        new(
+                            MakeLayoutNavigationService<HomePageViewModel>(sp),
+                            MakeLayoutNavigationService<AllAppointmentsViewModel>(sp)
                             )
                     ) ;
                     sc.AddSingleton<MainViewModel>();
@@ -129,6 +141,13 @@ namespace DentalClinicApplication
                 .Build();
         }
 
+        private VirtualizedCollectionComponentViewModel<Appointment> GetVirtualizedAppointmentsComponentViewModel(IServiceProvider sp)
+        {
+            return VirtualizedCollectionComponentViewModel<Appointment>.LoadVirtualizedCollectionComponentViewModel(
+                sp.GetRequiredService<VirtualizationCollection<Appointment>>());
+        }
+
+        
         private IProvider<Appointment> GetAllAppointmentsProvider(IServiceProvider sp)
         {
             return new AppointmentsProvider(sp.GetRequiredService<DbContext>(),
@@ -137,7 +156,7 @@ namespace DentalClinicApplication
 
         private VirtualizedCollectionComponentViewModel<Client> GetVirtualizedClientComponentViewModel(IServiceProvider sp)
         {
-            return VirtualizedClientsComponentViewModel.LoadVirtualizedCollectionComponentViewModel<VirtualizedClientsComponentViewModel>(
+            return VirtualizedCollectionComponentViewModel<Client>.LoadVirtualizedCollectionComponentViewModel(
                 sp.GetRequiredService<VirtualizationCollection<Client>>(),
                 sp.GetRequiredService<ICollectionStore<Client>>());
         }
@@ -187,6 +206,7 @@ namespace DentalClinicApplication
             MapperConfiguration config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(typeof(ClientProfile));
+                cfg.AddProfile(typeof(AppointmentProfile));
             });
             sc.AddSingleton(config.CreateMapper());
         }

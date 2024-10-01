@@ -61,7 +61,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <fa:FontAwesome Icon="Calendar" Grid.Column="0"/>
-            <RadioButton Command=""
+            <RadioButton Command="{Binding AllAppointmentsNavigationCommand}"
                          Grid.Column="1"
                          Content="Appointments"/>
         </Grid>

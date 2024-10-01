@@ -174,7 +174,7 @@ namespace DentalClinicApplication.ComponentsViewModels
         /// <returns></returns>
 
 
-        public static VirtualizedCollectionComponentViewModel<T> LoadVirtualizedCollectionComponentViewModel<TVM>(
+        public static VirtualizedCollectionComponentViewModel<T> LoadVirtualizedCollectionComponentViewModel(
             VirtualizationCollection<T> collection,
             ICollectionStore<T>? collectionStore = null
             )

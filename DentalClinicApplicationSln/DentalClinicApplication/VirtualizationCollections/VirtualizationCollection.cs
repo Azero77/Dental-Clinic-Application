@@ -146,7 +146,6 @@ namespace DentalClinicApplication.VirtualizationCollections
         #region Virtualization Logic
         public async Task RenderPage(int pageIndex)
         {
-            await Task.Delay(1000);
             if (!_pages.ContainsKey(pageIndex))
             {
                 _pages[pageIndex] = null;

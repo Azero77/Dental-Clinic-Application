@@ -17,7 +17,7 @@ namespace DentalClinicApplication.Commands
     public class SubmitAppointmentCommand
         : AsyncCommandBase
     {
-        public SubmitAppointmentCommand(INavigationService<HomePageViewModel> navigationService,
+        public SubmitAppointmentCommand(INavigationService navigationService,
                                         IDataService<Appointment> appointmentsCreator,
                                         MessageService messageService)
         {
@@ -26,7 +26,7 @@ namespace DentalClinicApplication.Commands
             MessageService = messageService;
         }
 
-        public INavigationService<HomePageViewModel> NavigationService { get; }
+        public INavigationService NavigationService { get; }
         public IDataService<Appointment> AppointmentsCreator { get; }
         public MessageService MessageService { get; }
         public override async Task ExecuteAsync(object? parameter)
@@ -39,6 +39,8 @@ namespace DentalClinicApplication.Commands
             try
             {
                 await AppointmentsCreator.CreateAsync(appointment);
+                MessageService.SetMessage("Appointment Added Successfully", MessageType.Status);
+                NavigationService.Navigate(parameter);
             }
             catch (AppointmentAlreadyTakenException exception)
             {

@@ -27,7 +27,7 @@ namespace DentalClinicApplication.Services.DataManiplator
         {
             await DbContext.RunAsync<int>(async conn =>
             {
-                int result = await conn.ExecuteAsync(sql, param);
+                int result = conn.Execute(sql, param);
                 if (result == 1)
                 {
                     OnDataManipulated();
@@ -36,10 +36,6 @@ namespace DentalClinicApplication.Services.DataManiplator
                 throw new InvalidDataContractException();
             });
         }
-
-        //This method calles the sql and param
-        //Child Classes should implement sql and param and then call the base method
-       
 
         public void OnDataManipulated()
         {

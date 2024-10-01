@@ -40,4 +40,38 @@ namespace DentalClinicApplication.Validations
             return new ValidationResult(ErrorMessage);
         }
     }
+
+    public class DateTimeRangeAttribue : ValidationAttribute
+    {
+        private readonly DateTime minValue;
+        private readonly DateTime maxValue;
+        public DateTimeRangeAttribue(DateTime minValue, DateTime maxValue,
+            string errorMessage) : base(errorMessage)
+        {
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+        }
+
+        public DateTimeRangeAttribue(DateTime minValue,
+            DateTime maxValue)
+        {
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+            ErrorMessage = $"Value should be in range between {minValue} and {maxValue}";
+        }
+
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+        {
+            DateTime number;
+            if (!DateTime.TryParse(value?.ToString(), out number))
+            {
+                return new ValidationResult("Value Should be a number");
+            }
+            if (number <= maxValue && number >= minValue)
+            {
+                return ValidationResult.Success;
+            }
+            return new ValidationResult(ErrorMessage);
+        }
+    }
 }

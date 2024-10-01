@@ -124,5 +124,6 @@ namespace DentalClinicApplication.Services.DataProvider
                 orderByClause ?? this.orderByClause
                 );
         }
+
     }
 }

@@ -76,11 +76,11 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Command="{Binding DataContext.MovePrevious,ElementName=root}"
+        <Button Command="{Binding MovePrevious}"
                 CommandParameter="{Binding CurrentPageIndex}">
             Previous
         </Button>
-        <Button Command="{Binding DataContext.MoveNext,ElementName=root}"
+        <Button Command="{Binding MoveNext}"
                 CommandParameter="{Binding CurrentPageIndex}">
             Next
         </Button>

@@ -36,6 +36,9 @@
                           >
                 <views:MakeEditAppointmentView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vms:AllAppointmentsViewModel}">
+                <views:AllAppointmentsView/>
+            </DataTemplate>
         </Grid.Resources>
         <ContentControl
             Content="{Binding CurrentViewModel}">

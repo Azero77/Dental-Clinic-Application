@@ -2,17 +2,19 @@
 using Configurations.DataContext;
 using Dapper;
 using DentalClinicApp.Models;
+using DentalClinicApplication.AutoMapperProfiles;
 using DentalClinicApplication.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataProvider
 {
-    class AppointmentsProvider : Provider<Appointment, AppointmentDTO>
+    public class AppointmentsProvider : Provider<Appointment, AppointmentDTO>
     {
         string? _whereClause;
         string? _orderClause;
@@ -52,19 +54,10 @@ namespace DentalClinicApplication.Services.DataProvider
                 ;
             IEnumerable<Appointment> result = await DataContext.RunAsync<IEnumerable<Appointment>>(conn =>
             {
-                    return conn.QueryAsync<AppointmentDTO, ClientDTO, Appointment>(sql,
-                    (appointmentDTO,clientDTO) => 
-                    {
-                        var r = _mapper.Map<ClientDTO,Client>(clientDTO);
-                        return new Appointment()
-                        {
-                            Client = _mapper.Map<ClientDTO, Client>(clientDTO),
-                            StartDate = appointmentDTO.StartDate,
-                            Duration = appointmentDTO.EndDate - appointmentDTO.StartDate,
-                            Description = appointmentDTO.Description
-                        };
-                    }
-                    ,splitOn:"ClientId");
+                    return conn.QueryAsync<AppointmentDTO, ClientDTO, Appointment>(
+                    sql,
+                    (aDTO, cDTO) => _mapper.MapAppointments(aDTO, cDTO),
+                    splitOn:"ClientId");
             });
             return result;
         }
@@ -72,6 +65,7 @@ namespace DentalClinicApplication.Services.DataProvider
                                     IMapper mapper
                                     )
         {
+
             string whereClause = "WHERE DATE(startDate) = DATE('now')";
             string orderClause = "ORDER BY StartDate";
             return new AppointmentsProvider(
@@ -80,6 +74,28 @@ namespace DentalClinicApplication.Services.DataProvider
                 whereClause,
                 orderClause
                 );
+        }
+
+        public Task<Appointment?> GetItem(int id)
+        {
+            return GetItem("Id", id);
+        }
+        public async Task<Appointment?> GetItem(string propName, object value)
+        {
+            string sql = "SELECT a.Id,StartDate,EndDate,ClientId,FirstName,LastName " +
+                "FROM Appointments a JOIN Clients c" +
+                "ON a.ClientId = c.Id " +
+                $"WHERE a.{propName} = @val";
+            object param = new { value };
+            IEnumerable<Appointment> appointments = await DataContext.RunAsync<IEnumerable<Appointment>>(conn =>
+            {
+                return conn.QueryAsync<AppointmentDTO, ClientDTO, Appointment>(sql,
+                    (aDTO,cDTO) => _mapper.MapAppointments(aDTO,cDTO)
+                    , param,
+                   splitOn: "ClientId");
+            });
+            Appointment? appointment = appointments.FirstOrDefault();
+            return appointment;
         }
     }
 }
