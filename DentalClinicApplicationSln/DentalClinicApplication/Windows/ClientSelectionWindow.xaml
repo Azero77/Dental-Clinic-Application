@@ -7,5 +7,19 @@
         mc:Ignorable="d"
         Title="ClientSelectionWindow" Height="450" Width="800">
     <components:VirtualizedCollectionComponent
-        DataContext="{Binding}"/>
+        DataContext="{Binding CollectionViewModel}"
+        >
+        <components:VirtualizedCollectionComponent.Columns>
+            <DataGridTextColumn Header="Name" Binding="{Binding FirstName}"/>
+            <DataGridTemplateColumn>
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding DataContext.SelectClientCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"
+                                Content="Select"/>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </components:VirtualizedCollectionComponent.Columns>
+    </components:VirtualizedCollectionComponent>
 </Window>

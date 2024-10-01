@@ -5,6 +5,7 @@ using DentalClinicApplication.VirtualizationCollections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -23,47 +24,41 @@ namespace DentalClinicApplication.Components
 {
     public partial class VirtualizedCollectionComponent : UserControl
     {
+        public ObservableCollection<DataGridColumn> Columns
+        {
+            get { return (ObservableCollection<DataGridColumn>)GetValue(ColumnsProperty); }
+            set { SetValue(ColumnsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ColumnsProperty =
+            DependencyProperty.Register("MyProperty", typeof(ObservableCollection<DataGridColumn>), typeof(VirtualizedCollectionComponent), new PropertyMetadata(new ObservableCollection<DataGridColumn>()));
+
         public VirtualizedCollectionComponent()
         {
             InitializeComponent();
         }
-    }
 
-  /*  /// <summary>
-    /// Interaction logic for VirtualizedCollectionComponent.xaml
-    /// </summary>
-    public partial class VirtualizedCollectionComponent<T> : VirtualizedCollectionComponent
-    {
-        public VirtualizedCollectionComponent() : base()
+        private void SetUpDataGridColumns()
         {
-            this.DataContext = new VirtualizedCollectionComponentViewModel<T>();
+            CollectionDataGrid.Columns.Clear();
+            foreach (DataGridColumn column in Columns)
+            {
+                try
+                {
+
+                    CollectionDataGrid.Columns.Add(column);
+                }
+                catch (Exception)
+                {
+                }
+            }
         }
 
-
-
-        public IEnumerable Collection
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            get { return (IEnumerable)GetValue(CollectionProperty); }
-            set { SetValue(CollectionProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Collection.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CollectionProperty =
-            DependencyProperty.Register("Collection", typeof(IEnumerable), typeof(VirtualizedCollectionComponent<T>), new PropertyMetadata(Enumerable.Empty<T>(),OnCollectionChanged));
-
-        private static void OnCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            VirtualizedCollectionComponent<T> userControlComponent = (VirtualizedCollectionComponent<T>)d;
-            userControlComponent.DataContext =
-                VirtualizedCollectionComponentViewModel<T>
-                .GetVirtualizedCollectionComponentViewModel((IEnumerable) e.NewValue);
+            SetUpDataGridColumns();
         }
     }
 
-    public partial class ClientVirtualizedCollectionComponent : VirtualizedCollectionComponent<Client>
-    {
-        public ClientVirtualizedCollectionComponent()
-        {
-        }
-    }*/
 }

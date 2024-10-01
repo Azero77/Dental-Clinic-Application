@@ -12,15 +12,12 @@ namespace DentalClinicApplication.Services.DataManiplator
     //can be extended by add eventArgs to each event and deals with it
     public class ManipulationNotifierService
     {
-        IEnumerable<IDataManipulator> DataManipulators { get; }
+        IDataManipulator Manipulator { get;}
 
-        public ManipulationNotifierService(IEnumerable<IDataManipulator> dataManipulators)
+        public ManipulationNotifierService(IDataManipulator dataManipulator)
         {
-            DataManipulators = dataManipulators;
-            foreach (IDataManipulator manipulator in DataManipulators)
-            {
-                manipulator.DataManipulated += OnDataManipulated;
-            }
+            Manipulator = dataManipulator;
+            Manipulator.DataManipulated += OnDataManipulated;
         }
 
         public event Action? DataManipulated;

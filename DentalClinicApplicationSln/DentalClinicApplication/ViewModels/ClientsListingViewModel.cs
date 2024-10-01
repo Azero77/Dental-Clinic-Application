@@ -44,7 +44,7 @@ namespace DentalClinicApplication.ViewModels
             ClientsStore = clientsStore;
             ClientsStore.CollectionChanged += ClientsStore_CollectionChanged;
             NavigateToEditClientView = new NavigationCommand(navigationService);
-            DeleteClientCommand = new ClientsDeleteCommand(dataDeleter);
+            //DeleteClientCommand = new ClientsDeleteCommand(dataDeleter);
             VirtualizedClientsComponentViewModel = virtualizedClientsComponentViewModel;
         }
 

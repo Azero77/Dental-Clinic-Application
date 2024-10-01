@@ -44,8 +44,11 @@ namespace DentalClinicApplication
                     sc.AddSingleton<appConfigurationModel>();
                     AddMapper(sc);
                     sc.AddSingleton<DbContext>();
-                    sc.AddSingleton<Provider<Appointment, AppointmentDTO>,AppointmentsProvider>(sp =>
-                    GetTodayAppointmentsProvider(sp));
+                    //provider for dataService where we need all appointments
+                    sc.AddSingleton<IProvider<Appointment>>(sp => 
+                    GetAllAppointmentsProvider(sp));
+
+                    //provider for the home page where we need the appointment for today
                     sc.AddSingleton<IProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, VirtualizedProvider<Client,ClientDTO>>();
                     sc.AddSingleton<MessageStore>();
@@ -58,16 +61,11 @@ namespace DentalClinicApplication
                         ) ;
                     sc.AddSingleton<ICollectionStore<Client>,VirtualizedCollectionStore<Client>>();
                     sc.AddSingleton<NavigationStore>();
-                    sc.AddSingleton<DataCreator>();
-                    sc.AddSingleton<DataEditor>();
-                    sc.AddSingleton<DataDeleter>();
+                    sc.AddSingleton<IDataManipulator,DataManipulator>();
+                    sc.AddSingleton<IDataService<Appointment>, AppointmentsDataService>();
+                    sc.AddSingleton<IDataService<Client>, ClientsDataService>();
 
-
-                    sc.AddSingleton<ManipulationNotifierService>(
-                       sp => new ManipulationNotifierService(
-                           GetManipulators(sp)
-                           )
-                       );
+                    sc.AddSingleton<ManipulationNotifierService>();
                     
                     sc.AddSingleton<ConfigurationViewModel>();
                     sc.AddTransient<HomePageViewModel>(sp => GetHomePageViewModel(sp));
@@ -77,14 +75,14 @@ namespace DentalClinicApplication
                         ClientsListingViewModel.GetClientsListingViewModel
                         (sp.GetRequiredService<IProvider<Client>>(),
                         sp.GetRequiredService<INavigationService<ClientsManipulationViewModel>>(),
-                        sp.GetRequiredService<DataDeleter>(),
+                        sp.GetRequiredService<IDataManipulator>(),
                         sp.GetRequiredService<ICollectionStore<Client>>(),
                         sp.GetRequiredService<VirtualizedClientsComponentViewModel>())
                     ) ;
                     //Default is Insert 
                     sc.AddTransient<ClientsManipulationViewModel>(sp => new ClientsManipulationViewModel(
                         sp.GetRequiredService<INavigationService>(),
-                        sp.GetRequiredService<DataCreator>()
+                        sp.GetRequiredService<IDataManipulator>()
                         ));
                     sc.AddTransient<MakeEditAppointmentViewModel>();
                     sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<HomePageViewModel>(sp));
@@ -102,21 +100,21 @@ namespace DentalClinicApplication
                     sc.AddSingleton<Func<object?, MessageViewModel>>(sp => 
                     obj => sp.GetRequiredService<MessageViewModel>());
                     sc.AddSingleton<MessageViewModel>();
-                    sc.AddSingleton<Func<object?, ClientsManipulationViewModel>>(sp =>
-                    (obj) =>
+
+                    sc.AddSingleton<Func<object?, ClientsManipulationViewModel>>(sp => (obj) =>
                     {
                         Client? client = obj as Client;
                         //if there is no client render the new client view, else render the edit client view
                         if (client is null)
                         {
                             return new ClientsManipulationViewModel(MakeLayoutNavigationService<ClientsListingViewModel>(sp),
-                                sp.GetRequiredService<DataCreator>()
+                                sp.GetRequiredService<IDataManipulator>()
                                 );
                         }
                         return new ClientsManipulationViewModel(
                             client,
                             MakeLayoutNavigationService<ClientsListingViewModel>(sp),
-                            sp.GetRequiredService<DataEditor>());
+                            sp.GetRequiredService<IDataManipulator>());
                     });
                     sc.AddSingleton<Func<object?, HomePageViewModel>>(sp =>
                     (obj) => sp.GetRequiredService<HomePageViewModel>());
@@ -129,6 +127,12 @@ namespace DentalClinicApplication
                     sc.AddSingleton<MainWindow>(sp => new MainWindow() { DataContext = sp.GetRequiredService<MainViewModel>()});
                 })
                 .Build();
+        }
+
+        private IProvider<Appointment> GetAllAppointmentsProvider(IServiceProvider sp)
+        {
+            return new AppointmentsProvider(sp.GetRequiredService<DbContext>(),
+                sp.GetRequiredService<IMapper>());
         }
 
         private VirtualizedCollectionComponentViewModel<Client> GetVirtualizedClientComponentViewModel(IServiceProvider sp)
@@ -147,7 +151,7 @@ namespace DentalClinicApplication
         private HomePageViewModel GetHomePageViewModel(IServiceProvider sp)
         {
             return HomePageViewModel.LoadHomePageViewModel(
-                sp.GetRequiredService<Provider<Appointment, AppointmentDTO>>(),
+                GetTodayAppointmentsProvider(sp),
                 sp.GetRequiredService<INavigationService<MakeEditAppointmentViewModel>>());
         }
 
@@ -177,23 +181,6 @@ namespace DentalClinicApplication
                 (obj) => sp.GetRequiredService<NavigationBarViewModel>(),
                 (obj) => sp.GetRequiredService<MessageViewModel>()
                 );
-        }
-
-        private IEnumerable<IDataManipulator> GetManipulators(IServiceProvider sp)
-        {
-            List<IDataManipulator> dataManipulators = new();
-            var allManipulatorsTypes =
-                Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .Where(type => !type.IsAbstract
-                            &&
-                            typeof(IDataManipulator).IsAssignableFrom(type));
-            foreach (Type type in allManipulatorsTypes)
-            {
-                dataManipulators.Add((IDataManipulator) sp.GetRequiredService(type));
-            }
-            return dataManipulators;
         }
         private void AddMapper(IServiceCollection sc)
         {

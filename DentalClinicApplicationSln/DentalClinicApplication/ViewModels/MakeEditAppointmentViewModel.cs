@@ -2,6 +2,7 @@
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
 using DentalClinicApplication.ComponentsViewModels;
+using DentalClinicApplication.Services.DataManiplator;
 using DentalClinicApplication.Validations;
 using DentalClinicApplication.VirtualizationCollections;
 using DentalClinicApplication.Windows;
@@ -61,7 +62,8 @@ namespace DentalClinicApplication.ViewModels
 			}
 		}
 
-		private Client _client;
+		private Client? _client;
+		[Required("Paitent Should be Selected")]
 		public Client Client
 		{
 			get
@@ -77,12 +79,22 @@ namespace DentalClinicApplication.ViewModels
         #endregion
         #region Commands
 		public ICommand ClientSelectionCommand { get; }
+		public ICommand SubmitAppointmentCommand { get; }
         #endregion
 
         public MakeEditAppointmentViewModel(VirtualizedCollectionComponentViewModel<Client> collectionViewModel)
         {
+			ClientSelectionViewModel clientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel,OnItemSelected);
 			ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(
-				(obj) => new ClientSelectionWindow(collectionViewModel));
+				(obj) => new ClientSelectionWindow(clientSelectionViewModel));
+        }
+
+        private void OnItemSelected(Client? client)
+        {
+			if (client is not null)
+			{
+                Client = client;
+            }
         }
     }
 }

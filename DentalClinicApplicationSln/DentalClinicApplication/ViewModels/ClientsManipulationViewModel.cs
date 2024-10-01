@@ -28,7 +28,7 @@ namespace DentalClinicApplication.ViewModels
 			DateOfBirth = client.DateOfBirth;
 
 			CancelCommand = new NavigationCommand(navigationService);
-			SubmitCommand = new ClientsEditCommand(editDataManipulator, navigationService);
+			//SubmitCommand = new ClientsEditCommand(editDataManipulator, navigationService);
             
         }
 
@@ -36,7 +36,7 @@ namespace DentalClinicApplication.ViewModels
         public ClientsManipulationViewModel(INavigationService navigationService,IDataManipulator InsertDataManipulator)
 		{
             CancelCommand = new NavigationCommand(navigationService);
-			SubmitCommand = new ClientsEditCommand(InsertDataManipulator, navigationService);
+			//SubmitCommand = new ClientsEditCommand(InsertDataManipulator, navigationService);
 
         }
 

@@ -7,6 +7,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              Name="root"
              mc:Ignorable="d"
+             Loaded="UserControl_Loaded"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:MutliBindingConverter x:Key="MutliBindingConverter"/>
@@ -54,9 +55,11 @@
                 IsLoading="{Binding IsLoading}"
                 />
             <DataGrid
+                x:Name="CollectionDataGrid"
                 Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
                 Height="200"
                 ItemsSource="{Binding Path = Collection}">
+
             </DataGrid>
         </Grid>
         <ListBox ItemsSource="{Binding PagesIndexers}" Height="40">

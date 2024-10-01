@@ -1,6 +1,4 @@
-﻿using DentalClinicApp.Models;
-using DentalClinicApplication.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace DentalClinicApplication.Windows
+namespace DentalClinicApplication.Components
 {
     /// <summary>
-    /// Interaction logic for ClientSelectionWindow.xaml
+    /// Interaction logic for ViewClientComponent.xaml
     /// </summary>
-    public partial class ClientSelectionWindow : Window
+    public partial class ViewClientComponent : UserControl
     {
-        public ClientSelectionWindow(ClientSelectionViewModel clientSelectionViewModel)
+        public ViewClientComponent()
         {
-            DataContext = clientSelectionViewModel;
             InitializeComponent();
         }
     }

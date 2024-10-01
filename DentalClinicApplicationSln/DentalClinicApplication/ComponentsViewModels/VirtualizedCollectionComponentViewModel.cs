@@ -47,6 +47,9 @@ namespace DentalClinicApplication.ComponentsViewModels
         {
             if (_collection is not null)
             {
+                _collection.CollectionChanged -= OnCollectionChanged;
+                _collection.PropertyChanged -= OnPropertyChanged;
+
                 _collection.CollectionChanged += OnCollectionChanged;
                 _collection.PropertyChanged += OnPropertyChanged;
                 ReloadButtons();
@@ -63,7 +66,7 @@ namespace DentalClinicApplication.ComponentsViewModels
         {
             if (_collection is null)
                 return;
-            ReloadButtons();
+           ReloadButtons();
         }
 
         private void ReloadButtons()
