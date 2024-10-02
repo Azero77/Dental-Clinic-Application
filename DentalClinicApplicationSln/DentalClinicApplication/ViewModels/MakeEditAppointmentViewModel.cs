@@ -38,7 +38,7 @@ namespace DentalClinicApplication.ViewModels
         }
 
         //Datetime without date (just hours and minutes)
-        private TimeSpan _startDate;
+        private TimeSpan _startDate = TimeSpan.FromTicks(0);
         [Required("Please Select The Start Time")]
         public TimeSpan StartDate
         {
@@ -53,8 +53,10 @@ namespace DentalClinicApplication.ViewModels
             }
         }
 
-        private TimeSpan _endDate;
+        private TimeSpan _endDate = TimeSpan.FromTicks(0);
         [Required("Please Select The End Time")]
+        [DelegateValidation("End Date Must be greater than Start Date",
+            nameof(isEndDateValid))]
         public TimeSpan EndDate
         {
             get
@@ -66,6 +68,15 @@ namespace DentalClinicApplication.ViewModels
                 _endDate = value;
                 OnPropertyChanged(nameof(EndDate));
             }
+        }
+
+        private bool isEndDateValid(object? value)
+        {
+            if (value is TimeSpan newEndDate)
+            {
+                return newEndDate > StartDate;
+            }
+            return false;
         }
 
         private string _description = string.Empty;
@@ -130,9 +141,8 @@ namespace DentalClinicApplication.ViewModels
             ClientSelectionViewModel clientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel, OnItemSelected);
             ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(
                 (obj) => new ClientSelectionWindow(clientSelectionViewModel));
-            SubmitAppointmentCommand = new SubmitAppointmentCommand(navigationService, dataService, messageService);
+            SubmitAppointmentCommand = new SubmitAppointmentCommand(this,navigationService, dataService, messageService);
         }
-
         private void OnItemSelected(Client? client)
         {
             if (client is not null)

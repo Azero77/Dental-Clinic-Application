@@ -16,11 +16,11 @@ using System.Windows.Input;
 
 namespace DentalClinicApplication.ViewModels
 {
-    public abstract class ErrorViewModelBase : ViewModelBase,INotifyDataErrorInfo
+    public abstract class ErrorViewModelBase : ViewModelBase, INotifyDataErrorInfo
     {
         public ErrorViewModelBase()
         {
-			ValidationErrorCommand = new RelayCommand<ValidationErrorEventArgs>(OnValidatoinError);
+            ValidationErrorCommand = new RelayCommand<ValidationErrorEventArgs>(OnValidatoinError);
         }
 
         public bool HasErrors => _errors.Count > 0;
@@ -68,26 +68,41 @@ namespace DentalClinicApplication.ViewModels
                 ClearErrors(propertyInfo!.Name);
                 foreach (ValidationAttribute validationAttribute in attributes)
                 {
-                    System.ComponentModel.DataAnnotations.ValidationResult? result = validationAttribute.GetValidationResult(propertyInfo!.GetValue(this), 
+                    System.ComponentModel.DataAnnotations.ValidationResult? result = validationAttribute.GetValidationResult(propertyInfo!.GetValue(this),
                         new ValidationContext(this));
                     if (result != System.ComponentModel.DataAnnotations.ValidationResult.Success)
                     {
                         string errorMessage = result?.ErrorMessage
                                 ?? $"{propertyInfo.Name} is not valid";
-                        
+
                         AddError(propertyInfo!.Name, errorMessage);
                         return false;
                     }
                 }
-                
             }
             return true;
-                
+        }
+        /// <summary>
+        /// Validate for all properties,specially used in commands before execution;
+        /// </summary>
+        /// <returns></returns>
+        public bool Validate()
+        {
+            IEnumerable<PropertyInfo?> propertyInfos = 
+            this.GetType().GetProperties().Where(p => p.GetCustomAttributes<ValidationAttribute>(true).Count() > 0);
+            foreach (PropertyInfo? propertyInfo in propertyInfos)
+            {
+                if (propertyInfo is not null)
+                {
+                    if (!Validate(propertyInfo.Name))
+                        return false;
+                }
+            }
+            return true;
         }
         public bool IsModelValid => !HasErrors
             && !GetType().GetProperties().Where(p => p.Name != "IsModelValid").Any(p => p.GetValue(this) is null
             || string.IsNullOrEmpty(p.GetValue(this)?.ToString()));
-
         public override void OnPropertyChanged(string propertyName)
         {
             Validate(propertyName);
