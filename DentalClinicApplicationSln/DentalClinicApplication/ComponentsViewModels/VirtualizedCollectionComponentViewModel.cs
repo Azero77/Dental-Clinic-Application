@@ -1,4 +1,5 @@
-﻿using DentalClinicApp.Models;
+﻿using DentalClinicApp.Commands;
+using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
 using DentalClinicApplication.Services;
@@ -20,7 +21,7 @@ namespace DentalClinicApplication.ComponentsViewModels
 {
     public class VirtualizedCollectionComponentViewModel<T> : CollectionViewModelBase<T>
     {
-        public VirtualizationCollection<T> _collection;
+        private VirtualizationCollection<T> _collection;
         
         //maybe null if the collection does not have to be stored
         public ICollectionStore<T>? CollectionStore { get; private set; }
@@ -36,10 +37,16 @@ namespace DentalClinicApplication.ComponentsViewModels
         {
             _collection = collection;
             Collection = _collection;
-            _collection.CollectionChanged += OnCollectionChanged;
             CollectionStore = collectionStore;
             if(CollectionStore is not null)
                 CollectionStore.CollectionChanged += OnCollectionReset;
+            Move = new VirtualizationCollectionMoveCommand<T>(collection);
+            MoveNext = new VirtualizationCollectionMoveCommand<T>(collection, moveValue: MoveValue.Next);
+            MovePrevious = new VirtualizationCollectionMoveCommand<T>(collection, moveValue: MoveValue.Previous);
+            SearchCommand = new SearchCommand<T>(
+                new ProviderChangerService<T>(this, _collection!.ItemsProvider, ChangeMode.Search), this);
+            OrderCommand = new SearchCommand<T>(
+                new ProviderChangerService<T>(this, _collection.ItemsProvider, ChangeMode.Order), this);
         }
 
         #region events
@@ -47,70 +54,19 @@ namespace DentalClinicApplication.ComponentsViewModels
         {
             if (_collection is not null)
             {
-                _collection.CollectionChanged -= OnCollectionChanged;
                 _collection.PropertyChanged -= OnPropertyChanged;
-
-                _collection.CollectionChanged += OnCollectionChanged;
                 _collection.PropertyChanged += OnPropertyChanged;
-                ReloadButtons();
             }
         }
 
         private void OnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            OnPropertyChanged(nameof(PagesIndexers));
             OnPropertyChanged(e?.PropertyName ?? string.Empty);
         }
 
-        private void OnCollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_collection is null)
-                return;
-           ReloadButtons();
-        }
-
-        private void ReloadButtons()
-        {
-            Move = new AsyncRelayCommand<int>
-                ((p) => MoveCommandDelegate(p),
-                (p) => _collection!.CanMoveToPage(p));
-
-            MoveNext = new AsyncRelayCommand<int>((p) => MoveCommandDelegate(VirtualizationCollection<T>.MoveValue.Next),
-                (p) => _collection!.CanMoveToPage(p));
-            MovePrevious = new AsyncRelayCommand<int>(
-               (p) => MoveCommandDelegate(VirtualizationCollection<T>.MoveValue.Previous),
-                (p) => _collection!.CanMoveToPage(p, VirtualizationCollection<T>.MoveValue.Previous));
-            SearchCommand = new SearchCommand<T>(
-                new ProviderChangerService<T>(this, _collection!.ItemsProvider,ChangeMode.Search),this);
-            OrderCommand = new SearchCommand<T>(
-                new ProviderChangerService<T>(this,_collection.ItemsProvider,ChangeMode.Order),this);
-            ReloadPropertyChanged();
-        }
-
-        private async Task MoveCommandDelegate(
-            VirtualizationCollection<T>.MoveValue moveValue)
-        {
-            IsLoading = true;
-            await _collection!.MoveToPage(moveValue);
-            IsLoading = false;
-        }
-        private async Task MoveCommandDelegate(
-            int pageNumber)
-        {
-            IsLoading = true;
-            await _collection!.MoveToPage(pageNumber);
-            IsLoading = false;
-        }
         #endregion
 
-        private void ReloadPropertyChanged()
-        {
-            OnPropertyChanged(nameof(Collection));
-            OnPropertyChanged(nameof(Move));
-            OnPropertyChanged(nameof(MoveNext));
-            OnPropertyChanged(nameof(MovePrevious));
-            OnPropertyChanged(nameof(CurrentPageIndex));
-        }
+        
         #region commands
         public ICommand? Move { get; set; }
         public ICommand? MoveNext { get; set; }
@@ -118,34 +74,13 @@ namespace DentalClinicApplication.ComponentsViewModels
         public ICommand? SearchCommand { get; set; }
         public ICommand? OrderCommand { get; set; }
 
-        private int? _currentPageIndex;
-        public int? CurrentPageIndex
+        public int CurrentPageIndex => _collection.CurrentPageIndex;
+        public int PageSize
         {
-            get => _collection?.CurrentPageIndex ?? _currentPageIndex;
+            get => _collection.PageSize;
             set
             {
-                if (_collection != null)
-                {
-                    // Update _collection's CurrentPageIndex
-                    _collection.CurrentPageIndex = value ?? _collection.CurrentPageIndex;
-                }
-                _currentPageIndex = value;
-                OnPropertyChanged(nameof(CurrentPageIndex));
-            }
-        }
-        private int? _pageSize;
-        public int? PageSize
-        {
-            get => _collection?.PageSize ?? _pageSize;
-            set
-            {
-                if (_collection != null)
-                {
-                    // Update _collection's PageSize if needed
-                    _collection.PageSize = value ?? _collection.PageSize;
-                }
-                _pageSize = value;
-                OnPropertyChanged(nameof(PageSize));
+                _collection.PageSize = value;
             }
         }
         public int? PagesCount => _collection?.PagesCount;

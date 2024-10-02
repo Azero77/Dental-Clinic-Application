@@ -11,6 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 #pragma warning  disable CS4014
 namespace DentalClinicApplication.VirtualizationCollections
 {
@@ -57,9 +58,6 @@ namespace DentalClinicApplication.VirtualizationCollections
 
         public IEnumerator<T> GetEnumerator()
         {
-            if (!_pages.ContainsKey(CurrentPageIndex))
-                yield break;
-            
             for (int i = 0; i < _pages[CurrentPageIndex].Count; i++)
             {
                 yield return _pages[CurrentPageIndex][i];
@@ -91,8 +89,8 @@ namespace DentalClinicApplication.VirtualizationCollections
             set
             {
                 _pageSize = value;
-                OnPropertyChanged(nameof(PagesCount));
                 OnPropertyChanged(nameof(PageSize));
+                OnPropertyChanged(nameof(PagesCount));
                 PageSizeChanged();
             }
         }
@@ -119,8 +117,8 @@ namespace DentalClinicApplication.VirtualizationCollections
             set
             {
                 _count = value;
-                OnPropertyChanged(nameof(PagesCount));
                 OnPropertyChanged(nameof(Count));
+                OnPropertyChanged(nameof(PagesCount));
             }
         }
         private int _currentPageIndex = 0;
@@ -168,7 +166,6 @@ namespace DentalClinicApplication.VirtualizationCollections
         public async Task LoadCount()
         {
             Count = await ItemsProvider.FetchCount();
-            OnPropertyChanged(nameof(PagesCount));
         }
 
         public async Task LoadPage(int pageIndex)
@@ -206,24 +203,21 @@ namespace DentalClinicApplication.VirtualizationCollections
         {
             CurrentPageIndex = pageIndex;
             await RenderPage(pageIndex);
+            //event
             OnCollectionReset();
         }
-        public async Task MoveToPage(MoveValue moveValue)
+        public Task MoveToPage(MoveValue moveValue)
         {
             if (moveValue == MoveValue.Next)
-                await MoveToPage(CurrentPageIndex + 1);
+                return MoveToPage(CurrentPageIndex + 1);
             else
-                await MoveToPage(CurrentPageIndex - 1);
+                return MoveToPage(CurrentPageIndex - 1);
         }
 
-        public enum MoveValue
-        {
-            Next,
-            Previous,
-            Undefined
-        }
+        
         public bool CanMoveToPage(int newPageNumber, MoveValue moveValue = MoveValue.Undefined)
         {
+
 
             if (moveValue == MoveValue.Next)
             {
@@ -242,6 +236,7 @@ namespace DentalClinicApplication.VirtualizationCollections
             await LoadCount();
             await RenderPage(CurrentPageIndex);
             OnPropertyChanged(string.Empty);
+            //event
             OnCollectionReset();
         }
 
@@ -250,9 +245,16 @@ namespace DentalClinicApplication.VirtualizationCollections
             if (CurrentPageIndex > PagesCount)
                 CurrentPageIndex = 0;
             await RenderPage(CurrentPageIndex);
+            //event
             OnCollectionReset();
         }
         #endregion
+    }
+    public enum MoveValue
+    {
+        Next,
+        Previous,
+        Undefined
     }
 }
 #pragma warning restore

@@ -77,11 +77,13 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <Button Command="{Binding MovePrevious}"
-                CommandParameter="{Binding CurrentPageIndex}">
+                CommandParameter="{Binding CurrentPageIndex}"
+                >
             Previous
         </Button>
         <Button Command="{Binding MoveNext}"
-                CommandParameter="{Binding CurrentPageIndex}">
+                CommandParameter="{Binding CurrentPageIndex}"
+                >
             Next
         </Button>
         <TextBlock Text="{Binding CurrentPageIndex, StringFormat='Page Number : {0}'}"/>
