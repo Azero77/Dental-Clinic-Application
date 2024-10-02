@@ -64,3 +64,7 @@ StyleCopReport.xml
 .idea/
 .idea_modules/
 .idea_workspaces/
+
+#database
+*/Database/
+
