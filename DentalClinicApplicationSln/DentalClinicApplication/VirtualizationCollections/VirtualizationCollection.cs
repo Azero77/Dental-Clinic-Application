@@ -58,6 +58,8 @@ namespace DentalClinicApplication.VirtualizationCollections
 
         public IEnumerator<T> GetEnumerator()
         {
+            if (!_pages.ContainsKey(CurrentPageIndex))
+                yield break;
             for (int i = 0; i < _pages[CurrentPageIndex].Count; i++)
             {
                 yield return _pages[CurrentPageIndex][i];
@@ -233,6 +235,7 @@ namespace DentalClinicApplication.VirtualizationCollections
         #region LazyLoading
         public async Task Load()
         {
+            await Task.Delay(3000);
             await LoadCount();
             await RenderPage(CurrentPageIndex);
             OnPropertyChanged(string.Empty);

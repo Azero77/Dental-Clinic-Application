@@ -74,9 +74,9 @@ namespace DentalClinicApplication
                     
                     sc.AddSingleton<ConfigurationViewModel>();
                     sc.AddTransient<HomePageViewModel>(sp => GetHomePageViewModel(sp));
-                    sc.AddSingleton<VirtualizedCollectionComponentViewModel<Client>>(sp => 
+                    sc.AddTransient<VirtualizedCollectionComponentViewModel<Client>>(sp => 
                     GetVirtualizedClientComponentViewModel(sp));
-                    sc.AddSingleton<VirtualizedCollectionComponentViewModel<Appointment>>(sp =>
+                    sc.AddTransient<VirtualizedCollectionComponentViewModel<Appointment>>(sp =>
                     GetVirtualizedAppointmentsComponentViewModel(sp));
                     sc.AddTransient<ClientsListingViewModel>(sp =>
                         ClientsListingViewModel.GetClientsListingViewModel
