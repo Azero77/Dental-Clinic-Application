@@ -36,7 +36,7 @@ namespace DentalClinicApplication.Commands
 
                 }
                 await _viewModel.Load();
-                _viewModel.OnCollectionReset();
+                //_viewModel.OnCollectionReset();
             }
             catch (Exception)
             {

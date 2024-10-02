@@ -38,8 +38,10 @@ namespace DentalClinicApplication.ComponentsViewModels
             _collection = collection;
             Collection = _collection;
             CollectionStore = collectionStore;
-            if(CollectionStore is not null)
-                CollectionStore.CollectionChanged += OnCollectionReset;
+            _collection.CollectionChanged += _collection_CollectionChanged;
+            _collection.PropertyChanged += OnPropertyChanged;
+            /*if (CollectionStore is not null)
+                CollectionStore.CollectionChanged += OnCollectionReset;*/
             Move = new VirtualizationCollectionMoveCommand<T>(collection);
             MoveNext = new VirtualizationCollectionMoveCommand<T>(collection, moveValue: MoveValue.Next);
             MovePrevious = new VirtualizationCollectionMoveCommand<T>(collection, moveValue: MoveValue.Previous);
@@ -49,16 +51,14 @@ namespace DentalClinicApplication.ComponentsViewModels
                 new ProviderChangerService<T>(this, _collection.ItemsProvider, ChangeMode.Order), this);
         }
 
-        #region events
-        public void OnCollectionReset()
-        {
-            if (_collection is not null)
-            {
-                _collection.PropertyChanged -= OnPropertyChanged;
-                _collection.PropertyChanged += OnPropertyChanged;
-            }
-        }
 
+
+        #region events
+
+        private void _collection_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(string.Empty);
+        }
         private void OnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             OnPropertyChanged(e?.PropertyName ?? string.Empty);

@@ -17,7 +17,7 @@
             <components:VirtualizedCollectionComponent.Columns>
                 <DataGridTextColumn Header="Patient">
                     <DataGridTextColumn.Binding>
-                        <MultiBinding StringFormat="{}{0} {1}">
+                        <MultiBinding StringFormat="r{0} {1}">
                             <Binding Path="Client.FirstName"/>
                             <Binding Path="Client.LastName"/>
                         </MultiBinding>

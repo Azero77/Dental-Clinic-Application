@@ -55,6 +55,7 @@
                 IsLoading="{Binding IsLoading}"
                 />
             <DataGrid
+                AutoGenerateColumns="False"
                 x:Name="CollectionDataGrid"
                 Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
                 Height="200"

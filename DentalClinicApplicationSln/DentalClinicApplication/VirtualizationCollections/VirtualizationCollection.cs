@@ -121,6 +121,7 @@ namespace DentalClinicApplication.VirtualizationCollections
                 _count = value;
                 OnPropertyChanged(nameof(Count));
                 OnPropertyChanged(nameof(PagesCount));
+                OnPageChanged();
             }
         }
         private int _currentPageIndex = 0;
@@ -207,6 +208,7 @@ namespace DentalClinicApplication.VirtualizationCollections
             await RenderPage(pageIndex);
             //event
             OnCollectionReset();
+            OnPageChanged();
         }
         public Task MoveToPage(MoveValue moveValue)
         {
@@ -230,6 +232,12 @@ namespace DentalClinicApplication.VirtualizationCollections
                 return newPageNumber > 0;
             }
             return true;
+        }
+        //event for notifying move commands to change canExecute;
+        public event Action PageChanged;
+        public void OnPageChanged()
+        {
+            PageChanged?.Invoke();
         }
         #endregion
         #region LazyLoading

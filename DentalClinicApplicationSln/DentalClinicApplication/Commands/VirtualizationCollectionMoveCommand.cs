@@ -15,13 +15,16 @@ namespace DentalClinicApplication.Commands
         private readonly MoveValue _moveValue;
 
         private readonly VirtualizationCollection<T> _collection;
-
-        public VirtualizationCollectionMoveCommand(VirtualizationCollection<T> collection,
+        public VirtualizationCollectionMoveCommand(
+            VirtualizationCollection<T> collection,
             MoveValue moveValue = MoveValue.Undefined)
         {
             _collection = collection;
             _moveValue = moveValue;
+            _collection.PageChanged += OnCanExecuteChanged;
         }
+
+
         public override bool CanExecute(object? parameter)
         {
             if (_moveValue == MoveValue.Undefined)
@@ -47,7 +50,6 @@ namespace DentalClinicApplication.Commands
                 await _collection.MoveToPage(_moveValue);
             }
             OnCanExecuteChanged();
-            CommandManager.InvalidateRequerySuggested();
         }
     }
 }
