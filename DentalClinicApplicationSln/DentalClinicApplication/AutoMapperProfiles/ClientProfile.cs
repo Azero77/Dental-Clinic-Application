@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DentalClinicApp.Models;
 using DentalClinicApplication.DTOs;
+using DentalClinicApplication.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,10 @@ namespace DentalClinicApplication.AutoMapperProfiles
                     src => GetGenderString(src.Gender)
                     )
                 );
+            //Mapper from viewModel to client
+            CreateMap<MakeEditClientViewModel, Client>()
+                .ForMember(dest => dest.Gender,
+                opts => opts.MapFrom(src => GetGenderEnum(src.Gender!)));
         }
 
         private Gender GetGenderEnum(string gender)

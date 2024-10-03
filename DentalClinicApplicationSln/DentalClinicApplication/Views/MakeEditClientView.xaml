@@ -16,7 +16,11 @@
         <Label>Gender</Label>
         <TextBox Text="{Binding Gender}"/>
         <Label>Date Of birth</Label>
-        <TextBox Text="{Binding DateOfBirth}"></TextBox>
+        <DatePicker SelectedDate="{Binding DateOfBirth}"/>
         <TextBlock Text="{Binding Age}"/>
+
+        <Button Command="{Binding SubmitClientCommand}"
+                CommandParameter="{Binding Client}"
+                Content="Add"/>
     </StackPanel>
 </UserControl>

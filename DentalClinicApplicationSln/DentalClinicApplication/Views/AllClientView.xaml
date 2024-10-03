@@ -7,6 +7,10 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
         <components:VirtualizedCollectionComponent
             DataContext="{Binding ComponentViewModel}">
             <components:VirtualizedCollectionComponent.Columns>
@@ -14,5 +18,10 @@
                     Binding="{Binding FirstName}"/>
             </components:VirtualizedCollectionComponent.Columns>
         </components:VirtualizedCollectionComponent>
+        <Button
+            Content="Add Patient"
+            Grid.Row="1"
+            Command="{Binding AddClientsNavigaitonCommand}"
+            />
     </Grid>
 </UserControl>

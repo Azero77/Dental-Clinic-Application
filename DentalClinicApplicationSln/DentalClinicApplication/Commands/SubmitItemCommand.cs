@@ -1,5 +1,6 @@
 ﻿using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataManiplator;
+using DentalClinicApplication.Stores;
 using DentalClinicApplication.ViewModels;
 using System;
 using System.Threading.Tasks;
@@ -23,11 +24,11 @@ namespace DentalClinicApplication.Commands
         public IDataService<T> ItemCreator { get; }
         public MessageService MessageService { get; }
 
-        public override Task ExecuteAsync(object? parameter)
+        public override async Task ExecuteAsync(object? parameter)
         {
             if (!ViewModel.Validate())
             {
-                return Task.CompletedTask;
+                return;
             }
             T? Item;
             try
@@ -44,7 +45,9 @@ namespace DentalClinicApplication.Commands
             {
                 throw new InvalidCastException("Change Parameter");
             }
-            return SubmitExecute(Item);
+            await SubmitExecute(Item);
+            MessageService.SetMessage("Item Added Successfully", MessageType.Status);
+            NavigationService.Navigate(parameter);
 
         }
         public abstract Task SubmitExecute(T? item);

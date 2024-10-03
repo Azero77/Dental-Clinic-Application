@@ -91,6 +91,7 @@ namespace DentalClinicApplication
                         sp.GetRequiredService<IDataManipulator>()
                         ));
                     sc.AddTransient<MakeEditAppointmentViewModel>();
+                    sc.AddTransient<MakeEditClientViewModel>();
                     sc.AddTransient<AllAppointmentsViewModel>();
                     sc.AddTransient<AllClientsViewModel>();
                     sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<HomePageViewModel>(sp));
@@ -99,6 +100,7 @@ namespace DentalClinicApplication
                         LayoutNavigationService<MakeEditAppointmentViewModel>>();
                     sc.AddSingleton<INavigationService<AllClientsViewModel>, LayoutNavigationService<AllClientsViewModel>>();
                     sc.AddSingleton<INavigationService<HomePageViewModel>, LayoutNavigationService<HomePageViewModel>>();
+                    sc.AddSingleton<INavigationService<MakeEditClientViewModel>, LayoutNavigationService<MakeEditClientViewModel>>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
                     );
@@ -113,6 +115,9 @@ namespace DentalClinicApplication
                     obj => sp.GetRequiredService<MessageViewModel>());
                     sc.AddSingleton<Func<object?, AllClientsViewModel>>(sp =>
                     obj => sp.GetRequiredService<AllClientsViewModel>());
+                    sc.AddSingleton<Func<object?, MakeEditClientViewModel>>(sp => 
+                    obj => sp.GetRequiredService<MakeEditClientViewModel>());
+
                     sc.AddSingleton<MessageViewModel>();
 
                     sc.AddSingleton<Func<object?, ClientsManipulationViewModel>>(sp => (obj) =>
