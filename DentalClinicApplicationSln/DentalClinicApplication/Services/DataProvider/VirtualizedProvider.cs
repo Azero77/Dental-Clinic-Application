@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataProvider
 {
-    public class VirtualizedProvider<T, TDTO>
+    public abstract class VirtualizedProvider<T, TDTO>
         : IVirtualizationItemsProvider<T>
     {
         public DbContext DataContext { get; }
@@ -113,18 +113,10 @@ namespace DentalClinicApplication.Services.DataProvider
         }
 
         //change provider for both order by or where clause depending on what is null
-        public IProvider<T> ChangeProvider
+        public abstract IProvider<T> ChangeProvider
             (string? whereClause,
-            string? orderByClause)
-        {
-            return new VirtualizedProvider<T, TDTO>(
-                this.DataContext,
-                this._mapper,
-                this.MessageService,
-                whereClause ?? this.whereClause,
-                orderByClause ?? this.orderByClause
-                );
-        }
+            string? orderByClause);
+        
 
     }
 }

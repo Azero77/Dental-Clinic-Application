@@ -38,7 +38,7 @@
             <RadioButton Command="{Binding HomePageNavigationCommand}"
                          Grid.Column="1"
                          Content="HomePage"
-                         GroupName="NavigationButtons"/>
+                         GroupName="NavigaitonButtons"/>
         </Grid>
         <!--Patients-->
         <Grid

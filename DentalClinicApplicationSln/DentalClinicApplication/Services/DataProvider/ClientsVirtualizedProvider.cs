@@ -70,5 +70,16 @@ namespace DentalClinicApplication.Services.DataProvider
                 return clients.Values;
             });
         }
+
+        public override IProvider<Client> ChangeProvider(string? whereClause, string? orderByClause)
+        {
+            return new ClientsVirtualizedProvider(
+               this.DataContext,
+               this._mapper,
+               this.MessageService,
+               whereClause ?? this.whereClause,
+               orderByClause ?? this.orderByClause
+               );
+        }
     }
 }

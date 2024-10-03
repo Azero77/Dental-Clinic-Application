@@ -84,7 +84,7 @@ namespace DentalClinicApplication.ComponentsViewModels
             }
         }
         public int? PagesCount => _collection?.PagesCount;
-        public IEnumerable<string> Properties => typeof(T).GetProperties().Select(p => p.Name);
+        public IEnumerable<string> Properties => typeof(T).GetProperties().Select(p => p.Name).Where(n => !n.Contains("Id"));
         public string? FirstProperty => Properties.FirstOrDefault();
         public List<int> PagesIndexers =>
             MakePageIndexers();

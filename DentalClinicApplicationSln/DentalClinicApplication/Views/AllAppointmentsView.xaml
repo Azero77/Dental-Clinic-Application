@@ -11,6 +11,10 @@
             x:Key="DateToDurationConverter"/>
     </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
         <components:VirtualizedCollectionComponent
             DataContext="{Binding ComponentViewModel}"
             >
@@ -34,10 +38,10 @@
                 <DataGridTextColumn Header="Description" Binding ="{Binding Description}"></DataGridTextColumn>
             </components:VirtualizedCollectionComponent.Columns>
         </components:VirtualizedCollectionComponent>
-        <!--<Button
-        Content="Add Appointment"
-        Command="{Binding AddAppointmentNavigationCommand}"
-        Grid.Row="3"
-        Grid.Column="1"/>-->
+        <Button
+            Grid.Row="1"
+            Content="Add Appointment"
+            Command="{Binding AddAppointmentNavigationCommand}"
+            />
     </Grid>
 </UserControl>

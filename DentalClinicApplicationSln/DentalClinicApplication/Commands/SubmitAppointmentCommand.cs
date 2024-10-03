@@ -5,52 +5,29 @@ using DentalClinicApplication.Services.DataManiplator;
 using DentalClinicApplication.Services.DataProvider;
 using DentalClinicApplication.Stores;
 using DentalClinicApplication.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Commands
 {
     public class SubmitAppointmentCommand
-        : AsyncCommandBase
+        : SubmitItemCommand<Appointment>
     {
-        public SubmitAppointmentCommand(
-                                        ErrorViewModelBase viewModel,
-                                        INavigationService navigationService,
-                                        IDataService<Appointment> appointmentsCreator,
-                                        MessageService messageService)
+        public SubmitAppointmentCommand(ErrorViewModelBase viewModel, INavigationService navigationService, IDataService<Appointment> itemCreator, MessageService messageService) : base(viewModel, navigationService, itemCreator, messageService)
         {
-            ViewModel = viewModel;
-            NavigationService = navigationService;
-            AppointmentsCreator = appointmentsCreator;
-            MessageService = messageService;
         }
 
-        public ErrorViewModelBase ViewModel { get; }
-        public INavigationService NavigationService { get; }
-        public IDataService<Appointment> AppointmentsCreator { get; }
-        public MessageService MessageService { get; }
-        public override async Task ExecuteAsync(object? parameter)
+        public override async Task SubmitExecute(Appointment? item)
         {
-            //checking valid data before execution of command
-            if (!ViewModel.Validate())
-            {
-                return;
-            }
-            Appointment? appointment = parameter as Appointment;
-            
-            if (appointment is null)
-            {
-                throw new InvalidCastException("Change Parameter");
-            }
             try
             {
-                await AppointmentsCreator.CreateAsync(appointment);
+                await ItemCreator.CreateAsync(item!);
                 MessageService.SetMessage("Appointment Added Successfully", MessageType.Status);
-                NavigationService.Navigate(parameter);
+                NavigationService.Navigate(item);
             }
             catch (AppointmentAlreadyTakenException exception)
             {

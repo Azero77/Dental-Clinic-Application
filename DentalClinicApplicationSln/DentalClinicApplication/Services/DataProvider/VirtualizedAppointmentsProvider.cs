@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Services.DataProvider
 {
-    public class VirtualizedAppointmentsProvider : VirtualizedProvider<Appointment, AppointmentDTO>
+    public class AppointmentsVirtualizedProvider : VirtualizedProvider<Appointment, AppointmentDTO>
     {
-        public VirtualizedAppointmentsProvider(DbContext dbContext,
+        public AppointmentsVirtualizedProvider(DbContext dbContext,
                                                IMapper mapper,
                                                MessageService messageService,
                                                string? whereClause = "",
@@ -38,7 +38,7 @@ namespace DentalClinicApplication.Services.DataProvider
 
         public override async Task<IEnumerable<Appointment>> GetItems(int start, int size)
         {
-            string sql = "SELECT StartDate,EndDate,ClientId,c.Id,FirstName,LastName  FROM " +
+            string sql = "SELECT StartDate,EndDate,Description,ClientId,c.Id,FirstName,LastName  FROM " +
                 "Appointments a JOIN Clients c ON " +
                 "a.ClientId = c.Id " +
                 $"{whereClause} " +
@@ -62,6 +62,17 @@ namespace DentalClinicApplication.Services.DataProvider
                 
             });
             return result;
+        }
+
+        public override IProvider<Appointment> ChangeProvider(string? whereClause, string? orderByClause)
+        {
+            return new AppointmentsVirtualizedProvider(
+               this.DataContext,
+               this._mapper,
+               this.MessageService,
+               whereClause ?? this.whereClause,
+               orderByClause ?? this.orderByClause
+               );
         }
     }
 }

@@ -51,7 +51,7 @@ namespace DentalClinicApplication
 
                     //provider for the home page where we need the appointment for today
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, ClientsVirtualizedProvider>();
-                    sc.AddSingleton<IVirtualizationItemsProvider<Appointment>, VirtualizedAppointmentsProvider>();
+                    sc.AddSingleton<IVirtualizationItemsProvider<Appointment>, AppointmentsVirtualizedProvider>();
                     sc.AddSingleton<MessageStore>();
                     sc.AddSingleton<MessageService>();
                     sc.AddSingleton<VirtualizationCollection<Client>>(
