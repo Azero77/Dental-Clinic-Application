@@ -40,6 +40,9 @@
             <DataTemplate DataType="{x:Type vms:AllAppointmentsViewModel}">
                 <views:AllAppointmentsView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vms:AllClientsViewModel}">
+                <views:AllClientView/>
+            </DataTemplate>
         </Grid.Resources>
         <ContentControl
             Content="{Binding CurrentViewModel}">

@@ -12,7 +12,7 @@
     </UserControl.Resources>
     <Grid>
         <components:VirtualizedCollectionComponent
-            DataContext="{Binding CollectionViewModel}"
+            DataContext="{Binding ComponentViewModel}"
             >
             <components:VirtualizedCollectionComponent.Columns>
                 <DataGridTextColumn Header="Patient">

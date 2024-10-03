@@ -16,14 +16,17 @@ namespace DentalClinicApplication.ViewModels
     {
         public ICommand HomePageNavigationCommand { get; }
         public ICommand AllAppointmentsNavigationCommand { get; }
+        public ICommand AllClientsNavigaitonCommand { get; }
 
         public NavigationBarViewModel(
-            INavigationService homePageNavigationCommand,
-            INavigationService allAppointmentsNavigationCommand
+            INavigationService homePageNavigationService,
+            INavigationService allAppointmentsNavigationService,
+            INavigationService allClientsNavigationService
             )
         {
-            HomePageNavigationCommand = new NavigationCommand(homePageNavigationCommand);
-            AllAppointmentsNavigationCommand = new NavigationCommand(allAppointmentsNavigationCommand);
+            HomePageNavigationCommand = new NavigationCommand(homePageNavigationService);
+            AllAppointmentsNavigationCommand = new NavigationCommand(allAppointmentsNavigationService);
+            AllClientsNavigaitonCommand = new NavigationCommand(allClientsNavigationService);
         }
     }
 }

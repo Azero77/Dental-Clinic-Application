@@ -48,7 +48,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <fa:FontAwesome Icon="User" Grid.Column="0"/>
-            <RadioButton Command=""
+            <RadioButton Command="{Binding AllClientsNavigaitonCommand}"
                          Grid.Column="1"
                          Content="Patients"/>
         </Grid>

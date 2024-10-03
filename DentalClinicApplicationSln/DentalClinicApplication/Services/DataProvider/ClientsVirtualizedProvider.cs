@@ -39,7 +39,7 @@ namespace DentalClinicApplication.Services.DataProvider
                 "FROM Clients c JOIN Appointments a " +
                 "ON c.Id = a.ClientId " +
                 $"{whereClause} " +
-                $"{orderByClause}" +
+                $"{orderByClause} " +
                 $"LIMIT @size OFFSET @start;";
             return await DataContext.RunAsync<IEnumerable<Client>>(async conn =>
             {

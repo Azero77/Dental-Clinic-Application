@@ -2,9 +2,11 @@
 using Configurations.DataContext;
 using Dapper;
 using DentalClinicApp.Models;
+using DentalClinicApplication.AutoMapperProfiles;
 using DentalClinicApplication.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,28 +38,28 @@ namespace DentalClinicApplication.Services.DataProvider
 
         public override async Task<IEnumerable<Appointment>> GetItems(int start, int size)
         {
-            string sql = "SELECT FirstName,LastName,StartDate,EndDate  FROM " +
+            string sql = "SELECT StartDate,EndDate,ClientId,c.Id,FirstName,LastName  FROM " +
                 "Appointments a JOIN Clients c ON " +
                 "a.ClientId = c.Id " +
                 $"{whereClause} " +
                 $"LIMIT @size OFFSET @start";
-            IEnumerable<Appointment> result = await DataContext.RunAsync<IEnumerable<Appointment>>(conn =>
+            IEnumerable<Appointment> result = await DataContext.RunAsync<IEnumerable<Appointment>>(async conn =>
             {
-                return conn.QueryAsync<AppointmentDTO, ClientDTO, Appointment>(sql,
-                (appointmentDTO, clientDTO) =>
+                try
                 {
-                    return new Appointment()
-                    {
-                        Client = Mapper.Map<ClientDTO, Client>(clientDTO),
-                        StartDate = appointmentDTO.StartDate,
-                        Duration = appointmentDTO.EndDate - appointmentDTO.StartDate,
-                        Description = appointmentDTO.Description
-                    };
+                    return await conn.QueryAsync<AppointmentDTO, ClientDTO, Appointment>(sql,
+                    (appointmentDTO, clientDTO) => _mapper.MapAppointments(appointmentDTO, clientDTO),
+                    param: new { start, size }
+                    ,
+                    splitOn: "ClientId");
                 }
-                , 
-                param : new { start, size }
-                ,
-                splitOn: "ClientId");
+                catch (SQLiteException)
+                {
+                    MessageService.SetMessage("SearchSchema is not Allowed",
+                        messageType: Stores.MessageType.Error);
+                    return Enumerable.Empty<Appointment>();
+                }
+                
             });
             return result;
         }

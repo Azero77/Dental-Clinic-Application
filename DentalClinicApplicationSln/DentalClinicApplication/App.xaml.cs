@@ -93,10 +93,12 @@ namespace DentalClinicApplication
                         ));
                     sc.AddTransient<MakeEditAppointmentViewModel>();
                     sc.AddTransient<AllAppointmentsViewModel>();
+                    sc.AddTransient<AllClientsViewModel>();
                     sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<HomePageViewModel>(sp));
                     sc.AddSingleton<INavigationService<ClientsManipulationViewModel>,LayoutNavigationService<ClientsManipulationViewModel>>();
                     sc.AddSingleton<INavigationService<MakeEditAppointmentViewModel>,
                         LayoutNavigationService<MakeEditAppointmentViewModel>>();
+                    sc.AddSingleton<INavigationService<AllClientsViewModel>, LayoutNavigationService<AllClientsViewModel>>();
                     sc.AddSingleton<INavigationService<HomePageViewModel>, LayoutNavigationService<HomePageViewModel>>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
@@ -110,6 +112,8 @@ namespace DentalClinicApplication
                         sp => obj => sp.GetRequiredService<NavigationBarViewModel>());
                     sc.AddSingleton<Func<object?, MessageViewModel>>(sp => 
                     obj => sp.GetRequiredService<MessageViewModel>());
+                    sc.AddSingleton<Func<object?, AllClientsViewModel>>(sp =>
+                    obj => sp.GetRequiredService<AllClientsViewModel>());
                     sc.AddSingleton<MessageViewModel>();
 
                     sc.AddSingleton<Func<object?, ClientsManipulationViewModel>>(sp => (obj) =>
@@ -132,7 +136,8 @@ namespace DentalClinicApplication
                     sc.AddSingleton<NavigationBarViewModel>(sp =>
                         new(
                             MakeLayoutNavigationService<HomePageViewModel>(sp),
-                            MakeLayoutNavigationService<AllAppointmentsViewModel>(sp)
+                            MakeLayoutNavigationService<AllAppointmentsViewModel>(sp),
+                            MakeLayoutNavigationService<AllClientsViewModel>(sp)
                             )
                     ) ;
                     sc.AddSingleton<MainViewModel>();
