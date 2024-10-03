@@ -37,7 +37,8 @@
             <fa:FontAwesome Icon="Home" Grid.Column="0"/>
             <RadioButton Command="{Binding HomePageNavigationCommand}"
                          Grid.Column="1"
-                         Content="HomePage"/>
+                         Content="HomePage"
+                         GroupName="NavigationButtons"/>
         </Grid>
         <!--Patients-->
         <Grid
@@ -50,7 +51,8 @@
             <fa:FontAwesome Icon="User" Grid.Column="0"/>
             <RadioButton Command="{Binding AllClientsNavigaitonCommand}"
                          Grid.Column="1"
-                         Content="Patients"/>
+                         Content="Patients"
+                         GroupName = "NavigaitonButtons"/>
         </Grid>
         <!--Appointments-->
         <Grid
@@ -63,7 +65,8 @@
             <fa:FontAwesome Icon="Calendar" Grid.Column="0"/>
             <RadioButton Command="{Binding AllAppointmentsNavigationCommand}"
                          Grid.Column="1"
-                         Content="Appointments"/>
+                         Content="Appointments"
+                         GroupName = "NavigaitonButtons"/>
         </Grid>
         <!--Analytics-->
         <Grid
@@ -76,7 +79,8 @@
             <fa:FontAwesome Icon="PieChart" Grid.Column="0"/>
             <RadioButton Command=""
                          Grid.Column="1"
-                         Content="Analytics"/>
+                         Content="Analytics"
+                         GroupName = "NavigaitonButtons"/>
         </Grid>
         <!--Settings-->
         <Grid
@@ -89,7 +93,8 @@
             <fa:FontAwesome Icon="Cog" Grid.Column="0"/>
             <RadioButton Command=""
                          Grid.Column="1"
-                         Content="Settings"/>
+                         Content="Settings"
+                         GroupName ="NavigaitonButtons"/>
         </Grid>
     </Grid>
 

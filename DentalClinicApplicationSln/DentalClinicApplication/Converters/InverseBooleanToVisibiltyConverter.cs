@@ -13,7 +13,6 @@ namespace DentalClinicApplication.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool val = (bool)value;
             return value is bool BooleanValue && BooleanValue ? Visibility.Collapsed : Visibility.Visible; 
         }
 

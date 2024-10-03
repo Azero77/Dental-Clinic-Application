@@ -29,10 +29,10 @@ namespace DentalClinicApplication.Services.DataProvider
 
         protected override async Task<int> InitializeCount()
         {
-            string sql = "SELECT COUNT(Id) FROM " +
+            string sql = "SELECT COUNT(a.Id) FROM " +
                 "Appointments a JOIN Clients c ON " +
                 "a.ClientId = c.Id " +
-                $"{whereClause}";
+                $"{whereClause};";
             return await RunSqlCount(sql);
         }
 

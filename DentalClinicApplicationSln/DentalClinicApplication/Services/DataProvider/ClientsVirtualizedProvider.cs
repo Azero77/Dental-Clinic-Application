@@ -26,7 +26,7 @@ namespace DentalClinicApplication.Services.DataProvider
 
         protected override async Task<int> InitializeCount()
         {
-            string sql = "SELECT COUNT(Id) FROM " +
+            string sql = "SELECT COUNT(DISTINCT c.Id) FROM " +
                 "Clients c JOIN Appointments a " +
                 "ON c.Id = a.ClientId " +
                 $"{whereClause};";
