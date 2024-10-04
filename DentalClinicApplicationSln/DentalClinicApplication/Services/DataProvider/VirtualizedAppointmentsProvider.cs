@@ -38,7 +38,7 @@ namespace DentalClinicApplication.Services.DataProvider
 
         public override async Task<IEnumerable<Appointment>> GetItems(int start, int size)
         {
-            string sql = "SELECT StartDate,EndDate,Description,ClientId,c.Id,FirstName,LastName  FROM " +
+            string sql = "SELECT a.Id,StartDate,EndDate,Description,ClientId,c.Id,FirstName,LastName  FROM " +
                 "Appointments a JOIN Clients c ON " +
                 "a.ClientId = c.Id " +
                 $"{whereClause} " +

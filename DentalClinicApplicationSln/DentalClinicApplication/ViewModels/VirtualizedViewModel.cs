@@ -1,5 +1,7 @@
 ﻿using DentalClinicApp.Commands;
 using DentalClinicApp.Models;
+using DentalClinicApp.Services;
+using DentalClinicApp.Stores;
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.ComponentsViewModels;
 using DentalClinicApplication.Services;
@@ -16,28 +18,47 @@ namespace DentalClinicApplication.ViewModels
     {
         public VirtualizedCollectionComponentViewModel<T> ComponentViewModel { get; }
         public ICommand AddItem { get; }
-        public VirtualizedViewModel(VirtualizedCollectionComponentViewModel<T> componentViewModel,
-            INavigationService navigationService)
+        //Edit Item required Seprate NavigationService so we make a dependency on NavigationStore
+        //And A factory
+        public ICommand EditItem { get; }
+        public VirtualizedViewModel(
+            VirtualizedCollectionComponentViewModel<T> componentViewModel,
+            INavigationService addItemNavigationService,
+            NavigationStore navigationStore,
+            Func<object?,MakeEditItemViewModel<T>> viewModelFactory)
         {
             ComponentViewModel = componentViewModel;
-            AddItem = new NavigationCommand(navigationService);
+            AddItem = new NavigationCommand(addItemNavigationService);
+            EditItem = new NavigationCommand(new NavigationService<MakeEditItemViewModel<T>>(
+                navigationStore,
+                viewModelFactory
+                ));
         }
     }
     public class AllAppointmentsViewModel : VirtualizedViewModel<Appointment>
     {
-        public ICommand AddAppointmentNavigationCommand { get; }
-        public AllAppointmentsViewModel(VirtualizedCollectionComponentViewModel<Appointment> componentViewModel, INavigationService<MakeEditAppointmentViewModel> navigationService) : base(componentViewModel, navigationService)
+        public AllAppointmentsViewModel(VirtualizedCollectionComponentViewModel<Appointment> componentViewModel, INavigationService addItemNavigationService, NavigationStore navigationStore, Func<object?, MakeEditItemViewModel<Appointment>> viewModelFactory) : base(componentViewModel, addItemNavigationService, navigationStore, viewModelFactory)
         {
             AddAppointmentNavigationCommand = AddItem;
+            EditAppointmentNavigationCommand = EditItem;
         }
+
+        public ICommand AddAppointmentNavigationCommand { get; }
+        public ICommand EditAppointmentNavigationCommand { get; }
+        
     }
 
     public class AllClientsViewModel : VirtualizedViewModel<Client>
     {
-        public ICommand AddClientsNavigaitonCommand { get; }
-        public AllClientsViewModel(VirtualizedCollectionComponentViewModel<Client> componentViewModel, INavigationService<MakeEditClientViewModel> navigationService) : base(componentViewModel, navigationService)
+        public AllClientsViewModel(VirtualizedCollectionComponentViewModel<Client> componentViewModel, INavigationService addItemNavigationService, NavigationStore navigationStore, Func<object?, MakeEditItemViewModel<Client>> viewModelFactory) : base(componentViewModel, addItemNavigationService, navigationStore, viewModelFactory)
         {
-            AddClientsNavigaitonCommand = AddItem;
+            AddClientNavigationCommand = AddItem;
+            EditClientNavigationCommand = EditItem;
         }
+
+        public ICommand AddClientNavigationCommand { get; }
+        public ICommand EditClientNavigationCommand { get; }
+
+        
     }
 }

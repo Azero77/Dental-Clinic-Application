@@ -54,14 +54,17 @@ namespace DentalClinicApplication.Services.DataManiplator
         public async Task EditAsync(Appointment appointment)
         {
             await ValidateAppointment(appointment);
-            string sql = "UPDATE Appointments SET(StartDate,EndDate,ClientId,Description) " +
-                "VALUES(@startdate,@endDate,@clientId,@description) " +
+            string sql =
+                "UPDATE Appointments SET StartDate = @startDate," +
+                "EndDate = @endDate," +
+                "ClientId = @clientId," +
+                "Description = @description " +
                 "WHERE Id = @id;";
             AppointmentDTO appointmentDTO = Mapper.Map<AppointmentDTO>(appointment);
             object param = new
             {
-                startDate = appointmentDTO.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                endDate = appointmentDTO.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                startDate = appointmentDTO.StartDate,
+                endDate = appointmentDTO.EndDate,
                 clientId = appointmentDTO.ClientId,
                 description = appointmentDTO.Description,
                 id = appointmentDTO.Id
@@ -72,7 +75,7 @@ namespace DentalClinicApplication.Services.DataManiplator
         private async Task ValidateAppointment(Appointment appointment)
         {
             Appointment? conflictedAppointment = await SearchConflictedAppointment(appointment);
-            if (conflictedAppointment is not null)
+            if (conflictedAppointment is not null && conflictedAppointment.Id != appointment.Id)
             {
                 string message = $"You have an Appointment" +
                     $" For {conflictedAppointment.Client?.FirstName + " " + conflictedAppointment.Client?.LastName} From {conflictedAppointment.StartDate:HH:mm}" +

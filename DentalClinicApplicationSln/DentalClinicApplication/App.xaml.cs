@@ -28,6 +28,7 @@ using Configurations;
 using DentalClinicApplication.ViewModels.Configuration;
 using System.Collections.ObjectModel;
 using DentalClinicApplication.Views;
+using DentalClinicApplication.Commands;
 
 namespace DentalClinicApplication
 {
@@ -92,8 +93,10 @@ namespace DentalClinicApplication
                         ));
                     sc.AddTransient<MakeEditAppointmentViewModel>();
                     sc.AddTransient<MakeEditClientViewModel>();
-                    sc.AddTransient<AllAppointmentsViewModel>();
-                    sc.AddTransient<AllClientsViewModel>();
+                    sc.AddTransient<AllAppointmentsViewModel>(
+                        sp => GetAllAppointmentsViewModel(sp));
+                    sc.AddTransient<AllClientsViewModel>(
+                        sp => GetAllClientsViewModel(sp));
                     sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<HomePageViewModel>(sp));
                     sc.AddSingleton<INavigationService<ClientsManipulationViewModel>,LayoutNavigationService<ClientsManipulationViewModel>>();
                     sc.AddSingleton<INavigationService<MakeEditAppointmentViewModel>,
@@ -101,6 +104,7 @@ namespace DentalClinicApplication
                     sc.AddSingleton<INavigationService<AllClientsViewModel>, LayoutNavigationService<AllClientsViewModel>>();
                     sc.AddSingleton<INavigationService<HomePageViewModel>, LayoutNavigationService<HomePageViewModel>>();
                     sc.AddSingleton<INavigationService<MakeEditClientViewModel>, LayoutNavigationService<MakeEditClientViewModel>>();
+                    sc.AddSingleton<INavigationService<AllAppointmentsViewModel>,LayoutNavigationService<AllAppointmentsViewModel>>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
                     );
@@ -148,6 +152,44 @@ namespace DentalClinicApplication
                     sc.AddSingleton<MainWindow>(sp => new MainWindow() { DataContext = sp.GetRequiredService<MainViewModel>()});
                 })
                 .Build();
+        }
+        
+        private AllClientsViewModel GetAllClientsViewModel(IServiceProvider sp)
+        {
+            return new AllClientsViewModel(
+                sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Client>>(),
+                sp.GetRequiredService<INavigationService<MakeEditClientViewModel>>(),
+                sp.GetRequiredService<NavigationStore>(),
+                (obj) => new MakeEditClientViewModel(
+                    sp.GetRequiredService<IMapper>(),
+                    sp.GetRequiredService<INavigationService<AllClientsViewModel>>(),
+                    sp.GetRequiredService<IDataService<Client>>(),
+                    sp.GetRequiredService<MessageService>(),
+                    obj as Client,
+                    SubmitStatus.Edit
+                    )
+                );
+        }
+
+        private AllAppointmentsViewModel GetAllAppointmentsViewModel(IServiceProvider sp)
+        {
+            return new AllAppointmentsViewModel(
+                sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Appointment>>(),
+                sp.GetRequiredService<INavigationService<MakeEditAppointmentViewModel>>(),
+                sp.GetRequiredService<NavigationStore>(),
+                (obj) => {
+                    return new MakeEditAppointmentViewModel(
+                    sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Client>>(),
+                    sp.GetRequiredService<INavigationService<AllAppointmentsViewModel>>(),
+                    sp.GetRequiredService<IDataService<Appointment>>(),
+                    sp.GetRequiredService<MessageService>(),
+                    sp.GetRequiredService<IMapper>(),
+                    obj as Appointment,
+                    //SubmitStatus Should be edit if the factory is not a dependency injection requiredSErvice
+                    SubmitStatus.Edit
+                    );
+                }
+                );
         }
 
         private VirtualizedCollectionComponentViewModel<Appointment> GetVirtualizedAppointmentsComponentViewModel(IServiceProvider sp)

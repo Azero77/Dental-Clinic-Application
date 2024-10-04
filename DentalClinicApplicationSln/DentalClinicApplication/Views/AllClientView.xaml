@@ -16,12 +16,21 @@
             <components:VirtualizedCollectionComponent.Columns>
                 <DataGridTextColumn
                     Binding="{Binding FirstName}"/>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.EditClientNavigationCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AllClientView}}}"
+                                    CommandParameter="{Binding}"
+                                    Content="Edit"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </components:VirtualizedCollectionComponent.Columns>
         </components:VirtualizedCollectionComponent>
         <Button
             Content="Add Patient"
             Grid.Row="1"
-            Command="{Binding AddClientsNavigaitonCommand}"
+            Command="{Binding AddClientNavigationCommand}"
             />
     </Grid>
 </UserControl>

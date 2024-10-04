@@ -1,4 +1,5 @@
-﻿using DentalClinicApp.Models;
+﻿using AutoMapper;
+using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
 using DentalClinicApplication.ComponentsViewModels;
@@ -9,6 +10,7 @@ using DentalClinicApplication.VirtualizationCollections;
 using DentalClinicApplication.Windows;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations.Model;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,10 +19,11 @@ using System.Windows.Input;
 
 namespace DentalClinicApplication.ViewModels
 {
-    public class MakeEditAppointmentViewModel : ErrorViewModelBase
+    public class MakeEditAppointmentViewModel :
+        MakeEditItemViewModel<Appointment>
     {
         #region props
-
+        private int _id = 0;
         //Date of the day (yyyy-MM-dd)
         private DateTime _dayDate = DateTime.Now;
         [Required("Please Select The Day")]
@@ -113,6 +116,7 @@ namespace DentalClinicApplication.ViewModels
         {
             return new Appointment()
             {
+                Id = _id,
                 StartDate = DayDate.Date.Add(StartDate),
                 Duration = DayDate.Date.Add(EndDate) - DayDate.Date.Add(StartDate),
                 Client = Client,
@@ -129,20 +133,46 @@ namespace DentalClinicApplication.ViewModels
         #endregion
         #region Commands
         public ICommand ClientSelectionCommand { get; }
-        public ICommand SubmitAppointmentCommand { get; }
+        
         #endregion
 
         public MakeEditAppointmentViewModel(
             VirtualizedCollectionComponentViewModel<Client> collectionViewModel,
-            INavigationService<HomePageViewModel> navigationService,
+            INavigationService navigationService,
             IDataService<Appointment> dataService,
-            MessageService messageService)
+            MessageService messageService,
+            IMapper mapper,
+            Appointment? appointment = null,
+            SubmitStatus submitStatus = SubmitStatus.Create)
+            : base(mapper,dataService,navigationService,messageService)
         {
             ClientSelectionViewModel clientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel, OnItemSelected);
             ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(
                 (obj) => new ClientSelectionWindow(clientSelectionViewModel));
-            SubmitAppointmentCommand = new SubmitAppointmentCommand(this,navigationService, dataService, messageService);
+            SubmitCommand = new SubmitItemCommand<Appointment>(
+                this,
+                navigationService,
+                dataService,
+                messageService,
+                submitStatus
+                );
+            AssignAppointment(appointment);
         }
+
+        private void AssignAppointment(Appointment? appointment)
+        {
+            if (appointment is not null)
+            {
+                _id = appointment.Id;
+                DayDate = appointment.StartDate.Date;
+                StartDate = appointment.StartDate.TimeOfDay;
+                EndDate = (StartDate + appointment.Duration);
+                Description = appointment.Description ?? string.Empty;
+                Client = appointment.Client!;
+            }
+            
+        }
+
         private void OnItemSelected(Client? client)
         {
             if (client is not null)

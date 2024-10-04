@@ -28,7 +28,7 @@
         <components:ViewClientComponent
             DataContext="{Binding Client}"/>
         <Button Content="Submit"
-                Command="{Binding SubmitAppointmentCommand}"
+                Command="{Binding SubmitCommand}"
                 IsEnabled="{Binding IsModelValid}"
                 CommandParameter="{Binding Appointment}"
                 />

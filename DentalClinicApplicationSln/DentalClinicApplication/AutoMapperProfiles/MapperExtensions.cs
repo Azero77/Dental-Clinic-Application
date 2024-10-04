@@ -15,6 +15,7 @@ namespace DentalClinicApplication.AutoMapperProfiles
         {
             return new Appointment()
             {
+                Id = appointmentDTO.Id,
                 Client = mapper.Map<ClientDTO, Client>(clientDTO),
                 StartDate = appointmentDTO.StartDate,
                 Duration = appointmentDTO.EndDate - appointmentDTO.StartDate,

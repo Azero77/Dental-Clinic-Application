@@ -19,8 +19,8 @@
         <DatePicker SelectedDate="{Binding DateOfBirth}"/>
         <TextBlock Text="{Binding Age}"/>
 
-        <Button Command="{Binding SubmitClientCommand}"
+        <Button Command="{Binding SubmitCommand}"
                 CommandParameter="{Binding Client}"
-                Content="Add"/>
+                Content="Submit"/>
     </StackPanel>
 </UserControl>

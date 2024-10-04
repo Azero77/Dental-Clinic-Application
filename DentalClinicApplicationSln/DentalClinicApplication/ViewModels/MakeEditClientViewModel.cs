@@ -15,7 +15,7 @@ using System.Windows.Input;
 namespace DentalClinicApplication.ViewModels
 {
     public class MakeEditClientViewModel
-        : ErrorViewModelBase
+        : MakeEditItemViewModel<Client>
     {
         #region props
         private int _id;
@@ -105,26 +105,22 @@ namespace DentalClinicApplication.ViewModels
 		public int Age => (int) ((DateTime.Now - DateOfBirth).TotalDays / 365.25);
 
 		public Client? Client => Mapper?.Map<Client>(this);
-        public INavigationService NavigationService { get; }
-		public IMapper Mapper { get; }
-        public IDataService<Client> DataCreator { get; }
-        public MessageService MessageService { get; }
-        public ICommand SubmitClientCommand { get; }
+       
 
-		public MakeEditClientViewModel(IMapper mapper,
+        public MakeEditClientViewModel(IMapper mapper,
 			INavigationService navigationService,
 			IDataService<Client> dataCreator,
 			MessageService messageService,
-			Client? client = null)
+			Client? client = null,
+			SubmitStatus submitStatus = SubmitStatus.Create)
+			: base(mapper,dataCreator,navigationService,messageService)
         {
-            NavigationService = navigationService;
-            DataCreator = dataCreator;
-            MessageService = messageService;
-            SubmitClientCommand = new SubmitClientCommand(this,
+           
+            SubmitCommand = new SubmitItemCommand<Client>(this,
                                                  navigationService,
                                                  dataCreator,
-                                                 messageService);
-			Mapper = mapper;
+                                                 messageService,
+												 submitStatus);
 			AssignClient(client);
         }
 
