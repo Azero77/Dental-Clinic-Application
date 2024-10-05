@@ -153,22 +153,37 @@ namespace DentalClinicApplication
                 })
                 .Build();
         }
-        
+
         private AllClientsViewModel GetAllClientsViewModel(IServiceProvider sp)
         {
             return new AllClientsViewModel(
                 sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Client>>(),
                 sp.GetRequiredService<INavigationService<MakeEditClientViewModel>>(),
-                sp.GetRequiredService<NavigationStore>(),
-                (obj) => new MakeEditClientViewModel(
-                    sp.GetRequiredService<IMapper>(),
-                    sp.GetRequiredService<INavigationService<AllClientsViewModel>>(),
-                    sp.GetRequiredService<IDataService<Client>>(),
-                    sp.GetRequiredService<MessageService>(),
-                    obj as Client,
-                    SubmitStatus.Edit
-                    )
+                GetEditLayoutNavigationService<MakeEditClientViewModel, Client>(sp, EditClientViewModelFactory(sp)));
+        }
+
+        private LayoutNavigationService<TViewModel> GetEditLayoutNavigationService<TViewModel,T>(
+            IServiceProvider sp,
+            Func<object?,TViewModel> editViewModelFactory)
+            where TViewModel : MakeEditItemViewModel<T>
+        {
+            return new LayoutNavigationService<TViewModel>(
+                    sp.GetRequiredService<NavigationStore>(),
+                    editViewModelFactory,
+                    sp.GetRequiredService<Func<object?, NavigationBarViewModel>>(),
+                    sp.GetRequiredService<Func<object?, MessageViewModel>>()
                 );
+        }
+        private Func<object?, MakeEditClientViewModel> EditClientViewModelFactory(IServiceProvider sp)
+        {
+            return (obj) => new MakeEditClientViewModel(
+                                sp.GetRequiredService<IMapper>(),
+                                sp.GetRequiredService<INavigationService<AllClientsViewModel>>(),
+                                sp.GetRequiredService<IDataService<Client>>(),
+                                sp.GetRequiredService<MessageService>(),
+                                obj as Client,
+                                SubmitStatus.Edit
+                                );
         }
 
         private AllAppointmentsViewModel GetAllAppointmentsViewModel(IServiceProvider sp)
@@ -176,20 +191,21 @@ namespace DentalClinicApplication
             return new AllAppointmentsViewModel(
                 sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Appointment>>(),
                 sp.GetRequiredService<INavigationService<MakeEditAppointmentViewModel>>(),
-                sp.GetRequiredService<NavigationStore>(),
-                (obj) => {
-                    return new MakeEditAppointmentViewModel(
-                    sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Client>>(),
-                    sp.GetRequiredService<INavigationService<AllAppointmentsViewModel>>(),
-                    sp.GetRequiredService<IDataService<Appointment>>(),
-                    sp.GetRequiredService<MessageService>(),
-                    sp.GetRequiredService<IMapper>(),
-                    obj as Appointment,
-                    //SubmitStatus Should be edit if the factory is not a dependency injection requiredSErvice
-                    SubmitStatus.Edit
-                    );
-                }
-                );
+                GetEditLayoutNavigationService<MakeEditAppointmentViewModel,Appointment>(sp,EditAppointmentViewModelFactory(sp)));
+        }
+        private Func<object?, MakeEditAppointmentViewModel> EditAppointmentViewModelFactory(IServiceProvider sp)
+        {
+            return (obj) =>
+                                     new MakeEditAppointmentViewModel(
+                                    sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Client>>(),
+                                    sp.GetRequiredService<INavigationService<AllAppointmentsViewModel>>(),
+                                    sp.GetRequiredService<IDataService<Appointment>>(),
+                                    sp.GetRequiredService<MessageService>(),
+                                    sp.GetRequiredService<IMapper>(),
+                                    obj as Appointment,
+                                    //SubmitStatus Should be edit if the factory is not a dependency injection requiredSErvice
+                                    SubmitStatus.Edit
+                                    );
         }
 
         private VirtualizedCollectionComponentViewModel<Appointment> GetVirtualizedAppointmentsComponentViewModel(IServiceProvider sp)

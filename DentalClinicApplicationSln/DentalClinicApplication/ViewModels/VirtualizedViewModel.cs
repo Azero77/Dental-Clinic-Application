@@ -24,20 +24,20 @@ namespace DentalClinicApplication.ViewModels
         public VirtualizedViewModel(
             VirtualizedCollectionComponentViewModel<T> componentViewModel,
             INavigationService addItemNavigationService,
-            NavigationStore navigationStore,
-            Func<object?,MakeEditItemViewModel<T>> viewModelFactory)
+            INavigationService editItemNavigationService)
         {
             ComponentViewModel = componentViewModel;
             AddItem = new NavigationCommand(addItemNavigationService);
-            EditItem = new NavigationCommand(new NavigationService<MakeEditItemViewModel<T>>(
+/*            EditItem = new NavigationCommand(new NavigationService<MakeEditItemViewModel<T>>(
                 navigationStore,
                 viewModelFactory
-                ));
+                ));*/
+            EditItem = new NavigationCommand(editItemNavigationService);
         }
     }
     public class AllAppointmentsViewModel : VirtualizedViewModel<Appointment>
     {
-        public AllAppointmentsViewModel(VirtualizedCollectionComponentViewModel<Appointment> componentViewModel, INavigationService addItemNavigationService, NavigationStore navigationStore, Func<object?, MakeEditItemViewModel<Appointment>> viewModelFactory) : base(componentViewModel, addItemNavigationService, navigationStore, viewModelFactory)
+        public AllAppointmentsViewModel(VirtualizedCollectionComponentViewModel<Appointment> componentViewModel, INavigationService addItemNavigationService, INavigationService editItemNavigationService) : base(componentViewModel, addItemNavigationService, editItemNavigationService)
         {
             AddAppointmentNavigationCommand = AddItem;
             EditAppointmentNavigationCommand = EditItem;
@@ -50,7 +50,7 @@ namespace DentalClinicApplication.ViewModels
 
     public class AllClientsViewModel : VirtualizedViewModel<Client>
     {
-        public AllClientsViewModel(VirtualizedCollectionComponentViewModel<Client> componentViewModel, INavigationService addItemNavigationService, NavigationStore navigationStore, Func<object?, MakeEditItemViewModel<Client>> viewModelFactory) : base(componentViewModel, addItemNavigationService, navigationStore, viewModelFactory)
+        public AllClientsViewModel(VirtualizedCollectionComponentViewModel<Client> componentViewModel, INavigationService addItemNavigationService, INavigationService editItemNavigationService) : base(componentViewModel, addItemNavigationService, editItemNavigationService)
         {
             AddClientNavigationCommand = AddItem;
             EditClientNavigationCommand = EditItem;
