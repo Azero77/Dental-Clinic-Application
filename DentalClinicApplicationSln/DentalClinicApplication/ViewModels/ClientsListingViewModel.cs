@@ -8,6 +8,7 @@ using DentalClinicApplication.Services.DataManiplator;
 using DentalClinicApplication.Services.DataProvider;
 using DentalClinicApplication.Stores;
 using DentalClinicApplication.VirtualizationCollections;
+using ResourceDictionariesContainer.Resources;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -40,6 +41,7 @@ namespace DentalClinicApplication.ViewModels
             VirtualizedClientsComponentViewModel virtualizedClientsComponentViewModel)
             
         {
+            
             DbClientsProvider = dbClientsProvider;
             ClientsStore = clientsStore;
             ClientsStore.CollectionChanged += ClientsStore_CollectionChanged;

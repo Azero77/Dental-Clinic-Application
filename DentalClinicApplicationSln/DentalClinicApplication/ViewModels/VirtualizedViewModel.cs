@@ -28,10 +28,6 @@ namespace DentalClinicApplication.ViewModels
         {
             ComponentViewModel = componentViewModel;
             AddItem = new NavigationCommand(addItemNavigationService);
-/*            EditItem = new NavigationCommand(new NavigationService<MakeEditItemViewModel<T>>(
-                navigationStore,
-                viewModelFactory
-                ));*/
             EditItem = new NavigationCommand(editItemNavigationService);
         }
     }
@@ -58,7 +54,5 @@ namespace DentalClinicApplication.ViewModels
 
         public ICommand AddClientNavigationCommand { get; }
         public ICommand EditClientNavigationCommand { get; }
-
-        
     }
 }

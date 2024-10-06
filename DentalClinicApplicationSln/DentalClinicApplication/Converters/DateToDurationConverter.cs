@@ -18,8 +18,10 @@ namespace DentalClinicApplication.Converters
             {
                 DateTime startDate = (DateTime)values[0];
                 TimeSpan Duration = (TimeSpan)values[1];
+                string startDateString = startDate.ToString("t", culture);
+                string endDateString = startDate.Add(Duration).ToString("t", culture);
 
-                return $"{startDate:HH:mm tt} - {startDate.Add(Duration):HH:mm tt}";
+                return $"{startDateString} - {endDateString}";
             }
             return DependencyProperty.UnsetValue;
         }

@@ -4,6 +4,7 @@ using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataProvider;
+using ResourceDictionariesContainer.Resources;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

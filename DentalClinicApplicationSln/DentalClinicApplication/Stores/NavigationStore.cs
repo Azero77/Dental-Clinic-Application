@@ -11,13 +11,14 @@ namespace DentalClinicApp.Stores
     /// </summary>
     public class NavigationStore
     {
-        private ViewModelBase _currentViewModel;
+        private ViewModelBase? _currentViewModel;
 
         public ViewModelBase CurrentViewModel
         {
             get => _currentViewModel;
             set
             {
+                CurrentViewModel?.Dispose();
                 _currentViewModel = value;
                 OnCurrentViewModelChanged();
             }

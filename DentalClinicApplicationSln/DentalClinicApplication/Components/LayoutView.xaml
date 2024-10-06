@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:DentalClinicApplication.Components"
              xmlns:vms="clr-namespace:DentalClinicApplication.ViewModels"
              xmlns:views="clr-namespace:DentalClinicApplication.Views" xmlns:components="clr-namespace:DentalClinicApplication.Components"
+             xmlns:resx="clr-namespace:ResourceDictionariesContainer.Resources;assembly=ResourceDictionariesContainer"
+
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -24,6 +26,7 @@
         <ContentControl Content="{Binding NavigationBarViewModel}"
                         Grid.Row="1"
                         Grid.Column="0"/>
+        <TextBox Text="{x:Static resx:Resources.Greeting}"/>
         <ContentControl Content="{Binding ContentViewModel}"
                         Grid.Row="1"
                         Grid.Column="1"/>

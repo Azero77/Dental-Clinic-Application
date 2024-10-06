@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DentalClinicApplication.Views"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:vms="clr-namespace:DentalClinicApplication.ViewModels"
+             xmlns:fa="http://schemas.fontawesome.io/icons/" xmlns:converters="clr-namespace:DentalClinicApplication.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <!--<StackPanel Orientation="Horizontal">
@@ -15,6 +16,10 @@
     New Client
     </Button>
     </StackPanel>-->
+    <UserControl.Resources>
+        <converters:CurrentViewModelNavigationBarIsCheckedConverter
+            x:Key="CurrentViewModelNavigationBarIsCheckedConverter"/>
+    </UserControl.Resources>
     <Grid Background="{StaticResource Primary}"
           >
         <Grid.RowDefinitions>
@@ -38,6 +43,7 @@
             <RadioButton Command="{Binding HomePageNavigationCommand}"
                          Grid.Column="1"
                          Content="HomePage"
+                         IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:HomePageViewModel}}"
                          GroupName="NavigaitonButtons"/>
         </Grid>
         <!--Patients-->
@@ -52,6 +58,8 @@
             <RadioButton Command="{Binding AllClientsNavigaitonCommand}"
                          Grid.Column="1"
                          Content="Patients"
+                         IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:AllClientsViewModel}}"
+
                          GroupName = "NavigaitonButtons"/>
         </Grid>
         <!--Appointments-->
@@ -66,6 +74,8 @@
             <RadioButton Command="{Binding AllAppointmentsNavigationCommand}"
                          Grid.Column="1"
                          Content="Appointments"
+                         IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:AllAppointmentsViewModel}}"
+
                          GroupName = "NavigaitonButtons"/>
         </Grid>
         <!--Analytics-->
@@ -80,6 +90,7 @@
             <RadioButton Command=""
                          Grid.Column="1"
                          Content="Analytics"
+
                          GroupName = "NavigaitonButtons"/>
         </Grid>
         <!--Settings-->

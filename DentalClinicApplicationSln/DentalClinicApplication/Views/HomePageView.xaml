@@ -4,8 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:local="clr-namespace:DentalClinicApplication.Views" xmlns:loadingspinnercontrol="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
+             xmlns:local="clr-namespace:DentalClinicApplication.Views"
+             xmlns:loadingspinnercontrol="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
              xmlns:converters="clr-namespace:DentalClinicApplication.Converters" xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:placeholdertextcontrol="clr-namespace:PlaceHolderTextControl;assembly=PlaceHolderTextControl"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -28,7 +30,9 @@
             <RowDefinition Height="auto"/> <!--Add Appointments button-->
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
-            <TextBox Name="SearchTextBox"></TextBox>
+            <placeholdertextcontrol:PlaceHolderTextBox
+                Name="SearchTextBox"
+                Placeholder="Search..."/>
             <ComboBox ItemsSource="{Binding HomePageProperties}"
                       Name="SearchComboBox"
                       SelectedItem="{Binding FirstProperty, Mode=OneTime}"/>

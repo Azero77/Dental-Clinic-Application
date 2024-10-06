@@ -20,7 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Configurations\Configurations.csproj" />
+    <ProjectReference Include="..\PlaceHolderTextControl\PlaceHolderTextControl.csproj" />
     <ProjectReference Include="..\ResourceDictionariesContainer\ResourceDictionariesContainer.csproj" />
   </ItemGroup>
-
+  
 </Project>

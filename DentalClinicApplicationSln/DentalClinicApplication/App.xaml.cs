@@ -25,10 +25,13 @@ using DentalClinicApplication.DTOs;
 using DentalClinicApplication.AutoMapperProfiles;
 using DentalClinicApplication.ComponentsViewModels;
 using Configurations;
-using DentalClinicApplication.ViewModels.Configuration;
 using System.Collections.ObjectModel;
 using DentalClinicApplication.Views;
 using DentalClinicApplication.Commands;
+using Microsoft.Extensions.Configuration;
+using System.Windows.Media;
+using System.Globalization;
+using System.Threading;
 
 namespace DentalClinicApplication
 {
@@ -40,11 +43,12 @@ namespace DentalClinicApplication
         IHost _host;
         public App()
         {
+            
             _host = Host.CreateDefaultBuilder()
                 .ConfigureServices((sc) => 
                 {
-                    sc.AddSingleton<appConfigurationModel>();
                     AddMapper(sc);
+                    ConfigureService(sc);
                     sc.AddSingleton<DbContext>();
                     //provider for dataService where we need all appointments
                     sc.AddSingleton<IProvider<Appointment>>(sp => 
@@ -72,7 +76,6 @@ namespace DentalClinicApplication
 
                     sc.AddSingleton<ManipulationNotifierService>();
                     
-                    sc.AddSingleton<ConfigurationViewModel>();
                     sc.AddTransient<HomePageViewModel>(sp => GetHomePageViewModel(sp));
                     sc.AddTransient<VirtualizedCollectionComponentViewModel<Client>>(sp => 
                     GetVirtualizedClientComponentViewModel(sp));
@@ -143,6 +146,7 @@ namespace DentalClinicApplication
                     (obj) => sp.GetRequiredService<HomePageViewModel>());
                     sc.AddSingleton<NavigationBarViewModel>(sp =>
                         new(
+                            sp.GetRequiredService<NavigationStore>(),
                             MakeLayoutNavigationService<HomePageViewModel>(sp),
                             MakeLayoutNavigationService<AllAppointmentsViewModel>(sp),
                             MakeLayoutNavigationService<AllClientsViewModel>(sp)
@@ -153,7 +157,51 @@ namespace DentalClinicApplication
                 })
                 .Build();
         }
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            _host.Start();
+            AddConfigurationResourceDictionary(_host.Services);
+            INavigationService InitialNavigatioService = _host.Services.GetRequiredService<INavigationService>();
+            InitialNavigatioService.Navigate(null);
+            MainWindow window = _host.Services.GetRequiredService<MainWindow>();
+            window.Show();
+        }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _host.Dispose();
+            base.OnExit(e);
+        }
+
+
+        #region dependencyMethods
+        private void ConfigureService(IServiceCollection sc)
+        {
+            ConfigureService configureService = new();
+            //Register IConfiguration for the project
+            sc.AddSingleton(configureService.Configuration);
+
+        }
+
+        private void AddConfigurationResourceDictionary(IServiceProvider sp)
+        {
+            Microsoft.Extensions.Configuration.IConfiguration configuration = sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>();
+            var resources = new ResourceDictionary()
+            {
+                {"ClinicName",configuration.GetValue<string>("ClinicName") },
+                {"DoctorName",configuration.GetValue<string>("DoctorName")},
+                {"NavigationBarColor",GetColor(configuration.GetValue<string>("NavigationBarColor"))},
+                {"BackgroundColor",GetColor(configuration.GetValue<string>("BackgroundColor"))},
+                {"TextColor",GetColor(configuration.GetValue<string>("TextColor"))},
+                {"Language",configuration.GetValue<string>("Language")}
+            };
+            App.Current.Resources.MergedDictionaries.Add(resources);
+        }
+
+        private Color GetColor(string colorHex)
+        {
+            return (Color)ColorConverter.ConvertFromString(colorHex);
+        }
         private AllClientsViewModel GetAllClientsViewModel(IServiceProvider sp)
         {
             return new AllClientsViewModel(
@@ -241,20 +289,7 @@ namespace DentalClinicApplication
                 sp.GetRequiredService<INavigationService<MakeEditAppointmentViewModel>>());
         }
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            _host.Start();
-            INavigationService InitialNavigatioService = _host.Services.GetRequiredService<INavigationService>();
-            InitialNavigatioService.Navigate(null);
-            MainWindow window = _host.Services.GetRequiredService<MainWindow>();
-            window.Show();
-        }
-
-        protected override void OnExit(ExitEventArgs e)
-        {
-            _host.Dispose();
-            base.OnExit(e);
-        }
+        
 
         private INavigationService<TViewModel> MakeLayoutNavigationService<TViewModel>(IServiceProvider sp
             )
@@ -277,5 +312,6 @@ namespace DentalClinicApplication
             });
             sc.AddSingleton(config.CreateMapper());
         }
+        #endregion
     }
 }

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Configurations", "Configura
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceDictionariesContainer", "ResourceDictionariesContainer\ResourceDictionariesContainer.csproj", "{FD731994-C111-4D08-B66B-0CAFAED6E037}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaceHolderTextControl", "PlaceHolderTextControl\PlaceHolderTextControl.csproj", "{95317AD4-8FDF-430B-BC29-4290DD429305}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{FD731994-C111-4D08-B66B-0CAFAED6E037}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD731994-C111-4D08-B66B-0CAFAED6E037}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD731994-C111-4D08-B66B-0CAFAED6E037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95317AD4-8FDF-430B-BC29-4290DD429305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95317AD4-8FDF-430B-BC29-4290DD429305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95317AD4-8FDF-430B-BC29-4290DD429305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95317AD4-8FDF-430B-BC29-4290DD429305}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

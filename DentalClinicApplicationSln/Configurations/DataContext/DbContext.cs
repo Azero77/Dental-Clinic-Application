@@ -14,14 +14,11 @@ namespace Configurations.DataContext
     public class DbContext
     {
         private string CONNECTION_STRING;
-        private IConfigurationRoot Configuration;
+        private IConfiguration Configuration;
 
-        public DbContext()
+        public DbContext(IConfiguration configuration)
         {
-            Configuration = new ConfigurationBuilder()
-                .AddJsonFile("appConfigurations.json")
-                .Build();
-            char.IsDigit('3');
+            Configuration = configuration;
             CONNECTION_STRING = Configuration["ConnectionStrings:ClientsConnectionString"];
         }
 

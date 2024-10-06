@@ -6,9 +6,13 @@ using System.Text;
 
 namespace DentalClinicApp.ViewModels
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    public class ViewModelBase : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void Dispose()
+        {
+        }
 
         public virtual void OnPropertyChanged(string propertyName)
         {
