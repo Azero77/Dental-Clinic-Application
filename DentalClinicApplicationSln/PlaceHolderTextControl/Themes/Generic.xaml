@@ -11,6 +11,7 @@
                             x:Key="PaddingToLeftConverter"/>
                     </ControlTemplate.Resources>
                     <Border
+                        CornerRadius="5"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">

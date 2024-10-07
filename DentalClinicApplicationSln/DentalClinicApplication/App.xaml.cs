@@ -192,8 +192,10 @@ namespace DentalClinicApplication
                 {"DoctorName",configuration.GetValue<string>("DoctorName")},
                 {"NavigationBarColor",GetColor(configuration.GetValue<string>("NavigationBarColor"))},
                 {"BackgroundColor",GetColor(configuration.GetValue<string>("BackgroundColor"))},
+                {"ButtonStatusColor",GetColor(configuration.GetValue<string>("ButtonStatusColor"))},
                 {"TextColor",GetColor(configuration.GetValue<string>("TextColor"))},
-                {"Language",configuration.GetValue<string>("Language")}
+                {"Language",configuration.GetValue<string>("Language")},
+                {"IsAnimated",configuration.GetValue<bool>("IsAnimated") }
             };
             App.Current.Resources.MergedDictionaries.Add(resources);
         }

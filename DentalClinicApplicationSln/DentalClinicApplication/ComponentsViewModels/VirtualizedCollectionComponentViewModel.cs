@@ -83,7 +83,7 @@ namespace DentalClinicApplication.ComponentsViewModels
                 _collection.PageSize = value;
             }
         }
-        public int? PagesCount => _collection?.PagesCount;
+        public int PagesCount => _collection?.PagesCount ?? 0;
         public IEnumerable<string> Properties => typeof(T).GetProperties().Select(p => p.Name).Where(n => !n.Contains("Id"));
         public string? FirstProperty => Properties.FirstOrDefault();
         public List<int> PagesIndexers =>
@@ -93,12 +93,55 @@ namespace DentalClinicApplication.ComponentsViewModels
         private List<int> MakePageIndexers()
         {
             List<int> result = new();
-            for (int i = 0; i < PagesCount; i++)
+            int left = 2;
+            int right = 2;
+
+            // Add the current page
+            result.Add(CurrentPageIndex);
+
+            // Add numbers from behind if available
+            for (int i = 1; i <= left; i++)
             {
-                result.Add(i);
+                if (CurrentPageIndex - i >= 0)
+                {
+                    result.Add(CurrentPageIndex - i);
+                }
+                else if (CurrentPageIndex + right + 1 < PagesCount) // No more behind, add ahead
+                {
+                    result.Add(CurrentPageIndex + right + 1);
+                    right++;
+                }
             }
+
+            // Add numbers ahead if available
+            for (int i = 1; i <= right; i++)
+            {
+                if (CurrentPageIndex + i < PagesCount)
+                {
+                    result.Add(CurrentPageIndex + i);
+                }
+                else if (CurrentPageIndex - left - 1 >= 0) // No more ahead, add behind
+                {
+                    result.Add(CurrentPageIndex - left - 1);
+                    left++;
+                }
+            }
+
+            // Always add the last page if it's not already included
+            if (!result.Contains(PagesCount - 1))
+            {
+                result.Add(PagesCount - 1);
+            }
+            if (!result.Contains(0))
+            {
+                result.Add(0);
+            }
+            // Sort and return unique values
+            result = result.Distinct().OrderBy(x => x).ToList();
+
             return result;
         }
+
 
         //initializing a new virtualization view model since there is no constuctor 
         // can be used to pass the view model when view is made

@@ -81,7 +81,7 @@ namespace DentalClinicApplication.VirtualizationCollections
             _pagesTimeout = new();
             await Load();
         }
-        private int _pageSize = 20;
+        private int _pageSize = 10;
         public int PageSize
         {
             get

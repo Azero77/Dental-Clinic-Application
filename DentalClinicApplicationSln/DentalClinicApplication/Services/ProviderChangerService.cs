@@ -24,7 +24,7 @@ namespace DentalClinicApplication.Services
     public class ProviderChangerService<T>
     {
         public CollectionViewModelBase<T> CollectionViewModelBase { get; }
-        public IProvider<T> CurrentProvider { get; }
+        public IProvider<T> CurrentProvider { get; set; }
         public ChangeMode ChangeMode { get; }
         public IEnumerable<T> Collection => CollectionViewModelBase.Collection;
 
@@ -51,6 +51,8 @@ namespace DentalClinicApplication.Services
                 await virtualizationCollection.ChangeProvider((IVirtualizationItemsProvider<T>)newProvider);
                 return;
             }
+            CurrentProvider = newProvider;
+            CollectionViewModelBase.CollectionProvider = newProvider;
             CollectionViewModelBase.Collection = await newProvider.GetItems();
         }
 

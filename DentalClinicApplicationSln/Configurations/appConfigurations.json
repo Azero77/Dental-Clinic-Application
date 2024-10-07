@@ -4,8 +4,10 @@
   "ConnectionStrings": {
     "ClientsConnectionString": "Data Source=E:\\WPF\\DentalClinic\\DentalClinicApplicationSln\\Configurations\\Database\\DentalClinic.db;Version=3"
   },
+  "IsAnimated" :  "true",
   "NavigationBarColor": "#48CFCB",
   "BackgroundColor": "#FFFFFF",
+  "ButtonStatusColor": "#009951",
   "TextColor": "#000000",
   "Language": "en-US"
 }

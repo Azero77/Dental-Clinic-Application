@@ -4,30 +4,130 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DentalClinicApplication.Components" xmlns:converters="clr-namespace:DentalClinicApplication.Converters" xmlns:loadingspinnercontrol="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:placeholdertextcontrol="clr-namespace:PlaceHolderTextControl;assembly=PlaceHolderTextControl"
              Name="root"
              mc:Ignorable="d"
-             Loaded="UserControl_Loaded"
-             d:DesignHeight="450" d:DesignWidth="800">
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <converters:MutliBindingConverter x:Key="MutliBindingConverter"/>
         <converters:InverseBooleanToVisibiltyConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        <converters:DivisionConverter x:Key="DivisionConverter"/>
     </UserControl.Resources>
-    <StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Label>Page Size:</Label>
-            <TextBox Width="20" Text="{Binding PageSize}"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <Label>Search:</Label>
-            <TextBox x:Name="SearchTextBox" Width="200"/>
+    <!--
+    <Label>Page Size:</Label>
+    <TextBox Width="20" Text="{Binding PageSize}"/>
+    <Grid>
+    <loadingspinnercontrol:LoadingSpinner
+    IsLoading="{Binding IsLoading}"
+    />
+    <DataGrid
+    AutoGenerateColumns="False"
+    x:Name="CollectionDataGrid"
+    Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+    Height="200"
+    ItemsSource="{Binding Path = Collection}">
+    </DataGrid>
+    </Grid>
+    <ListBox ItemsSource="{Binding PagesIndexers}" Height="40">
+    <ListBox.ItemsPanel>
+    <ItemsPanelTemplate>
+    <StackPanel Orientation="Horizontal"/>
+    </ItemsPanelTemplate>
+    </ListBox.ItemsPanel>
+    <ListBox.ItemTemplate>
+    <DataTemplate>
+    <Button Content="{Binding}"
+    Command="{Binding DataContext.Move, ElementName=root}"
+    CommandParameter="{Binding}"/>
+    </DataTemplate>
+    </ListBox.ItemTemplate>
+    </ListBox>
+    <Button Command="{Binding MovePrevious}"
+    CommandParameter="{Binding CurrentPageIndex}"
+    >
+    Previous
+    </Button>
+    <Button Command="{Binding MoveNext}"
+    CommandParameter="{Binding CurrentPageIndex}"
+    >
+    Next
+    </Button>
+    <TextBlock Text="{Binding CurrentPageIndex, StringFormat='Page Number : {0}'}"/>
+    <TextBlock Text="{Binding PagesCount, StringFormat='Number of Pages {0}'}"/>
+    <TextBlock Text="{Binding PageSize, StringFormat='Page Size {0}'}"/>
+    -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/> <!--search sections-->
+            <RowDefinition Height="3*"/> <!--DataGrid-->
+            <RowDefinition Height="*"/> <!--Pagination-->
+        </Grid.RowDefinitions>
 
+        <!--SearchSection-->
+        <Grid
+            Margin="0,0,0,15"
+            Width="{Binding ElementName=CollectionDataGrid,Path=ActualWidth,Converter={StaticResource DivisionConverter}, ConverterParameter= 2}"
+            Name="SearchSection"
+            HorizontalAlignment="Left"
+            Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition  Height="*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <!-- Search TextBox -->
+                <ColumnDefinition Width="0.05*"/>
+                <!-- Gap between Search TextBox and Category ComboBox -->
+                <ColumnDefinition Width="1*"/>
+                <!-- Category ComboBox -->
+                <ColumnDefinition Width="0.05*"/>
+                <!-- Gap between Category ComboBox and Order ComboBox -->
+                <ColumnDefinition Width="1*"/>
+                <!-- Order ComboBox -->
+                <ColumnDefinition Width="0.05*"/>
+                <!-- Gap between Order ComboBox and Search Button -->
+                <ColumnDefinition Width="0.5*"/>
+                <!-- Search Button -->
+            </Grid.ColumnDefinitions>
+
+            <placeholdertextcontrol:PlaceHolderTextBox
+                Background="LightGray"
+                Placeholder="Search..."
+                Grid.Row="1"
+                x:Name="SearchTextBox"/>
+            <Label Grid.Row="0"
+                   Grid.Column="2">
+                Category
+            </Label>
+            <Label Grid.Row="0"
+                   Grid.Column="4">
+                Order
+            </Label>
             <ComboBox x:Name="CategoryComboBox"
+                      Grid.Row="1"
+                      Grid.Column="2"
                       ItemsSource="{Binding Properties}"
                       SelectedItem="{Binding FirstProperty, Mode=OneTime}"
                       ></ComboBox>
-            <Button Content="Search"
-                    Command="{Binding SearchCommand}">
+            <ComboBox ItemsSource="{Binding Properties}"
+                      x:Name="orderByComboBox"
+                      Grid.Row="1"
+                      Grid.Column="4"
+                      >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding OrderCommand}"
+                                               CommandParameter="{Binding ElementName=orderByComboBox,Path=SelectedItem}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+            <Button
+                Style="{StaticResource StatusButton}"
+                Content="Search"
+                Grid.Column="6"
+                Grid.Row="1"
+                Command="{Binding SearchCommand}">
                 <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MutliBindingConverter}">
                         <Binding ElementName="SearchTextBox" Path="Text"/>
@@ -35,60 +135,75 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
-
-            <StackPanel Orientation="Horizontal">
-                <TextBlock>Order By:</TextBlock>
-                <ComboBox ItemsSource="{Binding Properties}"
-                          x:Name="orderByComboBox"
-                          >
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding OrderCommand}"
-                                                   CommandParameter="{Binding ElementName=orderByComboBox,Path=SelectedItem}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </ComboBox>
-            </StackPanel>
-        </StackPanel>
-        <Grid>
-            <loadingspinnercontrol:LoadingSpinner
-                IsLoading="{Binding IsLoading}"
-                />
-            <DataGrid
-                AutoGenerateColumns="False"
-                x:Name="CollectionDataGrid"
-                Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
-                Height="200"
-                ItemsSource="{Binding Path = Collection}">
-
-            </DataGrid>
         </Grid>
-        <ListBox ItemsSource="{Binding PagesIndexers}" Height="40">
-            <!--<ListBox.ItemsPanel>
-            <ItemsPanelTemplate>
-            <StackPanel Orientation="Horizontal"/>
-            </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>-->
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Button Content="{Binding}"
+
+        <DataGrid
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            x:Name="CollectionDataGrid"
+            Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+            ItemsSource="{Binding Path = Collection}">
+        </DataGrid>
+        <loadingspinnercontrol:LoadingSpinner
+            Grid.Row="1"
+            Thickness="6"
+            Color="{DynamicResource Primary}"
+            Diameter="{Binding ElementName=CollectionDataGrid,Mode=OneWay,Path=ActualWidth,Converter={StaticResource DivisionConverter},ConverterParameter=3}"
+            IsLoading="{Binding IsLoading}"
+            />
+
+        <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Top"
+                    Grid.Row="2">
+            <StackPanel.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Width" Value="50"/>
+                    <Setter Property="Height" Value="50"/>
+                    <Setter Property="Background" Value="White" />
+                </Style>
+                <converters:AddConverter
+                    x:Key="AddConverter"/>
+                <converters:PageIndexToButtonStyleConverter
+                    x:Key="PageIndexToButtonStyleConverter"/>
+            </StackPanel.Resources>
+            <Button Command="{Binding MovePrevious}"
+                    CommandParameter="{Binding CurrentPageIndex}"
+                    Content="&lt;"
+                    >
+
+            </Button>
+            <ItemsControl ItemsSource="{Binding PagesIndexers}"
+                          >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button
                             Command="{Binding DataContext.Move, ElementName=root}"
-                            CommandParameter="{Binding}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button Command="{Binding MovePrevious}"
-                CommandParameter="{Binding CurrentPageIndex}"
-                >
-            Previous
-        </Button>
-        <Button Command="{Binding MoveNext}"
-                CommandParameter="{Binding CurrentPageIndex}"
-                >
-            Next
-        </Button>
-        <TextBlock Text="{Binding CurrentPageIndex, StringFormat='Page Number : {0}'}"/>
-        <TextBlock Text="{Binding PagesCount, StringFormat='Number of Pages {0}'}"/>
-        <TextBlock Text="{Binding PageSize, StringFormat='Page Size {0}'}"/>
-    </StackPanel>
+                            CommandParameter="{Binding}"
+                            Content="{Binding Path=.,Converter={StaticResource AddConverter},ConverterParameter=1}"
+                            Width="50"
+                            >
+                            <Button.Style>
+                                <MultiBinding Converter="{StaticResource PageIndexToButtonStyleConverter}">
+                                    <Binding Path="DataContext.CurrentPageIndex" ElementName="root"/>
+                                    <Binding Path="."/>
+                                </MultiBinding>
+                            </Button.Style>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Button Command="{Binding MoveNext}"
+                    CommandParameter="{Binding CurrentPageIndex}"
+                    Content="&gt;"
+                    >
+            </Button>
+        </StackPanel>
+
+    </Grid>
 </UserControl>

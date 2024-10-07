@@ -5,108 +5,84 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DentalClinicApplication.Views"
              xmlns:vms="clr-namespace:DentalClinicApplication.ViewModels"
-             xmlns:fa="http://schemas.fontawesome.io/icons/" xmlns:converters="clr-namespace:DentalClinicApplication.Converters"
+             xmlns:fa="http://schemas.fontawesome.io/icons/" xmlns:converters="clr-namespace:DentalClinicApplication.Converters" xmlns:iconradiobutton="clr-namespace:IconRadioButton;assembly=IconRadioButton"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <!--<StackPanel Orientation="Horizontal">
-    <Button Command="{Binding ClientsListingNavigation}">
-    Clients Listing
-    </Button>
-    <Button Command="{Binding ClientsManipulationNavigation}">
-    New Client
-    </Button>
-    </StackPanel>-->
-    <UserControl.Resources>
-        <converters:CurrentViewModelNavigationBarIsCheckedConverter
-            x:Key="CurrentViewModelNavigationBarIsCheckedConverter"/>
-    </UserControl.Resources>
+             Loaded="UserControl_Loaded"
+             >
     <Grid Background="{StaticResource Primary}"
           >
+        <Grid.Resources>
+            <converters:CurrentViewModelNavigationBarIsCheckedConverter
+                x:Key="CurrentViewModelNavigationBarIsCheckedConverter"/>
+            <Style TargetType="iconradiobutton:IconRadioButton">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Padding" Value="10,5" />
+                <Setter Property="Margin" Value="0,5" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="18" />
+
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#B9E3E2"/>
+                    </Trigger>
+                    <!-- Checked state -->
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Background" Value="#B9E3E2"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/> <!--Clinic Name-->
+            <RowDefinition Height="4*" Name="NavigationBarRow"/> <!--NavigaitonBar iTems-->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <!--HomePage-->
-        <Grid
-            Grid.Row="1"
-            >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <fa:FontAwesome Icon="Home" Grid.Column="0"/>
-            <RadioButton Command="{Binding HomePageNavigationCommand}"
-                         Grid.Column="1"
-                         Content="HomePage"
-                         IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:HomePageViewModel}}"
-                         GroupName="NavigaitonButtons"/>
-        </Grid>
-        <!--Patients-->
-        <Grid
-            Grid.Row="2"
-            >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <fa:FontAwesome Icon="User" Grid.Column="0"/>
-            <RadioButton Command="{Binding AllClientsNavigaitonCommand}"
-                         Grid.Column="1"
-                         Content="Patients"
-                         IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:AllClientsViewModel}}"
+        <StackPanel Grid.Row="1"
+                    Name="NavigationBar"
+                    VerticalAlignment="Center">
+            <!--HomePage-->
+            <iconradiobutton:IconRadioButton
+                Command="{Binding HomePageNavigationCommand}"
+                Content="HomePage"
+                IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:HomePageViewModel}}"
+                GroupName="NavigaitonButtons"
+                Icon="Home"
+                >
+            </iconradiobutton:IconRadioButton>
+            <!--Patients-->
 
-                         GroupName = "NavigaitonButtons"/>
-        </Grid>
-        <!--Appointments-->
-        <Grid
-            Grid.Row="3"
-            >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <fa:FontAwesome Icon="Calendar" Grid.Column="0"/>
-            <RadioButton Command="{Binding AllAppointmentsNavigationCommand}"
-                         Grid.Column="1"
-                         Content="Appointments"
-                         IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:AllAppointmentsViewModel}}"
-
-                         GroupName = "NavigaitonButtons"/>
-        </Grid>
-        <!--Analytics-->
-        <Grid
-            Grid.Row="4"
-            >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <fa:FontAwesome Icon="PieChart" Grid.Column="0"/>
-            <RadioButton Command=""
-                         Grid.Column="1"
-                         Content="Analytics"
-
-                         GroupName = "NavigaitonButtons"/>
-        </Grid>
-        <!--Settings-->
-        <Grid
-            Grid.Row="5"
-            >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <fa:FontAwesome Icon="Cog" Grid.Column="0"/>
-            <RadioButton Command=""
-                         Grid.Column="1"
-                         Content="Settings"
-                         GroupName ="NavigaitonButtons"/>
-        </Grid>
+            <iconradiobutton:IconRadioButton
+                Command="{Binding AllClientsNavigaitonCommand}"
+                Content="Patients"
+                IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:AllClientsViewModel}}"
+                GroupName = "NavigaitonButtons"
+                Icon="User"
+                >
+            </iconradiobutton:IconRadioButton>
+            <!--Appointments-->
+            <iconradiobutton:IconRadioButton
+                Command="{Binding AllAppointmentsNavigationCommand}"
+                Content="Appointments"
+                IsChecked="{Binding CurrentViewModel,Mode=OneWay,Converter={StaticResource CurrentViewModelNavigationBarIsCheckedConverter},ConverterParameter={x:Type vms:AllAppointmentsViewModel}}"
+                GroupName = "NavigaitonButtons"
+                Icon="Calendar">
+            </iconradiobutton:IconRadioButton>
+            <!--Analytics-->
+            <iconradiobutton:IconRadioButton
+                Command=""
+                Content="Analytics"
+                GroupName = "NavigaitonButtons"
+                Icon="PieChart">
+            </iconradiobutton:IconRadioButton>
+            <!--Settings-->
+            <iconradiobutton:IconRadioButton
+                Command=""
+                Content="Settings"
+                GroupName ="NavigaitonButtons"
+                Icon="Cog">
+            </iconradiobutton:IconRadioButton>
+        </StackPanel>
     </Grid>
 
 </UserControl>

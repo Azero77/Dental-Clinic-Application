@@ -9,7 +9,9 @@
              xmlns:converters="clr-namespace:DentalClinicApplication.Converters" xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:placeholdertextcontrol="clr-namespace:PlaceHolderTextControl;assembly=PlaceHolderTextControl"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             FontSize="18"
+             >
     <Grid>
         <Grid.Resources>
             <converters:InverseBooleanToVisibiltyConverter
@@ -20,7 +22,7 @@
                 x:Key="MutliBindingConverter"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="4*" Name="ValuesWidth"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -29,15 +31,36 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/> <!--Add Appointments button-->
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
+        <Grid
+            Margin="0,20"
+            Name="SearchStackPanel"
+            HorizontalAlignment="Left"
+            >
+            <Grid.Resources>
+                <Thickness x:Key="Margin">
+                    0,0,5,0
+                </Thickness>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
             <placeholdertextcontrol:PlaceHolderTextBox
                 Name="SearchTextBox"
-                Placeholder="Search..."/>
+
+                Placeholder="Search..."
+                Grid.Column="0"
+                Margin="{StaticResource Margin}"/>
             <ComboBox ItemsSource="{Binding HomePageProperties}"
                       Name="SearchComboBox"
-                      SelectedItem="{Binding FirstProperty, Mode=OneTime}"/>
+                      SelectedItem="{Binding FirstProperty, Mode=OneTime}"
+                      Grid.Column="1"
+                      Margin="{StaticResource Margin}"/>
             <Button
+                Grid.Column="2"
                 Command="{Binding SearchCommand}"
+                Style="{StaticResource StatusButton}"
                 Content="Search">
                 <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MutliBindingConverter}">
@@ -46,15 +69,20 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
-        </StackPanel>
+        </Grid>
         <DataGrid
+            SizeChanged="DataGrid_SizeChanged"
+            MaxHeight="600"
             Grid.Row="1"
             Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibiltyConverter}}"
             ItemsSource="{Binding Appointments}"
             AutoGenerateColumns="False"
+            LoadingRow="DataGrid_LoadingRow"
             >
+
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Patient">
+                <DataGridTextColumn Header="Patient"
+                                    Width="*">
                     <DataGridTextColumn.Binding>
                         <MultiBinding StringFormat="{}{0} {1}">
                             <Binding Path="Client.FirstName"/>
@@ -62,7 +90,7 @@
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Appointment">
+                <DataGridTextColumn Header="Appointment" Width="*">
                     <DataGridTextColumn.Binding>
                         <MultiBinding Converter="{StaticResource DateToDurationConverter}">
                             <Binding Path="StartDate"/>
@@ -70,35 +98,43 @@
                         </MultiBinding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Description" Binding ="{Binding Description}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Description" Binding ="{Binding Description}" Width="2*">
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
         <loadingspinnercontrol:LoadingSpinner
             Grid.RowSpan="3"
             Grid.ColumnSpan="2"
             IsLoading="{Binding IsLoading}"/>
-        <Calendar Grid.Column="1" Grid.Row="0"
-                  Name="CalendarSelection"
-                  >
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectedDatesChanged">
-                    <i:InvokeCommandAction Command="{Binding SearchCommand}"
-                                           >
-                        <i:InvokeCommandAction.CommandParameter>
-                            <MultiBinding Converter="{StaticResource MutliBindingConverter}">
-                                <Binding Path="SelectedDates[0]" ElementName="CalendarSelection"/>
-                                <Binding>
-                                    <Binding.Source>
-                                        <system:String>StartDate</system:String>
-                                    </Binding.Source>
-                                </Binding>
-                            </MultiBinding>
-                        </i:InvokeCommandAction.CommandParameter>
-                    </i:InvokeCommandAction>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </Calendar>
+        <Border
+            Grid.Column="1"
+            Grid.Row="1"
+            >
+            <Calendar
+                Name="CalendarSelection"
+                Loaded="CalendarSelection_Loaded"
+                >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedDatesChanged">
+                        <i:InvokeCommandAction Command="{Binding SearchCommand}"
+                                               >
+                            <i:InvokeCommandAction.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MutliBindingConverter}">
+                                    <Binding Path="SelectedDates[0]" ElementName="CalendarSelection"/>
+                                    <Binding>
+                                        <Binding.Source>
+                                            <system:String>StartDate</system:String>
+                                        </Binding.Source>
+                                    </Binding>
+                                </MultiBinding>
+                            </i:InvokeCommandAction.CommandParameter>
+                        </i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Calendar>
+        </Border>
         <Button
+            Style="{StaticResource StatusButton}"
             Content="Add Appointment"
             Command="{Binding AddAppointmentNavigationCommand}"
             Grid.Row="3"

@@ -28,6 +28,7 @@
                         Grid.Column="0"/>
         <TextBox Text="{x:Static resx:Resources.Greeting}"/>
         <ContentControl Content="{Binding ContentViewModel}"
+                        Margin="50"
                         Grid.Row="1"
                         Grid.Column="1"/>
     </Grid>

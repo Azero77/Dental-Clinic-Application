@@ -32,7 +32,8 @@ namespace DentalClinicApplication.ViewModels
         public string? FirstProperty => HomePageProperties.FirstOrDefault();
 
         public ICommand AddAppointmentNavigationCommand { get; }
-        public HomePageViewModel(IProvider<Appointment> collectionProvider,
+        public HomePageViewModel(
+            IProvider<Appointment> collectionProvider,
             INavigationService<MakeEditAppointmentViewModel> makeEditAppointmentNavigationService) : base(collectionProvider)
         {
             SearchCommand = new SearchCommand<Appointment>(

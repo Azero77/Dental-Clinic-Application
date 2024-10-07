@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Configurations\Configurations.csproj" />
+    <ProjectReference Include="..\IconRadioButton\IconRadioButton.csproj" />
     <ProjectReference Include="..\PlaceHolderTextControl\PlaceHolderTextControl.csproj" />
     <ProjectReference Include="..\ResourceDictionariesContainer\ResourceDictionariesContainer.csproj" />
   </ItemGroup>
