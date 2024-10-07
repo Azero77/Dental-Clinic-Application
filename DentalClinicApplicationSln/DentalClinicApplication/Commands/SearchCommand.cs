@@ -16,7 +16,8 @@ namespace DentalClinicApplication.Commands
         private readonly CollectionViewModelBase<T> _viewModel;
 
         public ProviderChangerService<T> ProviderChangerService { get; }
-        public SearchCommand(ProviderChangerService<T> providerChangerService,
+        public SearchCommand(
+            ProviderChangerService<T> providerChangerService,
             CollectionViewModelBase<T> viewModel)
         {
             ProviderChangerService = providerChangerService;
@@ -25,6 +26,10 @@ namespace DentalClinicApplication.Commands
 
         public override async Task ExecuteAsync(object? parameter)
         {
+            if (parameter is null)
+            {
+                return;
+            }
             //parameter is a wrapper for the propertyName and the value for seacrh
             object? value = null;
             string propertyName;

@@ -18,8 +18,8 @@ namespace DentalClinicApplication.Services.DataProvider
         public AppointmentsVirtualizedProvider(DbContext dbContext,
                                                IMapper mapper,
                                                MessageService messageService,
-                                               string? whereClause = "",
-                                               string? orderByClause = "") : base(dbContext,
+                                               string? whereClause = null,
+                                               string? orderByClause = null) : base(dbContext,
                                                                                   mapper,
                                                                                   messageService,
                                                                                   whereClause,
@@ -62,17 +62,6 @@ namespace DentalClinicApplication.Services.DataProvider
                 
             });
             return result;
-        }
-
-        public override IProvider<Appointment> ChangeProvider(string? whereClause, string? orderByClause)
-        {
-            return new AppointmentsVirtualizedProvider(
-               this.DataContext,
-               this._mapper,
-               this.MessageService,
-               whereClause ?? this.whereClause,
-               orderByClause ?? this.orderByClause
-               );
         }
     }
 }

@@ -21,21 +21,21 @@ namespace DentalClinicApplication.Services.DataProvider
         public MessageService MessageService { get; }
 
         public readonly IMapper _mapper;
-        protected string? whereClause = string.Empty;
-        protected string? orderByClause = string.Empty;
+        protected string? whereClause = null;
+        protected string? orderByClause = null;
         Lazy<Task<int>> _initializeCount;
         public VirtualizedProvider(DbContext dbContext,
                                     IMapper mapper,
                                     MessageService messageService,
-                                    string? whereClause = "",
-                                    string? orderByClause = "")
+                                    string? whereClause = null,
+                                    string? orderByClause = null)
         {
             _initializeCount = new Lazy<Task<int>>(InitializeCount);
             DataContext = dbContext;
             _mapper = mapper;
             MessageService = messageService;
-            this.whereClause = whereClause;
-            this.orderByClause = orderByClause;
+            this.whereClause = whereClause ?? this.whereClause;
+            this.orderByClause = orderByClause ?? this.orderByClause;
             //if the sql was not provided then the provider will the table of T and get all items virtualized
         }
 
@@ -113,9 +113,15 @@ namespace DentalClinicApplication.Services.DataProvider
         }
 
         //change provider for both order by or where clause depending on what is null
-        public abstract IProvider<T> ChangeProvider
+        public virtual IProvider<T> ChangeProvider
             (string? whereClause,
-            string? orderByClause);
+            string? orderByClause)
+        {
+            this.whereClause = whereClause ?? this.whereClause;
+            this.orderByClause = orderByClause ?? this.orderByClause;
+            _initializeCount = new(InitializeCount);
+            return this;
+        }
         
 
     }

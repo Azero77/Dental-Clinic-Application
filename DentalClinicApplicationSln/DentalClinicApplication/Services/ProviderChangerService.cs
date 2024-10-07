@@ -98,7 +98,7 @@ namespace DentalClinicApplication.Services
         private IProvider<T> GenerateProvider(string clause)
         {
             return ChangeMode == ChangeMode.Search ?
-             CurrentProvider.ChangeProvider(clause, null) : 
+             CurrentProvider.ChangeProvider(clause,null) : 
              CurrentProvider.ChangeProvider(null, clause);
         }
 

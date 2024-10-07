@@ -243,7 +243,6 @@ namespace DentalClinicApplication.VirtualizationCollections
         #region LazyLoading
         public async Task Load()
         {
-            await Task.Delay(3000);
             await LoadCount();
             await RenderPage(CurrentPageIndex);
             OnPropertyChanged(string.Empty);

@@ -203,7 +203,6 @@
                         >
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
-
                                           Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}">
                             <ContentPresenter.RenderTransform>
@@ -241,7 +240,7 @@
                                             Storyboard.TargetName="BorderContainer"
                                             Duration="0:0:0.3"
                                             Storyboard.TargetProperty="Padding"
-                                            By="5"/>
+                                            By="10"/>
                                         <ThicknessAnimation
                                             Storyboard.TargetName="BorderContainer"
                                             Duration="0:0:0.3"
