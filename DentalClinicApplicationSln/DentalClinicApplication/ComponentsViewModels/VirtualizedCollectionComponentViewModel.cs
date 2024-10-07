@@ -42,9 +42,9 @@ namespace DentalClinicApplication.ComponentsViewModels
             _collection.PropertyChanged += OnPropertyChanged;
             /*if (CollectionStore is not null)
                 CollectionStore.CollectionChanged += OnCollectionReset;*/
-            Move = new VirtualizationCollectionMoveCommand<T>(collection);
-            MoveNext = new VirtualizationCollectionMoveCommand<T>(collection, moveValue: MoveValue.Next);
-            MovePrevious = new VirtualizationCollectionMoveCommand<T>(collection, moveValue: MoveValue.Previous);
+            Move = new VirtualizationCollectionMoveCommand<T>(this,collection);
+            MoveNext = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Next);
+            MovePrevious = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Previous);
             SearchCommand = new SearchCommand<T>(
                 new ProviderChangerService<T>(this, _collection!.ItemsProvider, ChangeMode.Search), this);
             OrderCommand = new SearchCommand<T>(

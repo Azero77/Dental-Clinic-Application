@@ -41,10 +41,7 @@
                         <DataTemplate>
                             <Button Command="{Binding Path=DataContext.EditAppointmentNavigationCommand,RelativeSource={RelativeSource AncestorType={x:Type local:AllAppointmentsView}}}"
                                     CommandParameter="{Binding}"
-                                    Style="{StaticResource ButtonStyle}"
-                                    Foreground="{StaticResource Primary}"
-                                    Background="White"
-                                    BorderThickness="0"
+                                    Style="{StaticResource EditButtonStyle}"
                                     >
                                 <Button.Content>
                                     <fa:FontAwesome
