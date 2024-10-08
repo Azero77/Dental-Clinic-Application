@@ -1,0 +1,48 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:HeaderedTextBox"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+                    xmlns:behaviors="clr-namespace:HeaderedTextBox.Behaviors">
+    <Style TargetType="local:HeaderedTextBox">
+        <Setter Property="Margin" Value="4"/>
+        <Setter Property="Validation.ErrorTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <AdornedElementPlaceholder/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:HeaderedTextBox">
+                    <i:Interaction.Behaviors>
+                        <behaviors:ValidationErrorBehavior Command="{Binding ValidationErrorCommand}"/>
+                    </i:Interaction.Behaviors>
+                    <StackPanel>
+                        <Border
+                            BorderBrush="Black"
+                            BorderThickness="1"
+                            >
+                            <StackPanel>
+                                <TextBlock Text="{TemplateBinding Header}"/>
+                                <ScrollViewer x:Name="PART_ContentHost"/>
+                            </StackPanel>
+
+                        </Border>
+                        <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock
+                                        Foreground="Red"
+                                        Text="{Binding ErrorContent}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+</ResourceDictionary>

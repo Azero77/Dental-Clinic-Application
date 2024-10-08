@@ -33,7 +33,7 @@ namespace DentalClinicApplication.Stores
         /// <summary>
         /// Changing provider for searching and sorting or grouping
         /// </summary>
-        void ChangeProvider(IProvider<T> newProvider);
+        void ChangeProvider();
 
         Task Load();
     }

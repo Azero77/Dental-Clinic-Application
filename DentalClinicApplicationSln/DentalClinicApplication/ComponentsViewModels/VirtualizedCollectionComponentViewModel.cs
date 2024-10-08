@@ -29,11 +29,13 @@ namespace DentalClinicApplication.ComponentsViewModels
         public override Task OnProviderChanged()
         {
             _collection.Reload();
+            CollectionStore?.ChangeProvider();
             return LoadViewModel();
         }
 
         public VirtualizedCollectionComponentViewModel(
             VirtualizationCollection<T> collection,
+            MessageService messageService,
             ICollectionStore<T>? collectionStore = null)
             : base(collection.ItemsProvider)
         {
@@ -48,8 +50,7 @@ namespace DentalClinicApplication.ComponentsViewModels
             MoveNext = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Next);
             MovePrevious = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Previous);
             ProviderChangerService<T> providerChangerService = new(this.CollectionProvider,OnProviderChanged);
-            SearchCommand = new SearchCommand<T>(providerChangerService);
-            OrderCommand = new SearchCommand<T>(providerChangerService);
+            SearchCommand = new SearchCommand<T>(providerChangerService,messageService);
         }
 
 
@@ -74,6 +75,7 @@ namespace DentalClinicApplication.ComponentsViewModels
         public ICommand? MovePrevious { get; set; }
         public ICommand? SearchCommand { get; set; }
         public ICommand? OrderCommand { get; set; }
+        public ICommand? ResetCommand { get; set; }
 
         public int CurrentPageIndex => _collection.CurrentPageIndex;
         public int PageSize
@@ -155,10 +157,11 @@ namespace DentalClinicApplication.ComponentsViewModels
 
         public static VirtualizedCollectionComponentViewModel<T> LoadVirtualizedCollectionComponentViewModel(
             VirtualizationCollection<T> collection,
+            MessageService messageService,
             ICollectionStore<T>? collectionStore = null
             )
         {
-            VirtualizedCollectionComponentViewModel<T> vm = new(collection,collectionStore);
+            VirtualizedCollectionComponentViewModel<T> vm = new(collection,messageService,collectionStore);
             return (VirtualizedCollectionComponentViewModel<T>) LoadCollectionViewModel(vm);
         }
 
@@ -174,10 +177,8 @@ namespace DentalClinicApplication.ComponentsViewModels
     }
     public class VirtualizedClientsComponentViewModel : VirtualizedCollectionComponentViewModel<Client>
     {
-        public VirtualizedClientsComponentViewModel(VirtualizationCollection<Client> virtualizedCollectionComponentViewModel)
-            : base(virtualizedCollectionComponentViewModel)
+        public VirtualizedClientsComponentViewModel(VirtualizationCollection<Client> collection, MessageService messageService, ICollectionStore<Client>? collectionStore = null) : base(collection, messageService, collectionStore)
         {
-
         }
     }
 }

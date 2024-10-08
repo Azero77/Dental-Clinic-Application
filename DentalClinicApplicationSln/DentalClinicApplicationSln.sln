@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceDictionariesContain
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlaceHolderTextControl", "PlaceHolderTextControl\PlaceHolderTextControl.csproj", "{95317AD4-8FDF-430B-BC29-4290DD429305}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconRadioButton", "IconRadioButton\IconRadioButton.csproj", "{FDA8C60C-E652-4039-9B4F-602F77F9297E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IconRadioButton", "IconRadioButton\IconRadioButton.csproj", "{FDA8C60C-E652-4039-9B4F-602F77F9297E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeaderedTextBox", "HeaderedTextBox\HeaderedTextBox.csproj", "{3A7995B5-77E5-4D26-B343-C71A80479142}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{FDA8C60C-E652-4039-9B4F-602F77F9297E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA8C60C-E652-4039-9B4F-602F77F9297E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDA8C60C-E652-4039-9B4F-602F77F9297E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A7995B5-77E5-4D26-B343-C71A80479142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A7995B5-77E5-4D26-B343-C71A80479142}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A7995B5-77E5-4D26-B343-C71A80479142}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A7995B5-77E5-4D26-B343-C71A80479142}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

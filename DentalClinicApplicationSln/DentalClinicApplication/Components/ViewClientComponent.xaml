@@ -7,23 +7,58 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <Style TargetType="Label">
-            <Setter Property="FontWeight" Value="ExtraBold" />
+        <Style x:Key="Header" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style x:Key="Text" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
         </Style>
     </UserControl.Resources>
-    <Border BorderThickness="4"
-            BorderBrush="Black"
-            Height="auto">
-        <StackPanel>
-            <Label>FirstName:</Label>
-            <TextBlock Text="{Binding FirstName}"></TextBlock>
-            <Label>LastName:</Label>
-            <TextBlock Text="{Binding LastName}"></TextBlock>
-            <Label>Age:</Label>
-            <TextBlock Text="{Binding Age}"/>
-            <Label>Email:</Label>
-            <TextBlock Text="{Binding Email}"/>
-        </StackPanel>
+    <Border
+        VerticalAlignment="Top"
+        Padding="10"
+        BorderThickness="1"
+        CornerRadius="5"
+        BorderBrush="LightGray"
+        >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <!-- Adjust width as needed -->
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Style="{StaticResource Header}" Grid.Row="0" Grid.Column="0">Name:</TextBlock>
+            <TextBlock Style="{StaticResource Text}" Grid.Row="0" Grid.Column="1">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} {1}">
+                        <Binding Path="FirstName"/>
+                        <Binding Path="LastName"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <TextBlock Style="{StaticResource Header}" Grid.Row="1" Grid.Column="0">Email:</TextBlock>
+            <TextBlock Style="{StaticResource Text}" Grid.Row="1" Grid.Column="1" Text="{Binding Email}"/>
+
+            <TextBlock Style="{StaticResource Header}" Grid.Row="2" Grid.Column="0">Gender:</TextBlock>
+            <TextBlock Style="{StaticResource Text}" Grid.Row="2" Grid.Column="1" Text="{Binding Gender}"/>
+
+            <TextBlock Style="{StaticResource Header}" Grid.Row="3" Grid.Column="0">Age:</TextBlock>
+            <TextBlock Style="{StaticResource Text}" Grid.Row="3" Grid.Column="1" Text="{Binding Age}"/>
+        </Grid>
+
 
     </Border>
 </UserControl>

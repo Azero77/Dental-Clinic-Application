@@ -34,10 +34,12 @@ namespace DentalClinicApplication.ViewModels
         public ICommand AddAppointmentNavigationCommand { get; }
         public HomePageViewModel(
             IProvider<Appointment> collectionProvider,
-            INavigationService<MakeEditAppointmentViewModel> makeEditAppointmentNavigationService) : base(collectionProvider)
+            INavigationService<MakeEditAppointmentViewModel> makeEditAppointmentNavigationService,
+            MessageService messageService) : base(collectionProvider)
         {
             SearchCommand = new SearchCommand<Appointment>(
-                new Services.ProviderChangerService<Appointment,Client>(this.CollectionProvider,OnProviderChanged)
+                new Services.ProviderChangerService<Appointment,Client>(this.CollectionProvider,OnProviderChanged),
+                    messageService
                 );
             CollectionChagned += OnCollectionChanged;
             AddAppointmentNavigationCommand = new NavigationCommand(makeEditAppointmentNavigationService );
@@ -66,9 +68,10 @@ namespace DentalClinicApplication.ViewModels
 
         public static HomePageViewModel LoadHomePageViewModel(
             IProvider<Appointment> collectionProvider,
-            INavigationService<MakeEditAppointmentViewModel> navigationService)
+            INavigationService<MakeEditAppointmentViewModel> navigationService,
+            MessageService messageService)
         {
-            HomePageViewModel homePageViewModel = new(collectionProvider,navigationService);
+            HomePageViewModel homePageViewModel = new(collectionProvider,navigationService, messageService);
             return (HomePageViewModel) LoadCollectionViewModel(homePageViewModel);
         }
     }

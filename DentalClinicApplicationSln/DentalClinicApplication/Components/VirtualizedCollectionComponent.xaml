@@ -117,7 +117,7 @@
                       >
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding OrderCommand}"
+                        <i:InvokeCommandAction Command="{Binding SearchCommand}"
                                                CommandParameter="{Binding ElementName=orderByComboBox,Path=SelectedItem}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>

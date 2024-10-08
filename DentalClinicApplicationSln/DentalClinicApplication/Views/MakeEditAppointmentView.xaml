@@ -5,32 +5,225 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DentalClinicApplication.Views"
              xmlns:converters="clr-namespace:DentalClinicApplication.Converters"
-             xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:components="clr-namespace:DentalClinicApplication.Components"
+             xmlns:wpfx="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:components="clr-namespace:DentalClinicApplication.Components"
              mc:Ignorable="d"
+             Name="root"
              d:DesignHeight="450" d:DesignWidth="800">
+
     <UserControl.Resources>
-        <converters:TimeSpanToDateTimeConverter
-            x:Key="TimeSpanToDateTimeConverter"/>
+        <converters:TimeSpanToDateTimeConverter x:Key="TimeSpanToDateTimeConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <!-- Style for DatePicker with CornerRadius through Border -->
+        <Style TargetType="DatePicker">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DatePicker">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                >
+                            <Grid>
+                                <DatePickerTextBox x:Name="PART_TextBox"
+                                                   BorderThickness="0"
+                                                   Background="Transparent"
+                                                   Padding="5"/>
+                                <Popup x:Name="PART_Popup"
+                                       Placement="Bottom"
+                                       StaysOpen="False"
+                                       AllowsTransparency="True">
+                                    <Border Background="White"
+                                            BorderBrush="Gray"
+                                            BorderThickness="1"
+                                            CornerRadius="8"/>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <!-- Style for TimePicker with CornerRadius through Border -->
+        <Style TargetType="{x:Type wpfx:TimePicker}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type wpfx:TimePicker}">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="4">
+                                <Grid>
+                                    <wpfx:WatermarkTextBox x:Name="PART_TextBox"
+                                                           BorderThickness="0"
+                                                           Background="Transparent"
+                                                           Padding="5"/>
+                                    <Popup x:Name="PART_Popup"
+                                           AllowsTransparency="True"
+                                           IsOpen="{TemplateBinding IsOpen}"
+                                           Placement="Bottom"
+                                           StaysOpen="False">
+                                        <Border Background="White"
+                                                BorderBrush="Gray"
+                                                BorderThickness="1"
+                                                CornerRadius="8"
+                                                Padding="5">
+                                            <wpfx:TimePicker x:Name="PART_TimePickerSelector"/>
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <!-- Style for TextBox with CornerRadius through Border -->
+        <Style TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="4">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for RichTextBox with CornerRadius through Border -->
+        <Style TargetType="wpfx:RichTextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="wpfx:RichTextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="4">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
-    <StackPanel>
-        <Label Content="Date:"></Label>
-        <DatePicker SelectedDate="{Binding DayDate}"
-                    />
-        <Label Content="Start at:"/>
-        <wpfx:TimePicker Value="{Binding StartDate, Converter={StaticResource TimeSpanToDateTimeConverter}}" />
-        <Label Content="Ends at:"/>
-        <wpfx:TimePicker Value="{Binding EndDate,Converter={StaticResource TimeSpanToDateTimeConverter}}"/>
-        <Label Content="Description:"></Label>
-        <TextBox Text="{Binding Description}"/>
-        <Button Content="Select Client"
-                Name="ClientSelectionButton"
-                Command="{Binding ClientSelectionCommand}"/>
-        <components:ViewClientComponent
-            DataContext="{Binding Client}"/>
-        <Button Content="Submit"
-                Command="{Binding SubmitCommand}"
-                IsEnabled="{Binding IsModelValid}"
-                CommandParameter="{Binding Appointment}"
-                />
-    </StackPanel>
+
+    <!-- Layout with updated styles -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <!--Appointment Header and profile picture-->
+            <RowDefinition Height="*"/>
+            <!--Text boxes-->
+        </Grid.RowDefinitions>
+        <DockPanel Name="Header" Grid.Row="0">
+            <TextBlock DockPanel.Dock="Left" FontSize="30" FontWeight="Heavy">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{} Appointment for {0} {1}">
+                        <Binding Path="Client.FirstName"/>
+                        <Binding Path="Client.LastName"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </DockPanel>
+        <Grid Name="MainGrid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <!--Appointment View-->
+                <ColumnDefinition Width="*"/>
+                <!--Client View-->
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" Name="AppointmentEditView">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" SharedSizeGroup="firstRow"/>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="3*"/>
+                    <!--Description-->
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- DatePicker with CornerRadius -->
+                <StackPanel Grid.Column="0" Grid.ColumnSpan="2">
+                    <Label Content="Appointment Date:"></Label>
+                    <DatePicker SelectedDate="{Binding DayDate}"/>
+                </StackPanel>
+
+                <!-- TimePickers with CornerRadius -->
+                <StackPanel Grid.Row="1">
+                    <Label Content="Start at:"/>
+                    <wpfx:TimePicker Value="{Binding StartDate, Converter={StaticResource TimeSpanToDateTimeConverter}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="2">
+                    <Label Content="Ends at:"/>
+                    <wpfx:TimePicker Value="{Binding EndDate,Converter={StaticResource TimeSpanToDateTimeConverter}}"/>
+                </StackPanel>
+
+                <!-- RichTextBox with CornerRadius -->
+                <StackPanel Grid.Row="3" Name="DescriptionContainer" Loaded="DescriptionContainer_Loaded">
+                    <Label Content="Description:"></Label>
+                    <wpfx:RichTextBox Text="{Binding Description}" Name="DescriptionTextBox"/>
+                </StackPanel>
+
+                <!-- Buttons -->
+                <DockPanel Grid.Row="4" LastChildFill="False">
+                    <Button Content="Delete" DockPanel.Dock="Left" VerticalAlignment="Center" Style="{StaticResource ErrorButton}"/>
+                    <Button
+                        Content="Submit"
+                        DockPanel.Dock="Right"
+                        VerticalAlignment="Center"
+                        Command="{Binding SubmitCommand}"
+                        CommandParameter="{Binding Appointment}"
+                        Style="{StaticResource StatusButton}"/>
+                </DockPanel>
+            </Grid>
+
+            <Grid Grid.Column="1" Name="ClientEditView">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" SharedSizeGroup="firstRow"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0"
+                            >
+                    <Label>Select a Client</Label>
+                    <Button Content="{Binding Client.FirstName}"
+                            Name="ClientSelectionButton"
+                            Command="{Binding ClientSelectionCommand}"
+                            Style="{StaticResource PaginationSelectedButtonStyle}"/>
+                </StackPanel>
+                <components:ViewClientComponent Grid.Row="1"
+                                                DataContext="{Binding Client}"
+                                                Visibility="{Binding Path = DataContext.IsClientSelected,ElementName=root,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                />
+                <Button Grid.Row="2" Content="Show Profile" HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Style="{StaticResource PaginationSelectedButtonStyle}"
+                        Visibility="{Binding IsClientSelected,Converter={StaticResource BooleanToVisibilityConverter}}"
+                        />
+            </Grid>
+        </Grid>
+    </Grid>
 </UserControl>

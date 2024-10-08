@@ -26,5 +26,9 @@ namespace DentalClinicApplication.Views
             InitializeComponent();
         }
 
+        private void DescriptionContainer_Loaded(object sender, RoutedEventArgs e)
+        {
+            DescriptionTextBox.Height = 0.6 *  ((StackPanel)sender).ActualHeight;
+        }
     }
 }

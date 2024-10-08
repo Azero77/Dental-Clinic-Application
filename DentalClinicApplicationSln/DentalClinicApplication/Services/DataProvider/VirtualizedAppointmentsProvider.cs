@@ -41,7 +41,7 @@ namespace DentalClinicApplication.Services.DataProvider
             string sql = "SELECT a.Id,StartDate,EndDate,Description,ClientId,c.Id,FirstName,LastName  FROM " +
                 "Appointments a JOIN Clients c ON " +
                 "a.ClientId = c.Id " +
-                $"{whereClause} " +
+                $"{whereClause} {orderByClause} " +
                 $"LIMIT @size OFFSET @start";
             IEnumerable<Appointment> result = await DataContext.RunAsync<IEnumerable<Appointment>>(async conn =>
             {

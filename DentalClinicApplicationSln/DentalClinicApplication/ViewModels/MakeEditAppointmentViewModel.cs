@@ -97,8 +97,10 @@ namespace DentalClinicApplication.ViewModels
         }
 
         private Client? _client;
+        public bool IsClientSelected => Client is not null;
+
         [Required("Paitent Should be Selected")]
-        public Client Client
+        public Client? Client
         {
             get
             {
@@ -108,6 +110,7 @@ namespace DentalClinicApplication.ViewModels
             {
                 _client = value;
                 OnPropertyChanged(nameof(Client));
+                OnPropertyChanged(nameof(IsClientSelected));
             }
         }
         public Appointment Appointment => GetAppointment();

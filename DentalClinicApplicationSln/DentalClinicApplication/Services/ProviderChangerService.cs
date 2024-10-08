@@ -68,7 +68,7 @@ namespace DentalClinicApplication.Services
             {
                 value = Convert.ChangeType(value, propType);
             }
-            catch (FormatException e)
+            catch (Exception e)
             {
                 throw;
             }

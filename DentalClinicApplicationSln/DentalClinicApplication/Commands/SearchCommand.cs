@@ -16,11 +16,15 @@ namespace DentalClinicApplication.Commands
     {
 
         public ProviderChangerService<T> ProviderChangerService { get; }
+        public MessageService MessageService { get; }
+
         public SearchCommand(
-            ProviderChangerService<T> providerChangerService
+            ProviderChangerService<T> providerChangerService,
+            MessageService messageService
             )
         {
             ProviderChangerService = providerChangerService;
+            MessageService = messageService;
         }
 
         public override void Execute(object? parameter)
@@ -43,7 +47,14 @@ namespace DentalClinicApplication.Commands
             {
                 propertyName = parameter as string ?? throw new InvalidCastException();
             }
-            ProviderChangerService.ChangeProvider(propertyName, value);
+            try
+            {
+                ProviderChangerService.ChangeProvider(propertyName, value);
+            }
+            catch
+            {
+                MessageService.SetMessage($"{value} is not a valid {propertyName}",Stores.MessageType.Error);
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DentalClinicApplication.Services;
 namespace DentalClinicApplication.Stores
 {
     public class VirtualizedCollectionStore<T> : ICollectionStore<T>
@@ -45,15 +46,9 @@ namespace DentalClinicApplication.Stores
             await _initialize.Value;
         }
 
-        public async void ChangeProvider(IProvider<T> newProvider)
+        public void ChangeProvider()
         {
-            if (newProvider is not IVirtualizationItemsProvider<T>)
-            {
-                throw new InvalidCastException();
-            }
-            await _collection.ChangeProvider((IVirtualizationItemsProvider<T>) newProvider);
-            OnDataManipulated();
-
+            _initialize = new(Initialize);
         }
 
         private Lazy<Task> _initialize;
