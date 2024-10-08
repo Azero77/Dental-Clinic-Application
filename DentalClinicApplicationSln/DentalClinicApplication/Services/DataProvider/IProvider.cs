@@ -11,7 +11,7 @@ namespace DentalClinicApplication.Services.DataProvider
     public interface IProvider<T>
     {
         Task<IEnumerable<T>> GetItems();
-        IProvider<T> ChangeProvider
+        void ChangeProvider
             (string? whereClause,
             string? orderByClause);
     }

@@ -1,4 +1,5 @@
-﻿using DentalClinicApplication.ComponentsViewModels;
+﻿using DentalClinicApp.Commands;
+using DentalClinicApplication.ComponentsViewModels;
 using DentalClinicApplication.DTOs;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataProvider;
@@ -11,20 +12,18 @@ using System.Threading.Tasks;
 
 namespace DentalClinicApplication.Commands
 {
-    public class SearchCommand<T> : AsyncCommandBase
+    public class SearchCommand<T> : CommandBase
     {
-        private readonly CollectionViewModelBase<T> _viewModel;
 
         public ProviderChangerService<T> ProviderChangerService { get; }
         public SearchCommand(
-            ProviderChangerService<T> providerChangerService,
-            CollectionViewModelBase<T> viewModel)
+            ProviderChangerService<T> providerChangerService
+            )
         {
             ProviderChangerService = providerChangerService;
-            _viewModel = viewModel;
         }
 
-        public override async Task ExecuteAsync(object? parameter)
+        public override void Execute(object? parameter)
         {
             if (parameter is null)
             {
@@ -44,11 +43,7 @@ namespace DentalClinicApplication.Commands
             {
                 propertyName = parameter as string ?? throw new InvalidCastException();
             }
-
-
-            _viewModel.IsLoading = true;
-            await ProviderChangerService.Change(propertyName, value);
-            _viewModel.IsLoading = false;
+            ProviderChangerService.ChangeProvider(propertyName, value);
         }
     }
 }

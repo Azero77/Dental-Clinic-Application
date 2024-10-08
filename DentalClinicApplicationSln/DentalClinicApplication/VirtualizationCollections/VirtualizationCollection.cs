@@ -249,7 +249,12 @@ namespace DentalClinicApplication.VirtualizationCollections
             //event
             OnCollectionReset();
         }
-
+        public void Reload()
+        {
+            CurrentPageIndex = 0;
+            _pages = new();
+            _pagesTimeout = new();
+        }
         public async Task PageSizeChanged()
         {
             if (CurrentPageIndex > PagesCount)

@@ -23,7 +23,6 @@ namespace DentalClinicApplication.Commands
 
         public override async Task ExecuteAsync(object? parameter)
         {
-            CollectionViewModelBase.IsLoading = true;
             try
             {
                 await CollectionViewModelBase.LoadViewModel();
@@ -31,10 +30,6 @@ namespace DentalClinicApplication.Commands
             catch (Exception)
             {
                 throw;
-            }
-            finally
-            {
-                CollectionViewModelBase.IsLoading = false;
             }
         }
     }

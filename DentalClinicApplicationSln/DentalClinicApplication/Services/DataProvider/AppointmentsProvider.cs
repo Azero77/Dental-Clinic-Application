@@ -28,7 +28,7 @@ namespace DentalClinicApplication.Services.DataProvider
             _orderClause = orderClause;
         }
 
-        public override IProvider<Appointment> ChangeProvider(string? whereClause, string? orderClause)
+        public override void ChangeProvider(string? whereClause, string? orderClause)
         {
             //check if whereClause is not for date
             if (_whereClause is not null
@@ -41,8 +41,8 @@ namespace DentalClinicApplication.Services.DataProvider
                 string newWhereClause = new string(whereClause?.SkipWhile(c => "WHERE".Contains(c)).ToArray());
                 whereClause = $"{_whereClause} AND {newWhereClause}";
             }
-            return new AppointmentsProvider(this.DataContext,this._mapper,whereClause ?? this._whereClause,
-                orderClause ?? this._orderClause);
+            this._whereClause = whereClause ?? this._whereClause;
+            this._orderClause = orderClause ?? this._orderClause;
         }
         public override async Task<IEnumerable<Appointment>> GetItems()
         {

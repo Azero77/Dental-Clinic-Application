@@ -21,7 +21,6 @@ namespace DentalClinicApplication.Services
             MessageStore.CurrentMessage = message;
             MessageStore.CurrentMessageType = messageType;
 
-            Task.Delay(3000).ContinueWith((r) => MessageStore.ClearMessage());
         }
     }
 }

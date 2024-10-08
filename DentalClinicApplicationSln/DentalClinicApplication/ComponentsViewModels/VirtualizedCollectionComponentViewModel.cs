@@ -25,9 +25,11 @@ namespace DentalClinicApplication.ComponentsViewModels
         
         //maybe null if the collection does not have to be stored
         public ICollectionStore<T>? CollectionStore { get; private set; }
-        public Task Load()
+        
+        public override Task OnProviderChanged()
         {
-            return _collection.Load();
+            _collection.Reload();
+            return LoadViewModel();
         }
 
         public VirtualizedCollectionComponentViewModel(
@@ -45,10 +47,9 @@ namespace DentalClinicApplication.ComponentsViewModels
             Move = new VirtualizationCollectionMoveCommand<T>(this,collection);
             MoveNext = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Next);
             MovePrevious = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Previous);
-            SearchCommand = new SearchCommand<T>(
-                new ProviderChangerService<T>(this, _collection!.ItemsProvider, ChangeMode.Search), this);
-            OrderCommand = new SearchCommand<T>(
-                new ProviderChangerService<T>(this, _collection.ItemsProvider, ChangeMode.Order), this);
+            ProviderChangerService<T> providerChangerService = new(this.CollectionProvider,OnProviderChanged);
+            SearchCommand = new SearchCommand<T>(providerChangerService);
+            OrderCommand = new SearchCommand<T>(providerChangerService);
         }
 
 
@@ -161,11 +162,14 @@ namespace DentalClinicApplication.ComponentsViewModels
             return (VirtualizedCollectionComponentViewModel<T>) LoadCollectionViewModel(vm);
         }
 
-        public override Task LoadViewModel()
+        public override async Task LoadViewModel()
         {
-            if (CollectionStore is not null)
-                return CollectionStore.Load();
-            return _collection?.Load() ?? Task.CompletedTask;
+            IsLoading = true;
+            if (CollectionStore is null)
+                await _collection.Load();
+            else
+                await CollectionStore.Load();
+            IsLoading = false;
         }
     }
     public class VirtualizedClientsComponentViewModel : VirtualizedCollectionComponentViewModel<Client>

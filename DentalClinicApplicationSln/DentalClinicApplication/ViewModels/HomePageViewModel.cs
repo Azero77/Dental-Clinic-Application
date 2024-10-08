@@ -37,8 +37,7 @@ namespace DentalClinicApplication.ViewModels
             INavigationService<MakeEditAppointmentViewModel> makeEditAppointmentNavigationService) : base(collectionProvider)
         {
             SearchCommand = new SearchCommand<Appointment>(
-                new Services.ProviderChangerService<Appointment,Client>(this,CollectionProvider,Services.ChangeMode.Search),
-                this
+                new Services.ProviderChangerService<Appointment,Client>(this.CollectionProvider,OnProviderChanged)
                 );
             CollectionChagned += OnCollectionChanged;
             AddAppointmentNavigationCommand = new NavigationCommand(makeEditAppointmentNavigationService );
@@ -47,10 +46,15 @@ namespace DentalClinicApplication.ViewModels
 
         public override async Task LoadViewModel()
         {
+            IsLoading = true;
             Collection = await CollectionProvider.GetItems();
+            IsLoading = false;
             OnCollectionChanged();
         }
-
+        public override Task OnProviderChanged()
+        {
+            return LoadViewModel();
+        }
         private void OnCollectionChanged()
         {
             Appointments.Clear();

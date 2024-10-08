@@ -21,7 +21,7 @@ namespace DentalClinicApplication.Services.DataProvider
             _mapper = mapper;
         }
         public abstract Task<IEnumerable<T>> GetItems();
-        public abstract IProvider<T> ChangeProvider(string? whereClause, string? orderClause);
+        public abstract void ChangeProvider(string? whereClause, string? orderClause);
 
     }
 }

@@ -45,13 +45,13 @@ namespace DentalClinicApplication.Stores
             await _initialize.Value;
         }
 
-        public void ChangeProvider(IProvider<T> newProvider)
+        public async void ChangeProvider(IProvider<T> newProvider)
         {
             if (newProvider is not IVirtualizationItemsProvider<T>)
             {
                 throw new InvalidCastException();
             }
-            _collection.ChangeProvider((IVirtualizationItemsProvider<T>) newProvider);
+            await _collection.ChangeProvider((IVirtualizationItemsProvider<T>) newProvider);
             OnDataManipulated();
 
         }

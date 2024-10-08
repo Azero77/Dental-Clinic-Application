@@ -42,6 +42,7 @@
         </components:VirtualizedCollectionComponent>
         <Button
             Content="Add Patient"
+            Style="{StaticResource StatusButton}"
             Grid.Row="1"
             Command="{Binding AddClientNavigationCommand}"
             />

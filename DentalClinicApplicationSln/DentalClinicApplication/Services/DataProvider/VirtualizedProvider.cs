@@ -113,14 +113,13 @@ namespace DentalClinicApplication.Services.DataProvider
         }
 
         //change provider for both order by or where clause depending on what is null
-        public virtual IProvider<T> ChangeProvider
+        public virtual void ChangeProvider
             (string? whereClause,
             string? orderByClause)
         {
             this.whereClause = whereClause ?? this.whereClause;
             this.orderByClause = orderByClause ?? this.orderByClause;
             _initializeCount = new(InitializeCount);
-            return this;
         }
         
 

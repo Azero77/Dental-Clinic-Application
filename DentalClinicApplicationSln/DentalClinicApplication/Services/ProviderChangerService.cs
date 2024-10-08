@@ -23,44 +23,38 @@ namespace DentalClinicApplication.Services
     /// <typeparam name="T">type of Item to provide</typeparam>
     public class ProviderChangerService<T>
     {
-        public CollectionViewModelBase<T> CollectionViewModelBase { get; }
-        public IProvider<T> CurrentProvider { get; set; }
-        public ChangeMode ChangeMode { get; }
-        public IEnumerable<T> Collection => CollectionViewModelBase.Collection;
+        public IProvider<T> CurrentProvider { get; }
+        public event Func<Task> ProviderChanged;
 
-
-        public ProviderChangerService(CollectionViewModelBase<T> collectionViewModelBase,
-            IProvider<T> currentProvider,
-            ChangeMode changeMode)
+        public ProviderChangerService(
+            IProvider<T> CurrentProvider,
+            Func<Task> OnProviderChanged)
         {
-            CollectionViewModelBase = collectionViewModelBase;
-            CurrentProvider = currentProvider;
-            ChangeMode = changeMode;
+            this.CurrentProvider = CurrentProvider;
+            ProviderChanged += OnProviderChanged;
         }
 
 
 
-        public async Task Change(string propertyName,object? value)
+        /// <summary>
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="value">if not present then it will be an order clause</param>
+        public (string? whereClause,string? orderClause) sqlGenerator(string propertyName,object? value)
         {
-            string sql = ChangeMode == ChangeMode.Search ?
-                WhereClauseGenerator(propertyName, value) :
-                OrderByGenerator(propertyName);
-            IProvider<T> newProvider = GenerateProvider(sql);
-            if (Collection is VirtualizationCollection<T> virtualizationCollection)
+            if (value is not null)
             {
-                await virtualizationCollection.ChangeProvider((IVirtualizationItemsProvider<T>)newProvider);
-                return;
+                //then it will be a where clause
+                return (WhereClauseGenerator(propertyName, value), null);
             }
-            CurrentProvider = newProvider;
-            CollectionViewModelBase.CollectionProvider = newProvider;
-            CollectionViewModelBase.Collection = await newProvider.GetItems();
+            return (null, OrderByGenerator(propertyName));
         }
 
         protected virtual PropertyInfo? SearchProperty(string propertyName)
         {
             return typeof(T).GetProperty(propertyName);
         }
-        private string WhereClauseGenerator(string propertyName,object? value)
+        private string WhereClauseGenerator(string propertyName,object value)
         {
             //see the propertyType
             //depending on the propertyType we set the sql string
@@ -68,21 +62,27 @@ namespace DentalClinicApplication.Services
             if (prop is null)
                 throw new InvalidDataException("The Type is not Found");
             Type propType = prop.PropertyType;
-            string sql = "WHERE ";
-            if (value is null)
+
+            //parse the value, if there is error => invalidCastException
+            try
             {
-                throw new InvalidDataException();
+                value = Convert.ChangeType(value, propType);
             }
+            catch (FormatException e)
+            {
+                throw;
+            }
+            string sql = "WHERE ";
             switch (propType)
             {
                 case Type t when t == typeof(int):
-                    sql += $"{propertyName} = {value.ToString()}";
+                    sql += $"{propertyName} = {value}";
                     break;
                 case Type t when t == typeof(string):
-                    sql += $"{propertyName} LIKE '%{value.ToString()}%'";
+                    sql += $"{propertyName} LIKE '%{value}%'";
                     break;
                 case Type t when t == typeof(DateTime):
-                    DateTime dateTime = DateTime.Parse(value.ToString());
+                    DateTime dateTime = DateTime.Parse(value!.ToString()!);
                     string sqlDate = dateTime.ToString("yyyy-MM-dd");
                     sql += $"DATE({propertyName}) = DATE('{sqlDate}')";
                     break;
@@ -90,27 +90,35 @@ namespace DentalClinicApplication.Services
             return sql;
 
         }
+        
+
         private string OrderByGenerator(string propertyName)
         {
             return $"ORDER BY {propertyName}";
         }
 
-        private IProvider<T> GenerateProvider(string clause)
+        public void ChangeProvider(string propertyName,object? value)
         {
-            return ChangeMode == ChangeMode.Search ?
-             CurrentProvider.ChangeProvider(clause,null) : 
-             CurrentProvider.ChangeProvider(null, clause);
+            (string? whereClause,string? orderClause) = sqlGenerator(propertyName, value);
+            CurrentProvider.ChangeProvider(whereClause, orderClause);
+            ProviderChanged?.Invoke();
         }
 
-
+        public static Dictionary<Type, string> TypeRepresentaion = new()
+        {
+            {typeof(int),"Integer" },
+            {typeof(string), "Text" },
+            {typeof(DateTime), "Date" }
+        };
     }
 
     public class ProviderChangerService<T, TJOIN>
         : ProviderChangerService<T>
     {
-        public ProviderChangerService(CollectionViewModelBase<T> collectionViewModelBase, IProvider<T> currentProvider, ChangeMode changeMode) : base(collectionViewModelBase, currentProvider, changeMode)
+        public ProviderChangerService(IProvider<T> CurrentProvider, Func<Task> OnProviderChanged) : base(CurrentProvider, OnProviderChanged)
         {
         }
+
         protected override PropertyInfo? SearchProperty(string propertyName)
         {
             return typeof(T).GetProperty(propertyName) ??
@@ -118,9 +126,4 @@ namespace DentalClinicApplication.Services
         }
     }
 
-    public enum ChangeMode
-    {
-        Search = 0,
-        Order = 1
-    }
 }
