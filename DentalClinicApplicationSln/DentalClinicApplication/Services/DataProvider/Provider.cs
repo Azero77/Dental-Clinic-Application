@@ -15,6 +15,8 @@ namespace DentalClinicApplication.Services.DataProvider
     {
         public DbContext DataContext { get; }
         public IMapper _mapper { get; }
+        protected string? _whereClause;
+        protected string? _orderClause;
         public Provider(DbContext dataContext, IMapper mapper)
         {
             DataContext = dataContext;
@@ -22,6 +24,11 @@ namespace DentalClinicApplication.Services.DataProvider
         }
         public abstract Task<IEnumerable<T>> GetItems();
         public abstract void ChangeProvider(string? whereClause, string? orderClause);
+        public void ResetProvider()
+        {
+            _whereClause = null;
+            _orderClause = null;
+        }
 
     }
 }

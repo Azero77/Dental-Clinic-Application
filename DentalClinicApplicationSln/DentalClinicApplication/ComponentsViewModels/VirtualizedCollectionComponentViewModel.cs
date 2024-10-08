@@ -51,6 +51,13 @@ namespace DentalClinicApplication.ComponentsViewModels
             MovePrevious = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Previous);
             ProviderChangerService<T> providerChangerService = new(this.CollectionProvider,OnProviderChanged);
             SearchCommand = new SearchCommand<T>(providerChangerService,messageService);
+            ResetCommand = new RelayCommand<object>(ResetDelegate);
+        }
+
+        private void ResetDelegate(object? obj)
+        {
+            CollectionProvider.ResetProvider();
+            OnProviderChanged();
         }
 
 

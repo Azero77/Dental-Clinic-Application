@@ -14,5 +14,6 @@ namespace DentalClinicApplication.Services.DataProvider
         void ChangeProvider
             (string? whereClause,
             string? orderByClause);
+        void ResetProvider();
     }
 }

@@ -16,8 +16,7 @@ namespace DentalClinicApplication.Services.DataProvider
 {
     public class AppointmentsProvider : Provider<Appointment, AppointmentDTO>
     {
-        string? _whereClause;
-        string? _orderClause;
+        
         public AppointmentsProvider(DbContext dataContext,
                                     IMapper mapper,
                                     string? whereClause = null,

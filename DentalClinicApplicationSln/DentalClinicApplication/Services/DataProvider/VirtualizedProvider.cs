@@ -121,6 +121,12 @@ namespace DentalClinicApplication.Services.DataProvider
             this.orderByClause = orderByClause ?? this.orderByClause;
             _initializeCount = new(InitializeCount);
         }
+        public void ResetProvider()
+        {
+            whereClause = null;
+            orderByClause = null;
+            _initializeCount = new Lazy<Task<int>>(InitializeCount);
+        }
 
     }
 }

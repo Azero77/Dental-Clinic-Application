@@ -89,6 +89,8 @@
                 <!-- Gap between Order ComboBox and Search Button -->
                 <ColumnDefinition Width="0.5*"/>
                 <!-- Search Button -->
+                <ColumnDefinition Width="0.5*"/>
+                <!--Reset Button-->
             </Grid.ColumnDefinitions>
 
             <placeholdertextcontrol:PlaceHolderTextBox
@@ -135,6 +137,12 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
+            <Button
+                Content="Reset"
+                Command="{Binding ResetCommand}"
+                Style="{StaticResource PaginationNormalButtonStyle}"
+                Grid.Column="7"
+                Grid.Row="1"/>
         </Grid>
 
         <DataGrid
