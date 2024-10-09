@@ -22,31 +22,15 @@ namespace DentalClinicApplication.ViewModels
     {
         public ObservableCollection<Appointment> Appointments { get; } = new();
         public ICommand SearchCommand { get; }
-        public static IEnumerable<string> HomePageProperties =>
-            new string[] 
-            {
-                "Name",
-                "Date",
-                "Description",
-                "Email"
-            }
-            ;
-        public static Dictionary<string, string> HomePageDataKeyValuePairsProperties =>
-            new Dictionary<string, string>()
-            {
-                {"Date","StartDate" },
-                {"Description","Description" },
-                {"Email","Email" }
-            };
-
-        public string? FirstProperty => HomePageProperties.FirstOrDefault();
+        
 
         public ICommand AddAppointmentNavigationCommand { get; }
         public ICommand ResetCommand { get; }
         public HomePageViewModel(
             IProvider<Appointment> collectionProvider,
             INavigationService<MakeEditAppointmentViewModel> makeEditAppointmentNavigationService,
-            MessageService messageService) : base(collectionProvider)
+            MessageService messageService,
+            IProviderHelper<Appointment> providerHelper) : base(collectionProvider,providerHelper)
         {
             SearchCommand = new SearchCommand<Appointment>(
                 this,
@@ -87,36 +71,12 @@ namespace DentalClinicApplication.ViewModels
         public static HomePageViewModel LoadHomePageViewModel(
             IProvider<Appointment> collectionProvider,
             INavigationService<MakeEditAppointmentViewModel> navigationService,
-            MessageService messageService)
+            MessageService messageService,
+            IProviderHelper<Appointment> providerHelper)
         {
-            HomePageViewModel homePageViewModel = new(collectionProvider,navigationService, messageService);
+            HomePageViewModel homePageViewModel = new(collectionProvider,navigationService, messageService,providerHelper);
             return (HomePageViewModel) LoadCollectionViewModel(homePageViewModel);
         }
 
-        public override Dictionary<string, object> SearchMapper(string property, object value)
-        {
-            //switch for each property in Home Page Properties
-            if (HomePageDataKeyValuePairsProperties.TryGetValue(property, out string propertyDataName))
-            {
-                return new Dictionary<string, object>() {
-                    {propertyDataName,value }
-                };
-            }
-            else
-            {
-                switch (property)
-                {
-                    case "Name":
-                        return ProviderChangerServiceHelpers.NameSearch(value);
-                    default:
-                        return new()
-                        {
-                            {property,value }
-                        };
-
-                }
-            }
-
-        }
     }
 }

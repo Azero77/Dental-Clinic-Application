@@ -43,17 +43,18 @@ namespace DentalClinicApplication
         IHost _host;
         public App()
         {
-            
+
             _host = Host.CreateDefaultBuilder()
-                .ConfigureServices((sc) => 
+                .ConfigureServices((sc) =>
                 {
                     AddMapper(sc);
                     ConfigureService(sc);
                     sc.AddSingleton<DbContext>();
                     //provider for dataService where we need all appointments
-                    sc.AddSingleton<IProvider<Appointment>>(sp => 
+                    sc.AddSingleton<IProvider<Appointment>>(sp =>
                     GetAllAppointmentsProvider(sp));
-
+                    sc.AddSingleton<IProviderHelper<Appointment>, AppointemntsProviderHelper>();
+                    sc.AddSingleton<IProviderHelper<Client>, ClientsProviderHelper>();
                     //provider for the home page where we need the appointment for today
                     sc.AddSingleton<IVirtualizationItemsProvider<Client>, ClientsVirtualizedProvider>();
                     sc.AddSingleton<IVirtualizationItemsProvider<Appointment>, AppointmentsVirtualizedProvider>();
@@ -262,7 +263,8 @@ namespace DentalClinicApplication
         {
             return VirtualizedCollectionComponentViewModel<Appointment>.LoadVirtualizedCollectionComponentViewModel(
                 sp.GetRequiredService<VirtualizationCollection<Appointment>>(),
-                sp.GetRequiredService<MessageService>());
+                sp.GetRequiredService<MessageService>(),
+                sp.GetRequiredService<IProviderHelper<Appointment>>());
         }
 
         
@@ -277,6 +279,7 @@ namespace DentalClinicApplication
             return VirtualizedCollectionComponentViewModel<Client>.LoadVirtualizedCollectionComponentViewModel(
                 sp.GetRequiredService<VirtualizationCollection<Client>>(),
                 sp.GetRequiredService<MessageService>(),
+                sp.GetRequiredService<IProviderHelper<Client>>(),
                 sp.GetRequiredService<ICollectionStore<Client>>());
         }
 
@@ -291,7 +294,8 @@ namespace DentalClinicApplication
             return HomePageViewModel.LoadHomePageViewModel(
                 GetTodayAppointmentsProvider(sp),
                 sp.GetRequiredService<INavigationService<MakeEditAppointmentViewModel>>(),
-                sp.GetRequiredService<MessageService>());
+                sp.GetRequiredService<MessageService>(),
+                sp.GetRequiredService<IProviderHelper<Appointment>>());
         }
 
         

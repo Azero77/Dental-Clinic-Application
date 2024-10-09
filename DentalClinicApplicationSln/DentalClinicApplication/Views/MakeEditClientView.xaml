@@ -4,23 +4,61 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DentalClinicApplication.Views"
+             xmlns:headeredtextbox="clr-namespace:HeaderedTextBox;assembly=HeaderedTextBox" xmlns:formatteddatepicker="clr-namespace:FormattedDatePicker;assembly=FormattedDatePicker"
              mc:Ignorable="d"
+             FontSize="20"
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <Label>First Name</Label>
-        <TextBox Text="{Binding FirstName}"/>
-        <Label>Last Name</Label>
-        <TextBox Text="{Binding LastName}"/>
-        <Label>Email</Label>
-        <TextBox Text="{Binding Email}"/>
-        <Label>Gender</Label>
-        <TextBox Text="{Binding Gender}"/>
-        <Label>Date Of birth</Label>
-        <DatePicker SelectedDate="{Binding DateOfBirth}"/>
-        <TextBlock Text="{Binding Age}"/>
+    <UserControl.Resources>
+        <Style TargetType="UserControl">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <AdornedElementPlaceholder/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="headeredtextbox:HeaderedTextBox">
+            <Setter Property="Padding" Value="5" />
+        </Style>
+    </UserControl.Resources>
 
+    <StackPanel>
+        <!-- First Name -->
+        <headeredtextbox:HeaderedTextBox
+            Header="First Name"
+            Text="{Binding FirstName}"
+            ValidationErrorCommand="{Binding ValidationErrorCommand}"/>
+
+        <!-- Last Name -->
+        <headeredtextbox:HeaderedTextBox
+            Header="Last Name"
+            Text="{Binding LastName}"
+            ValidationErrorCommand="{Binding ValidationErrorCommand}"/>
+
+        <!-- Email -->
+        <headeredtextbox:HeaderedTextBox
+            Header="Email"
+            Text="{Binding Email}"
+            ValidationErrorCommand="{Binding ValidationErrorCommand}"/>
+
+        <!-- Gender -->
+        <headeredtextbox:HeaderedTextBox
+            Header="Gender"
+            Text="{Binding Gender}"
+            ValidationErrorCommand="{Binding ValidationErrorCommand}"/>
+
+        <formatteddatepicker:FormattedDatePicker
+            Format="dd/MM/yyyy"
+            Padding="3"
+            SelectedDate="{Binding DateOfBirth}"/>
+        <!-- Age (Read-Only) -->
+        <TextBlock Text="{Binding Age,StringFormat='{}Age is {0}'}" Margin="5"/>
+
+        <!-- Submit Button -->
         <Button Command="{Binding SubmitCommand}"
                 CommandParameter="{Binding Client}"
+                HorizontalAlignment="Left"
+                Padding="10"
+                Style="{StaticResource EditButtonStyle}"
                 Content="Submit"/>
     </StackPanel>
 </UserControl>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HeaderedTextBox.Behaviors;
+using Microsoft.Xaml.Behaviors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,35 +17,6 @@ using System.Windows.Shapes;
 
 namespace HeaderedTextBox
 {
-    /// <summary>
-    /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
-    ///
-    /// Step 1a) Using this custom control in a XAML file that exists in the current project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:HeaderedTextBox"
-    ///
-    ///
-    /// Step 1b) Using this custom control in a XAML file that exists in a different project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:HeaderedTextBox;assembly=HeaderedTextBox"
-    ///
-    /// You will also need to add a project reference from the project where the XAML file lives
-    /// to this project and Rebuild to avoid compilation errors:
-    ///
-    ///     Right click on the target project in the Solution Explorer and
-    ///     "Add Reference"->"Projects"->[Select this project]
-    ///
-    ///
-    /// Step 2)
-    /// Go ahead and use your control in the XAML file.
-    ///
-    ///     <MyNamespace:CustomControl1/>
-    ///
-    /// </summary>
     public class HeaderedTextBox : TextBox
     {
 
@@ -58,11 +31,51 @@ namespace HeaderedTextBox
         public static readonly DependencyProperty HeaderProperty =
             DependencyProperty.Register("Header", typeof(string), typeof(HeaderedTextBox), new PropertyMetadata(string.Empty));
 
+        public static readonly DependencyProperty ValidationErrorCommandProperty =
+           DependencyProperty.Register("ValidationErrorCommand", typeof(ICommand), typeof(HeaderedTextBox), new PropertyMetadata(null, OnValidationErrorCommandChanged));
+
+        public ICommand ValidationErrorCommand
+        {
+            get { return (ICommand)GetValue(ValidationErrorCommandProperty); }
+            set { SetValue(ValidationErrorCommandProperty, value); }
+        }
 
 
         static HeaderedTextBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(HeaderedTextBox), new FrameworkPropertyMetadata(typeof(HeaderedTextBox)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            AttachValidationBehavior();
+        }
+
+        // When the ValidationErrorCommand changes, update the behavior
+        private static void OnValidationErrorCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = d as HeaderedTextBox;
+            control?.AttachValidationBehavior();
+        }
+
+        // Method to attach the behavior programmatically
+        private void AttachValidationBehavior()
+        {
+            if (ValidationErrorCommand != null)
+            {
+                var behaviors = Interaction.GetBehaviors(this);
+
+                // Remove existing behavior if already added
+                var existingBehavior = behaviors.OfType<ValidationErrorBehavior>().FirstOrDefault();
+                if (existingBehavior != null)
+                {
+                    behaviors.Remove(existingBehavior);
+                }
+
+                // Add new behavior
+                behaviors.Add(new ValidationErrorBehavior { Command = ValidationErrorCommand });
+            }
         }
     }
 }

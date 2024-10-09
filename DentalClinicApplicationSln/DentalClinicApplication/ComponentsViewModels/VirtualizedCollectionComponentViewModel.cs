@@ -3,6 +3,7 @@ using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
 using DentalClinicApplication.Services;
+using DentalClinicApplication.Services.DataProvider;
 using DentalClinicApplication.Stores;
 using DentalClinicApplication.ViewModels;
 using DentalClinicApplication.VirtualizationCollections;
@@ -23,7 +24,6 @@ namespace DentalClinicApplication.ComponentsViewModels
     {
         private VirtualizationCollection<T> _collection;
 
-        public Func<string, object, Dictionary<string, object>> PropertiesFactory { get; }
 
         //maybe null if the collection does not have to be stored
         public ICollectionStore<T>? CollectionStore { get; private set; }
@@ -38,12 +38,11 @@ namespace DentalClinicApplication.ComponentsViewModels
         public VirtualizedCollectionComponentViewModel(
             VirtualizationCollection<T> collection,
             MessageService messageService,
-            Func<string, object, Dictionary<string, object>> propertiesFactory,
+            IProviderHelper<T> providerHelper,
             ICollectionStore<T>? collectionStore = null)
-            : base(collection.ItemsProvider)
+            : base(collection.ItemsProvider,providerHelper)
         {
             _collection = collection;
-            PropertiesFactory = propertiesFactory;
             Collection = _collection;
             CollectionStore = collectionStore;
             _collection.CollectionChanged += _collection_CollectionChanged;
@@ -98,8 +97,6 @@ namespace DentalClinicApplication.ComponentsViewModels
             }
         }
         public int PagesCount => _collection?.PagesCount ?? 0;
-        public IEnumerable<string> Properties => typeof(T).GetProperties().Select(p => p.Name).Where(n => !n.Contains("Id"));
-        public string? FirstProperty => Properties.FirstOrDefault();
         public List<int> PagesIndexers =>
             MakePageIndexers();
         #endregion
@@ -169,10 +166,11 @@ namespace DentalClinicApplication.ComponentsViewModels
         public static VirtualizedCollectionComponentViewModel<T> LoadVirtualizedCollectionComponentViewModel(
             VirtualizationCollection<T> collection,
             MessageService messageService,
+            IProviderHelper<T> providerHelper,
             ICollectionStore<T>? collectionStore = null
             )
         {
-            VirtualizedCollectionComponentViewModel<T> vm = new(collection,messageService,collectionStore);
+            VirtualizedCollectionComponentViewModel<T> vm = new(collection,messageService,providerHelper,collectionStore);
             return (VirtualizedCollectionComponentViewModel<T>) LoadCollectionViewModel(vm);
         }
 
@@ -186,14 +184,10 @@ namespace DentalClinicApplication.ComponentsViewModels
             IsLoading = false;
         }
 
-        public override Dictionary<string, object> SearchMapper(string property, object value)
-        {
-            return PropertiesFactory(property, value);
-        }
     }
     public class VirtualizedClientsComponentViewModel : VirtualizedCollectionComponentViewModel<Client>
     {
-        public VirtualizedClientsComponentViewModel(VirtualizationCollection<Client> collection, MessageService messageService, ICollectionStore<Client>? collectionStore = null) : base(collection, messageService, collectionStore)
+        public VirtualizedClientsComponentViewModel(VirtualizationCollection<Client> collection, MessageService messageService,IProviderHelper<Client> ph ,ICollectionStore<Client>? collectionStore = null) : base(collection, messageService,ph, collectionStore)
         {
         }
     }

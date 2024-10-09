@@ -109,10 +109,10 @@
             <ComboBox x:Name="CategoryComboBox"
                       Grid.Row="1"
                       Grid.Column="2"
-                      ItemsSource="{Binding Properties}"
+                      ItemsSource="{Binding SearchProperties}"
                       SelectedItem="{Binding FirstProperty, Mode=OneTime}"
                       ></ComboBox>
-            <ComboBox ItemsSource="{Binding Properties}"
+            <ComboBox ItemsSource="{Binding SearchProperties}"
                       x:Name="orderByComboBox"
                       Grid.Row="1"
                       Grid.Column="4"

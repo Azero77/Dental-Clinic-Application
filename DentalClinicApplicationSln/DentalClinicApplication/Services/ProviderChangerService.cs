@@ -57,7 +57,10 @@ namespace DentalClinicApplication.Services
             return typeof(T).GetProperty(propertyName);
         }
 
-        private static string sqlPropertyGenerator(string propertyName, object value, Type propType)
+        private static string sqlPropertyGenerator(string propertyName,
+                object value, 
+                Type propType
+                )
         {
             try
             {
@@ -69,6 +72,9 @@ namespace DentalClinicApplication.Services
             }
             switch (propType)
             {
+                case Type t when t == typeof(DateTime) && value.GetType() == typeof(int):
+                    //Year of date search type
+                    return $"strftime('%Y',StartDate) == '{value}'";
                 case Type t when t == typeof(int):
                     return $"{propertyName} = {value}";
                 case Type t when t == typeof(string):
@@ -155,7 +161,28 @@ namespace DentalClinicApplication.Services
                 }
                 return result;
             }
+            else
+            {
+                return new Dictionary<string, object>()
+                {
+                    {"FirstName",null }
+                };
+            }
             throw new InvalidCastException();
+        }
+
+        internal static Dictionary<string, object> AgeSearch(object value)
+        {
+            //will return int Age To a valid year DateOfBirth
+            if (value is int age)
+            {
+                int year = DateTime.Now.Year - age;
+                return new()
+                {
+                    {"DateOfBirth",year }
+                };
+            }
+            throw new InvalidCastException("Age Must Be an Integer");
         }
     }
 

@@ -330,5 +330,111 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontSize" Value="30" />
     </Style>
+    <Style TargetType="ToggleButton">
+        <Setter Property="Foreground" Value="{StaticResource Secondary}"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Secondary}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="Select"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- Handle hover state -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Secondary}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
 
+            <!-- Handle pressed state -->
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource Secondary}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+
+            <!-- Handle checked (open dropdown) state -->
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="{StaticResource Secondary}"/>
+                <Setter Property="Foreground" Value="White"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="DatePicker">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DatePicker">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <DatePickerTextBox x:Name="PART_TextBox"
+                                               IsReadOnly="True"
+                                               Padding="5"
+                                               BorderThickness="0"
+                                               Background="Transparent"
+                                               Text="{Binding SelectedDate,
+                                               RelativeSource={RelativeSource AncestorType=DatePicker},
+                                               StringFormat='{}{0:dd/MM/yyyy}',
+                                               TargetNullValue='', Mode=TwoWay}"/>
+                            <ToggleButton x:Name="PART_Button"
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType=DatePicker}}"
+                                          BorderThickness="1"
+                                          Focusable="False"
+                                          BorderBrush="{StaticResource Secondary}"
+                                          Foreground="{StaticResource Secondary}"
+                                          Background="White"
+                                          Margin="0"
+                                          Grid.Column="1"
+                                          ClickMode="Press">
+                                Select
+                            </ToggleButton>
+                            <Popup x:Name="PART_Popup"
+                                   Placement="Bottom"
+                                   StaysOpen="False"
+                                   AllowsTransparency="True"
+                                   IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource AncestorType=DatePicker}}">
+                                <Border Background="White"
+                                        BorderBrush="Gray"
+                                        BorderThickness="1"
+                                        CornerRadius="8">
+                                    <Calendar x:Name="PART_Calendar"
+                                              SelectedDate="{Binding SelectedDate, RelativeSource={RelativeSource AncestorType=DatePicker}, Mode=TwoWay}" />
+                                </Border>
+                            </Popup>
+
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="Background" Value="White"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Transparent"/>
+                <!-- Make background transparent on hover -->
+                <Setter Property="BorderBrush" Value="DarkGray"/>
+            </Trigger>
+            <Trigger Property="IsDropDownOpen" Value="True">
+                <Setter Property="BorderBrush" Value="DarkGray"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

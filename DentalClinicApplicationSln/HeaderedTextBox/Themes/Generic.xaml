@@ -16,19 +16,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:HeaderedTextBox">
-                    <i:Interaction.Behaviors>
-                        <behaviors:ValidationErrorBehavior Command="{Binding ValidationErrorCommand}"/>
-                    </i:Interaction.Behaviors>
                     <StackPanel>
+                        <TextBlock Text="{TemplateBinding Header}"/>
                         <Border
-                            BorderBrush="Black"
+                            BorderBrush="Gray"
                             BorderThickness="1"
+                            CornerRadius="4"
                             >
-                            <StackPanel>
-                                <TextBlock Text="{TemplateBinding Header}"/>
-                                <ScrollViewer x:Name="PART_ContentHost"/>
-                            </StackPanel>
-
+                            <ScrollViewer x:Name="PART_ContentHost"/>
                         </Border>
                         <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
                             <ItemsControl.ItemTemplate>

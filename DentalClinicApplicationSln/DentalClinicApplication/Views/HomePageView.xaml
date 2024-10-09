@@ -53,7 +53,7 @@
                 Placeholder="Search..."
                 Grid.Column="0"
                 Margin="{StaticResource Margin}"/>
-            <ComboBox ItemsSource="{Binding HomePageProperties}"
+            <ComboBox ItemsSource="{Binding SearchProperties}"
                       Name="SearchComboBox"
                       SelectedItem="{Binding FirstProperty, Mode=OneTime}"
                       Grid.Column="1"

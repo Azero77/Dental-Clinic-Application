@@ -16,8 +16,9 @@ namespace DentalClinicApplication.ViewModels
 {
     public abstract class CollectionViewModelBase<T> : SearchCollectionViewModel<T>
     {
-        public CollectionViewModelBase(IProvider<T> collectionProvider
-			) : base(collectionProvider)
+        public CollectionViewModelBase(IProvider<T> collectionProvider,
+			IProviderHelper<T> providerHelper
+			) : base(collectionProvider,providerHelper)
         {
             CollectionProvider = collectionProvider;
         }
@@ -79,16 +80,27 @@ namespace DentalClinicApplication.ViewModels
 		:ViewModelBase
 	{
         public ProviderChangerService<T> ProviderChangerService { get; }
+        public IProviderHelper<T> ProviderHelper { get; }
+
         public SearchCollectionViewModel(
-            IProvider<T> collectionProvider
+            IProvider<T> collectionProvider,
+			IProviderHelper<T> providerHelper
             )
         {
             ProviderChangerService = new ProviderChangerService<T>(collectionProvider,OnProviderChanged);
+            ProviderHelper = providerHelper;
         }
         public abstract Task OnProviderChanged();
 
 		//method for generating properties and values search
-		public abstract Dictionary<string, object> SearchMapper(string property, object value);
+		public Dictionary<string, object> SearchMapper(string property, object value)
+		{
+			return PropertiesFactory(property, value);
+		}
+		public IEnumerable<string> SearchProperties => ProviderHelper.SearchProperties;
+        public string? FirstProperty => SearchProperties.FirstOrDefault();
+        public Dictionary<string, string> SearchDataProviderKeyValues => ProviderHelper.SearchDataProviderKeyValues;
+		public Func<string, object, Dictionary<string, object>> PropertiesFactory => ProviderHelper.PropertiesFactory;
 
     }
 }
