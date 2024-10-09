@@ -50,7 +50,7 @@ namespace DentalClinicApplication.ComponentsViewModels
             MoveNext = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Next);
             MovePrevious = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Previous);
             ProviderChangerService<T> providerChangerService = new(this.CollectionProvider,OnProviderChanged);
-            SearchCommand = new SearchCommand<T>(providerChangerService,messageService);
+            SearchCommand = new SearchCommand<T>(this,providerChangerService,messageService);
             ResetCommand = new RelayCommand<object>(ResetDelegate);
         }
 
@@ -180,6 +180,14 @@ namespace DentalClinicApplication.ComponentsViewModels
             else
                 await CollectionStore.Load();
             IsLoading = false;
+        }
+
+        public override Dictionary<string, object> SearchMapper(string property, object value)
+        {
+            return new Dictionary<string, object>()
+            {
+                {property,value }
+            };
         }
     }
     public class VirtualizedClientsComponentViewModel : VirtualizedCollectionComponentViewModel<Client>

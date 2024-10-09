@@ -14,15 +14,17 @@ namespace DentalClinicApplication.Commands
 {
     public class SearchCommand<T> : CommandBase
     {
-
+        public SearchCollectionViewModel<T> SearchCollectionViewModel { get; }
         public ProviderChangerService<T> ProviderChangerService { get; }
         public MessageService MessageService { get; }
 
         public SearchCommand(
+            SearchCollectionViewModel<T> searchCollectionViewModel,
             ProviderChangerService<T> providerChangerService,
             MessageService messageService
             )
         {
+            SearchCollectionViewModel = searchCollectionViewModel;
             ProviderChangerService = providerChangerService;
             MessageService = messageService;
         }
@@ -47,9 +49,10 @@ namespace DentalClinicApplication.Commands
             {
                 propertyName = parameter as string ?? throw new InvalidCastException();
             }
+            Dictionary<string, object> keyValuePairs = SearchCollectionViewModel.SearchMapper(propertyName, value);
             try
             {
-                ProviderChangerService.ChangeProvider(propertyName, value);
+                ProviderChangerService.ChangeProvider(keyValuePairs);
             }
             catch
             {

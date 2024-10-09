@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -21,30 +22,40 @@ namespace DentalClinicApplication.ViewModels
     {
         public ObservableCollection<Appointment> Appointments { get; } = new();
         public ICommand SearchCommand { get; }
-        public IEnumerable<string> HomePageProperties =>
-            typeof(Appointment).GetProperties()
-            .Concat(
-                typeof(Client).GetProperties()
-                )
-            .Where(p => p.PropertyType == typeof(string))
-            .Select(p => p.Name)
+        public static IEnumerable<string> HomePageProperties =>
+            new string[] 
+            {
+                "FirstName",
+                "LastName",
+                "StartDate",
+                "Description",
+                "Email",
+            }
             ;
         public string? FirstProperty => HomePageProperties.FirstOrDefault();
 
         public ICommand AddAppointmentNavigationCommand { get; }
+        public ICommand ResetCommand { get; }
         public HomePageViewModel(
             IProvider<Appointment> collectionProvider,
             INavigationService<MakeEditAppointmentViewModel> makeEditAppointmentNavigationService,
             MessageService messageService) : base(collectionProvider)
         {
             SearchCommand = new SearchCommand<Appointment>(
+                this,
                 new Services.ProviderChangerService<Appointment,Client>(this.CollectionProvider,OnProviderChanged),
                     messageService
                 );
             CollectionChagned += OnCollectionChanged;
             AddAppointmentNavigationCommand = new NavigationCommand(makeEditAppointmentNavigationService );
+            ResetCommand = new RelayCommand<object>(ResetDelegate);
         }
 
+        private void ResetDelegate(object? obj)
+        {
+            CollectionProvider.ResetProvider();
+            LoadViewModel().ConfigureAwait(false);
+        }
 
         public override async Task LoadViewModel()
         {
@@ -73,6 +84,14 @@ namespace DentalClinicApplication.ViewModels
         {
             HomePageViewModel homePageViewModel = new(collectionProvider,navigationService, messageService);
             return (HomePageViewModel) LoadCollectionViewModel(homePageViewModel);
+        }
+
+        public override Dictionary<string, object> SearchMapper(string property, object value)
+        {
+            return new Dictionary<string, object>()
+            {
+                {property,value }
+            };
         }
     }
 }

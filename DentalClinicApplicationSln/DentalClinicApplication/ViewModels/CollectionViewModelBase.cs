@@ -14,13 +14,12 @@ using System.Windows.Input;
 
 namespace DentalClinicApplication.ViewModels
 {
-    public abstract class CollectionViewModelBase<T> : ViewModelBase
+    public abstract class CollectionViewModelBase<T> : SearchCollectionViewModel<T>
     {
         public CollectionViewModelBase(IProvider<T> collectionProvider
-			)
+			) : base(collectionProvider)
         {
             CollectionProvider = collectionProvider;
-            ProviderChangerService = new ProviderChangerService<T>(collectionProvider,OnProviderChanged);
         }
         private IEnumerable<T> _collection = Enumerable.Empty<T>();
 		public IEnumerable<T> Collection
@@ -40,7 +39,6 @@ namespace DentalClinicApplication.ViewModels
 		public event Action? CollectionChagned;
 
         public IProvider<T> CollectionProvider { get; set; }
-        public ProviderChangerService<T> ProviderChangerService { get; }
 
         private bool _isLoading;
 		public bool IsLoading
@@ -56,7 +54,6 @@ namespace DentalClinicApplication.ViewModels
 			}
 		}
         public abstract Task LoadViewModel();
-		public abstract Task OnProviderChanged();
 
         /// <summary>
         /// Take the view model and load the collection from the provider
@@ -73,4 +70,25 @@ namespace DentalClinicApplication.ViewModels
 			return collectionViewModelBase;
 		}
 	}
+
+	/// <summary>
+	/// View Model Base Class For Searching With CollectionViewModel base
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public abstract class SearchCollectionViewModel<T>
+		:ViewModelBase
+	{
+        public ProviderChangerService<T> ProviderChangerService { get; }
+        public SearchCollectionViewModel(
+            IProvider<T> collectionProvider
+            )
+        {
+            ProviderChangerService = new ProviderChangerService<T>(collectionProvider,OnProviderChanged);
+        }
+        public abstract Task OnProviderChanged();
+
+		//method for generating properties and values search
+		public abstract Dictionary<string, object> SearchMapper(string property, object value);
+
+    }
 }

@@ -45,7 +45,8 @@ namespace DentalClinicApplication.Services.DataProvider
         {
             string tableName = typeof(T).Name + "s";
 
-            string sql = $"SELECT COUNT(*) FROM {tableName} {whereClause};";
+            string sql = $"SELECT COUNT(*) FROM {tableName} " +
+                $"WHERE {whereClause};";
             return await RunSqlCount(sql);
         }
 
@@ -85,7 +86,10 @@ namespace DentalClinicApplication.Services.DataProvider
         public virtual async Task<IEnumerable<T>> GetItems(int start, int size)
         {
             string tableName = typeof(T).Name + "s";
-            string sql = $"SELECT * FROM {tableName} {orderByClause} {whereClause} LIMIT @size OFFSET @start;";
+            string sql = $"SELECT * FROM {tableName} " +
+                $"WHERE {whereClause} " +
+                $"ORDER BY {orderByClause} " +
+                $"LIMIT @size OFFSET @start;";
             return await RunSqlRange(start, size, sql);
         }
 

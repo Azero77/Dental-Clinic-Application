@@ -40,6 +40,19 @@ namespace DentalClinicApplication.Services.DataProvider
                 string newWhereClause = new string(whereClause?.SkipWhile(c => "WHERE".Contains(c)).ToArray());
                 whereClause = $"{_whereClause} AND {newWhereClause}";
             }
+            else if (whereClause is null
+                        &&
+                    _whereClause is not null
+                        &&
+                    _whereClause.StartsWith("WHERE DATE(")
+                        &&
+                    _whereClause.Contains("AND"))
+            {
+                //we will take the where date only without the second where clause
+                //this if statement was specifily applied for reset in HomePage
+                string newWhereClause = _whereClause!.Split("AND")[0];
+                _whereClause = newWhereClause;
+            }
             this._whereClause = whereClause ?? this._whereClause;
             this._orderClause = orderClause ?? this._orderClause;
         }
@@ -95,6 +108,10 @@ namespace DentalClinicApplication.Services.DataProvider
             });
             Appointment? appointment = appointments.FirstOrDefault();
             return appointment;
+        }
+        public override void ResetProvider()
+        {
+            ChangeProvider(null,null);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace DentalClinicApplication.Services.DataProvider
                 }
                 catch (SQLiteException)
                 {
-                    MessageService.SetMessage("SearchSchema is not Allowed",
+                    MessageService.SetMessage("Search Schema is not Allowed",
                         messageType: Stores.MessageType.Error);
                     return Enumerable.Empty<Appointment>();
                 }

@@ -24,7 +24,7 @@ namespace DentalClinicApplication.Services.DataProvider
         }
         public abstract Task<IEnumerable<T>> GetItems();
         public abstract void ChangeProvider(string? whereClause, string? orderClause);
-        public void ResetProvider()
+        public virtual void ResetProvider()
         {
             _whereClause = null;
             _orderClause = null;

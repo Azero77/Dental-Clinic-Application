@@ -40,30 +40,22 @@ namespace DentalClinicApplication.Services
         /// </summary>
         /// <param name="propertyName"></param>
         /// <param name="value">if not present then it will be an order clause</param>
-        public (string? whereClause,string? orderClause) sqlGenerator(string propertyName,object? value)
+        public (string? whereClause,string? orderClause) sqlGenerator(Dictionary<string,object> keyValuePairs)
         {
-            if (value is not null)
-            {
-                //then it will be a where clause
-                return (WhereClauseGenerator(propertyName, value), null);
-            }
-            return (null, OrderByGenerator(propertyName));
+            bool isOrder = keyValuePairs.Count == 1 && keyValuePairs.First().Value == null;
+
+            if (isOrder)
+                return (null, OrderByGenerator(keyValuePairs.First().Key));
+            return (WhereClauseGenerator(keyValuePairs), null);
         }
 
         protected virtual PropertyInfo? SearchProperty(string propertyName)
         {
             return typeof(T).GetProperty(propertyName);
         }
-        private string WhereClauseGenerator(string propertyName,object value)
-        {
-            //see the propertyType
-            //depending on the propertyType we set the sql string
-            PropertyInfo? prop = SearchProperty(propertyName);
-            if (prop is null)
-                throw new InvalidDataException("The Type is not Found");
-            Type propType = prop.PropertyType;
 
-            //parse the value, if there is error => invalidCastException
+        private static string sqlPropertyGenerator(string propertyName, object value, Type propType)
+        {
             try
             {
                 value = Convert.ChangeType(value, propType);
@@ -72,34 +64,51 @@ namespace DentalClinicApplication.Services
             {
                 throw;
             }
-            string sql = "WHERE ";
             switch (propType)
             {
                 case Type t when t == typeof(int):
-                    sql += $"{propertyName} = {value}";
-                    break;
+                    return $"{propertyName} = {value}";
                 case Type t when t == typeof(string):
-                    sql += $"{propertyName} LIKE '%{value}%'";
-                    break;
+                    return $"{propertyName} LIKE '%{value}%'";
                 case Type t when t == typeof(DateTime):
                     DateTime dateTime = DateTime.Parse(value!.ToString()!);
                     string sqlDate = dateTime.ToString("yyyy-MM-dd");
-                    sql += $"DATE({propertyName}) = DATE('{sqlDate}')";
-                    break;
+                    return $"DATE({propertyName}) = DATE('{sqlDate}')";
+                default:
+                    return string.Empty;
             }
-            return sql;
 
         }
-        
+
+        /// <summary>
+        /// For Multiple Search Like Name (FirstName and LastName)
+        /// </summary>
+        /// <param name="keyValuePairs"></param>
+        /// <returns></returns>
+        private string WhereClauseGenerator(Dictionary<string, object> keyValuePairs)
+        {
+            string sql = "WHERE ";
+            List<string> whereClauses = new();
+            foreach (string propertyName in keyValuePairs.Keys)
+            {
+                PropertyInfo? prop = SearchProperty(propertyName);
+                if (prop is null)
+                    throw new InvalidDataException("The Type is not Found");
+                Type propType = prop.PropertyType;
+                whereClauses.Add(sqlPropertyGenerator(propertyName, keyValuePairs[propertyName], propType!));
+            }
+            sql += string.Join(" AND ",whereClauses);
+            return sql;
+        }
 
         private string OrderByGenerator(string propertyName)
         {
             return $"ORDER BY {propertyName}";
         }
 
-        public void ChangeProvider(string propertyName,object? value)
+        public void ChangeProvider(Dictionary<string,object> keyValuePairs)
         {
-            (string? whereClause,string? orderClause) = sqlGenerator(propertyName, value);
+            (string? whereClause,string? orderClause) = sqlGenerator(keyValuePairs);
             CurrentProvider.ChangeProvider(whereClause, orderClause);
             ProviderChanged?.Invoke();
         }

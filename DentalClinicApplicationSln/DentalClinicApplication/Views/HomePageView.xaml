@@ -45,6 +45,7 @@
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="1.5*"/>
                 <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
             </Grid.ColumnDefinitions>
             <placeholdertextcontrol:PlaceHolderTextBox
                 Name="SearchTextBox"
@@ -69,6 +70,11 @@
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>
+            <Button
+                Style="{StaticResource PaginationNormalButtonStyle}"
+                Command="{Binding ResetCommand}"
+                Content="Reset"
+                Grid.Column="3"/>
         </Grid>
         <DataGrid
             SizeChanged="DataGrid_SizeChanged"
