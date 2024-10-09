@@ -17,10 +17,13 @@ using System.Windows.Media.Animation;
 
 namespace DentalClinicApplication.Services
 {
+    
     /// <summary>
     /// Class For Changing the provider For the Collection Store COllection
     /// </summary>
     /// <typeparam name="T">type of Item to provide</typeparam>
+
+
     public class ProviderChangerService<T>
     {
         public IProvider<T> CurrentProvider { get; }
@@ -119,6 +122,7 @@ namespace DentalClinicApplication.Services
             {typeof(string), "Text" },
             {typeof(DateTime), "Date" }
         };
+        
     }
 
     public class ProviderChangerService<T, TJOIN>
@@ -132,6 +136,26 @@ namespace DentalClinicApplication.Services
         {
             return typeof(T).GetProperty(propertyName) ??
                 typeof(TJOIN).GetProperty(propertyName);
+        }
+    }
+    public class ProviderChangerServiceHelpers
+    {
+        public static Dictionary<string, object> NameSearch(object value)
+        {
+            if (value is string stringValue)
+            {
+                Dictionary<string, object> result = new();
+                string[] NameArray = stringValue.Split(" ");
+                string firstName = NameArray[0];
+                result.Add("FirstName", firstName);
+                if (NameArray.Length > 1)
+                {
+                    string lastName = NameArray[1];
+                    result.Add("LastName", lastName);
+                }
+                return result;
+            }
+            throw new InvalidCastException();
         }
     }
 

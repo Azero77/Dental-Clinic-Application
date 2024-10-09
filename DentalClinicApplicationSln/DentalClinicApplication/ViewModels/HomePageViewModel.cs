@@ -25,13 +25,20 @@ namespace DentalClinicApplication.ViewModels
         public static IEnumerable<string> HomePageProperties =>
             new string[] 
             {
-                "FirstName",
-                "LastName",
-                "StartDate",
+                "Name",
+                "Date",
                 "Description",
-                "Email",
+                "Email"
             }
             ;
+        public static Dictionary<string, string> HomePageDataKeyValuePairsProperties =>
+            new Dictionary<string, string>()
+            {
+                {"Date","StartDate" },
+                {"Description","Description" },
+                {"Email","Email" }
+            };
+
         public string? FirstProperty => HomePageProperties.FirstOrDefault();
 
         public ICommand AddAppointmentNavigationCommand { get; }
@@ -88,10 +95,28 @@ namespace DentalClinicApplication.ViewModels
 
         public override Dictionary<string, object> SearchMapper(string property, object value)
         {
-            return new Dictionary<string, object>()
+            //switch for each property in Home Page Properties
+            if (HomePageDataKeyValuePairsProperties.TryGetValue(property, out string propertyDataName))
             {
-                {property,value }
-            };
+                return new Dictionary<string, object>() {
+                    {propertyDataName,value }
+                };
+            }
+            else
+            {
+                switch (property)
+                {
+                    case "Name":
+                        return ProviderChangerServiceHelpers.NameSearch(value);
+                    default:
+                        return new()
+                        {
+                            {property,value }
+                        };
+
+                }
+            }
+
         }
     }
 }

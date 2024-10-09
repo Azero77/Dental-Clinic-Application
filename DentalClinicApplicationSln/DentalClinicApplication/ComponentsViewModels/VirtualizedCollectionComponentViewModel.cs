@@ -22,7 +22,9 @@ namespace DentalClinicApplication.ComponentsViewModels
     public class VirtualizedCollectionComponentViewModel<T> : CollectionViewModelBase<T>
     {
         private VirtualizationCollection<T> _collection;
-        
+
+        public Func<string, object, Dictionary<string, object>> PropertiesFactory { get; }
+
         //maybe null if the collection does not have to be stored
         public ICollectionStore<T>? CollectionStore { get; private set; }
         
@@ -36,10 +38,12 @@ namespace DentalClinicApplication.ComponentsViewModels
         public VirtualizedCollectionComponentViewModel(
             VirtualizationCollection<T> collection,
             MessageService messageService,
+            Func<string, object, Dictionary<string, object>> propertiesFactory,
             ICollectionStore<T>? collectionStore = null)
             : base(collection.ItemsProvider)
         {
             _collection = collection;
+            PropertiesFactory = propertiesFactory;
             Collection = _collection;
             CollectionStore = collectionStore;
             _collection.CollectionChanged += _collection_CollectionChanged;
@@ -184,10 +188,7 @@ namespace DentalClinicApplication.ComponentsViewModels
 
         public override Dictionary<string, object> SearchMapper(string property, object value)
         {
-            return new Dictionary<string, object>()
-            {
-                {property,value }
-            };
+            return PropertiesFactory(property, value);
         }
     }
     public class VirtualizedClientsComponentViewModel : VirtualizedCollectionComponentViewModel<Client>
@@ -195,5 +196,18 @@ namespace DentalClinicApplication.ComponentsViewModels
         public VirtualizedClientsComponentViewModel(VirtualizationCollection<Client> collection, MessageService messageService, ICollectionStore<Client>? collectionStore = null) : base(collection, messageService, collectionStore)
         {
         }
+    }
+
+    public class VirtualizedCollectionComponentViewModelSearchHelpers
+    {
+        //implement dictionary key for each property
+
+        //implements factory
+        public Func<string, object, Dictionary<string, object>> AppointmentsPropertiesFactory =
+            (propertyName, value) => new();
+
+        public Func<string, object, Dictionary<string, object>> ClientsPropertiesFactory =
+           (propertyName, value) => new();
+
     }
 }
