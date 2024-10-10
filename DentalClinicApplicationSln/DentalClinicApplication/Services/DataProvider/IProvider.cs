@@ -15,5 +15,6 @@ namespace DentalClinicApplication.Services.DataProvider
             (string? whereClause,
             string? orderByClause);
         void ResetProvider();
+        Task<T?> GetItem(int id);
     }
 }

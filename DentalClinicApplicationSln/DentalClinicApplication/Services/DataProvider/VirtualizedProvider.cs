@@ -132,5 +132,10 @@ namespace DentalClinicApplication.Services.DataProvider
             _initializeCount = new Lazy<Task<int>>(InitializeCount);
         }
 
+        //no need for provider single item for search in Virtualization Provider
+        public Task<T?> GetItem(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

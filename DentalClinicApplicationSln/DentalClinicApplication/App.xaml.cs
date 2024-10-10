@@ -53,6 +53,7 @@ namespace DentalClinicApplication
                     //provider for dataService where we need all appointments
                     sc.AddSingleton<IProvider<Appointment>>(sp =>
                     GetAllAppointmentsProvider(sp));
+                    sc.AddSingleton<IProvider<Client>,ClientsProvider>();
                     sc.AddSingleton<IProviderHelper<Appointment>, AppointemntsProviderHelper>();
                     sc.AddSingleton<IProviderHelper<Client>, ClientsProviderHelper>();
                     //provider for the home page where we need the appointment for today
@@ -109,6 +110,7 @@ namespace DentalClinicApplication
                     sc.AddSingleton<INavigationService<HomePageViewModel>, LayoutNavigationService<HomePageViewModel>>();
                     sc.AddSingleton<INavigationService<MakeEditClientViewModel>, LayoutNavigationService<MakeEditClientViewModel>>();
                     sc.AddSingleton<INavigationService<AllAppointmentsViewModel>,LayoutNavigationService<AllAppointmentsViewModel>>();
+                    sc.AddSingleton<INavigationService<ClientProfileViewModel>,LayoutNavigationService<ClientProfileViewModel>>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
                     );
@@ -257,6 +259,21 @@ namespace DentalClinicApplication
                                     //SubmitStatus Should be edit if the factory is not a dependency injection requiredSErvice
                                     SubmitStatus.Edit
                                     );
+        }
+        private Func<object?, ClientProfileViewModel> GetClientProfileViewModel(IServiceProvider sp)
+        {
+            return (obj) =>
+            {
+                if (!int.TryParse(obj?.ToString() ?? "", out int id))
+                {
+                    throw new InvalidCastException();
+                }
+                return ClientProfileViewModel.LoadClientProfileViewModel(
+                    sp.GetRequiredService<IProvider<Client>>(),
+                    id
+                    );
+                
+            }
         }
 
         private VirtualizedCollectionComponentViewModel<Appointment> GetVirtualizedAppointmentsComponentViewModel(IServiceProvider sp)

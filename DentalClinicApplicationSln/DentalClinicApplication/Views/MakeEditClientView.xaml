@@ -12,7 +12,9 @@
         <Style TargetType="UserControl">
             <Setter Property="Validation.ErrorTemplate">
                 <Setter.Value>
-                    <AdornedElementPlaceholder/>
+                    <ControlTemplate>
+                        <AdornedElementPlaceholder/>
+                    </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>

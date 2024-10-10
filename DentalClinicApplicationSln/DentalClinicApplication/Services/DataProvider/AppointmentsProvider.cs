@@ -87,12 +87,7 @@ namespace DentalClinicApplication.Services.DataProvider
                 orderClause
                 );
         }
-
-        public Task<Appointment?> GetItem(int id)
-        {
-            return GetItem("Id", id);
-        }
-        public async Task<Appointment?> GetItem(string propName, object value)
+        public override async Task<Appointment?> GetItem(string propName, object value)
         {
             string sql = "SELECT a.Id,StartDate,EndDate,ClientId,FirstName,LastName " +
                 "FROM Appointments a JOIN Clients c" +

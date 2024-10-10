@@ -41,7 +41,18 @@
                                                 BorderThickness="1"
                                                 CornerRadius="8"
                                                 Padding="5">
-                                            <wpfx:TimePicker x:Name="PART_TimePickerSelector"/>
+                                            <StackPanel>
+                                                <wpfx:TimePicker x:Name="PART_TimePickerSelector"/>
+                                                <ItemsControl ItemsSource="{TemplateBinding Validation.Errors}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock
+                                                                Text="{Binding ErrorContent}"
+                                                                Foreground="Red"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
                                         </Border>
                                     </Popup>
                                 </Grid>
