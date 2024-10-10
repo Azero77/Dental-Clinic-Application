@@ -178,6 +178,7 @@
             <Button Command="{Binding MovePrevious}"
                     CommandParameter="{Binding CurrentPageIndex}"
                     Content="&lt;"
+
                     >
 
             </Button>

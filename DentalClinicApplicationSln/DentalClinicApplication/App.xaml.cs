@@ -155,6 +155,9 @@ namespace DentalClinicApplication
                             MakeLayoutNavigationService<AllClientsViewModel>(sp)
                             )
                     ) ;
+                    sc.AddSingleton<Func<object?, ClientProfileViewModel>>(sp =>
+                    GetClientProfileViewModel(sp)
+                    );
                     sc.AddSingleton<MainViewModel>();
                     sc.AddSingleton<MainWindow>(sp => new MainWindow() { DataContext = sp.GetRequiredService<MainViewModel>()});
                 })
@@ -212,7 +215,8 @@ namespace DentalClinicApplication
             return new AllClientsViewModel(
                 sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Client>>(),
                 sp.GetRequiredService<INavigationService<MakeEditClientViewModel>>(),
-                GetEditLayoutNavigationService<MakeEditClientViewModel, Client>(sp, EditClientViewModelFactory(sp)));
+                GetEditLayoutNavigationService<MakeEditClientViewModel, Client>(sp, EditClientViewModelFactory(sp)),
+                sp.GetRequiredService<INavigationService<ClientProfileViewModel>>());
         }
 
         private LayoutNavigationService<TViewModel> GetEditLayoutNavigationService<TViewModel,T>(
@@ -272,8 +276,8 @@ namespace DentalClinicApplication
                     sp.GetRequiredService<IProvider<Client>>(),
                     id
                     );
-                
-            }
+
+            };
         }
 
         private VirtualizedCollectionComponentViewModel<Appointment> GetVirtualizedAppointmentsComponentViewModel(IServiceProvider sp)

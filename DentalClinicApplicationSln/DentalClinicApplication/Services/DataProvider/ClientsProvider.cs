@@ -25,11 +25,11 @@ namespace DentalClinicApplication.Services.DataProvider
 
         public override async Task<Client?> GetItem(string propertyName, object value)
         {
-            string sql = "SELECT c.Id,FirstName,LastName,Email,Gender,DateOfBirth " +
+            string sql = "SELECT c.Id,FirstName,LastName,Email,Gender,DateOfBirth," +
                 "ClientId,a.Id,StartDate,EndDate,Description" +
-                " From Clients JOIN Appointments ON " +
-                "a.ClientId = c.Id" +
-                $"WHERE {propertyName} = @value";
+                " From Clients c JOIN Appointments a ON " +
+                "a.ClientId = c.Id " +
+                $"WHERE c.{propertyName} = @value;";
             Client client = new();
             client.Appointments = null;
             await DataContext.RunAsync(conn =>

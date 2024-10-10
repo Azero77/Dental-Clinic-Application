@@ -38,6 +38,16 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.ViewItemNavigationCommand, RelativeSource={RelativeSource AncestorType={x:Type local:AllClientView}}}"
+                                    CommandParameter="{Binding Id}"
+                                    Content="View"
+                                    Style="{StaticResource StatusButton}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </components:VirtualizedCollectionComponent.Columns>
         </components:VirtualizedCollectionComponent>
         <Button

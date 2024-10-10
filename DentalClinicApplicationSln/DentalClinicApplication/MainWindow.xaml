@@ -47,6 +47,9 @@
             <DataTemplate DataType="{x:Type vms:MakeEditClientViewModel}">
                 <views:MakeEditClientView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vms:ClientProfileViewModel}">
+                <views:ClientProfileView/>
+            </DataTemplate>
         </Grid.Resources>
         <ContentControl
             Content="{Binding CurrentViewModel}">

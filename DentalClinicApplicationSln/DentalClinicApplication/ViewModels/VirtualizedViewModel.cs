@@ -46,13 +46,15 @@ namespace DentalClinicApplication.ViewModels
 
     public class AllClientsViewModel : VirtualizedViewModel<Client>
     {
-        public AllClientsViewModel(VirtualizedCollectionComponentViewModel<Client> componentViewModel, INavigationService addItemNavigationService, INavigationService editItemNavigationService) : base(componentViewModel, addItemNavigationService, editItemNavigationService)
+        public AllClientsViewModel(VirtualizedCollectionComponentViewModel<Client> componentViewModel, INavigationService addItemNavigationService, INavigationService editItemNavigationService,INavigationService viewItemNavigationService) : base(componentViewModel, addItemNavigationService, editItemNavigationService)
         {
             AddClientNavigationCommand = AddItem;
             EditClientNavigationCommand = EditItem;
+            ViewItemNavigationCommand = new NavigationCommand(viewItemNavigationService);
         }
 
         public ICommand AddClientNavigationCommand { get; }
         public ICommand EditClientNavigationCommand { get; }
+        public ICommand ViewItemNavigationCommand { get; }
     }
 }
