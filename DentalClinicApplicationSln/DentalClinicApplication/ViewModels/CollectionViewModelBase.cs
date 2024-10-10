@@ -35,9 +35,9 @@ namespace DentalClinicApplication.ViewModels
 
         private void OnCollectionChanged()
         {
-			CollectionChagned?.Invoke();
+			CollectionChanged?.Invoke();
         }
-		public event Action? CollectionChagned;
+		public event Action? CollectionChanged;
 
         public IProvider<T> CollectionProvider { get; set; }
 
@@ -70,7 +70,8 @@ namespace DentalClinicApplication.ViewModels
 			LoadCommand.Execute(null);
 			return collectionViewModelBase;
 		}
-	}
+
+    }
 
 	/// <summary>
 	/// View Model Base Class For Searching With CollectionViewModel base

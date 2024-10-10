@@ -7,7 +7,6 @@
         xmlns:vms ="clr-namespace:DentalClinicApplication.ViewModels"
         xmlns:views="clr-namespace:DentalClinicApplication.Views" xmlns:components="clr-namespace:DentalClinicApplication.Components"
         xmlns:cvms="clr-namespace:DentalClinicApplication.ComponentsViewModels"
-        xmlns:resx="clr-namespace:ResourceDictionariesContainer;assembly=ResourceDictionariesContainer"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 

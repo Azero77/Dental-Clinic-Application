@@ -17,44 +17,32 @@ namespace DentalClinicApplication.ViewModels
     public class VirtualizedViewModel<T> : ViewModelBase
     {
         public VirtualizedCollectionComponentViewModel<T> ComponentViewModel { get; }
-        public ICommand AddItem { get; }
-        //Edit Item required Seprate NavigationService so we make a dependency on NavigationStore
-        //And A factory
-        public ICommand EditItem { get; }
+        public ICommand EditItemNavigationCommand { get; }
         public VirtualizedViewModel(
             VirtualizedCollectionComponentViewModel<T> componentViewModel,
-            INavigationService addItemNavigationService,
-            INavigationService editItemNavigationService)
+            INavigationService editItemNavigationService
+            )
         {
             ComponentViewModel = componentViewModel;
-            AddItem = new NavigationCommand(addItemNavigationService);
-            EditItem = new NavigationCommand(editItemNavigationService);
+            EditItemNavigationCommand = new NavigationCommand(editItemNavigationService);
         }
     }
     public class AllAppointmentsViewModel : VirtualizedViewModel<Appointment>
     {
-        public AllAppointmentsViewModel(VirtualizedCollectionComponentViewModel<Appointment> componentViewModel, INavigationService addItemNavigationService, INavigationService editItemNavigationService) : base(componentViewModel, addItemNavigationService, editItemNavigationService)
+        public AllAppointmentsViewModel(VirtualizedCollectionComponentViewModel<Appointment> componentViewModel, INavigationService addItemNavigationService ) : base(componentViewModel, addItemNavigationService)
         {
-            AddAppointmentNavigationCommand = AddItem;
-            EditAppointmentNavigationCommand = EditItem;
         }
 
-        public ICommand AddAppointmentNavigationCommand { get; }
-        public ICommand EditAppointmentNavigationCommand { get; }
         
     }
 
     public class AllClientsViewModel : VirtualizedViewModel<Client>
     {
-        public AllClientsViewModel(VirtualizedCollectionComponentViewModel<Client> componentViewModel, INavigationService addItemNavigationService, INavigationService editItemNavigationService,INavigationService viewItemNavigationService) : base(componentViewModel, addItemNavigationService, editItemNavigationService)
+        public AllClientsViewModel(VirtualizedCollectionComponentViewModel<Client> componentViewModel, INavigationService addItemNavigationService,INavigationService viewItemNavigationService) : base(componentViewModel, addItemNavigationService)
         {
-            AddClientNavigationCommand = AddItem;
-            EditClientNavigationCommand = EditItem;
             ViewItemNavigationCommand = new NavigationCommand(viewItemNavigationService);
         }
 
-        public ICommand AddClientNavigationCommand { get; }
-        public ICommand EditClientNavigationCommand { get; }
         public ICommand ViewItemNavigationCommand { get; }
     }
 }

@@ -10,7 +10,7 @@ namespace DentalClinicApp.ViewModels
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void Dispose()
+        public virtual void Dispose()
         {
         }
 

@@ -34,6 +34,10 @@ namespace DentalClinicApplication.Services.DataProvider
             _whereClause = null;
             _orderClause = null;
         }
+        ~Provider()
+        {
+
+        }
 
     }
 }

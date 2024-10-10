@@ -24,7 +24,7 @@ namespace DentalClinicApplication.ViewModels
         public ICommand SearchCommand { get; }
         
 
-        public ICommand AddAppointmentNavigationCommand { get; }
+        public ICommand EditItemNavigationCommand { get; }
         public ICommand ResetCommand { get; }
         public HomePageViewModel(
             IProvider<Appointment> collectionProvider,
@@ -37,8 +37,8 @@ namespace DentalClinicApplication.ViewModels
                 new Services.ProviderChangerService<Appointment,Client>(this.CollectionProvider,OnProviderChanged),
                     messageService
                 );
-            CollectionChagned += OnCollectionChanged;
-            AddAppointmentNavigationCommand = new NavigationCommand(makeEditAppointmentNavigationService );
+            CollectionChanged += OnCollectionChanged;
+            EditItemNavigationCommand = new NavigationCommand(makeEditAppointmentNavigationService );
             ResetCommand = new RelayCommand<object>(ResetDelegate);
         }
 
@@ -77,6 +77,5 @@ namespace DentalClinicApplication.ViewModels
             HomePageViewModel homePageViewModel = new(collectionProvider,navigationService, messageService,providerHelper);
             return (HomePageViewModel) LoadCollectionViewModel(homePageViewModel);
         }
-
     }
 }

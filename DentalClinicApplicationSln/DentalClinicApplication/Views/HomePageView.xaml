@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DentalClinicApplication.Views"
              xmlns:loadingspinnercontrol="clr-namespace:LoadingSpinnerControl;assembly=LoadingSpinnerControl"
              xmlns:converters="clr-namespace:DentalClinicApplication.Converters" xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:placeholdertextcontrol="clr-namespace:PlaceHolderTextControl;assembly=PlaceHolderTextControl"
+             xmlns:placeholdertextcontrol="clr-namespace:PlaceHolderTextControl;assembly=PlaceHolderTextControl" xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              FontSize="18"
@@ -106,6 +106,18 @@
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Description" Binding ="{Binding Description}" Width="2*">
                 </DataGridTextColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.EditItemNavigationCommand, RelativeSource={RelativeSource AncestorType={x:Type local:HomePageView}}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource EditButtonStyle}"
+                                    >
+                                <fa:FontAwesome Icon="Edit"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <loadingspinnercontrol:LoadingSpinner
@@ -142,7 +154,7 @@
         <Button
             Style="{StaticResource StatusButton}"
             Content="Add Appointment"
-            Command="{Binding AddAppointmentNavigationCommand}"
+            Command="{Binding EditItemNavigationCommand}"
             Grid.Row="3"
             Grid.Column="1"/>
     </Grid>
