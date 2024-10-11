@@ -165,7 +165,7 @@
                 <!-- RichTextBox with CornerRadius -->
                 <StackPanel Grid.Row="3" Name="DescriptionContainer" Loaded="DescriptionContainer_Loaded">
                     <Label Content="Description:"></Label>
-                    <wpfx:RichTextBox Text="{Binding Description}" Name="DescriptionTextBox"/>
+                    <TextBox FontSize="20" Text="{Binding Description}" Name="DescriptionTextBox"/>
                 </StackPanel>
 
                 <!-- Buttons -->

@@ -35,7 +35,7 @@ namespace DentalClinicApplication.Services.DataProvider
         }
         public override async Task<IEnumerable<Client>> GetItems(int start, int size)
         {
-            string clientsSql = "SELECT Id,FirstName,LastName,Email " +
+            string clientsSql = "SELECT Id,FirstName,LastName,Gender,DateOfBirth,Email " +
                 $"FROM Clients {whereClause} {orderByClause} LIMIT @size OFFSET @start;";
             //get the clients , get appointments of the clients, map them together
             IEnumerable<ClientDTO> clients = await DataContext.RunAsync(conn =>

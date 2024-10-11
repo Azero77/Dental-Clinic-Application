@@ -71,6 +71,7 @@ namespace DentalClinicApplication
                     new VirtualizationCollection<Appointment>(
                         sp.GetRequiredService<IVirtualizationItemsProvider<Appointment>>()));
                     sc.AddSingleton<ICollectionStore<Client>,VirtualizedCollectionStore<Client>>();
+                    sc.AddSingleton<ICollectionStore<Appointment>, VirtualizedCollectionStore<Appointment>>();
                     sc.AddSingleton<NavigationStore>();
                     sc.AddSingleton<IDataManipulator,DataManipulator>();
                     sc.AddSingleton<IDataService<Appointment>, AppointmentsDataService>();
@@ -83,19 +84,6 @@ namespace DentalClinicApplication
                     GetVirtualizedClientComponentViewModel(sp));
                     sc.AddTransient<VirtualizedCollectionComponentViewModel<Appointment>>(sp =>
                     GetVirtualizedAppointmentsComponentViewModel(sp));
-                   /* sc.AddTransient<ClientsListingViewModel>(sp =>
-                        ClientsListingViewModel.GetClientsListingViewModel
-                        (sp.GetRequiredService<IProvider<Client>>(),
-                        sp.GetRequiredService<INavigationService<ClientsManipulationViewModel>>(),
-                        sp.GetRequiredService<IDataManipulator>(),
-                        sp.GetRequiredService<ICollectionStore<Client>>(),
-                        sp.GetRequiredService<VirtualizedClientsComponentViewModel>())
-                    ) ;*/
-                    //Default is Insert 
-                    sc.AddTransient<ClientsManipulationViewModel>(sp => new ClientsManipulationViewModel(
-                        sp.GetRequiredService<INavigationService>(),
-                        sp.GetRequiredService<IDataManipulator>()
-                        ));
                     sc.AddTransient<MakeEditAppointmentViewModel>();
                     sc.AddTransient<MakeEditClientViewModel>();
                     sc.AddTransient<AllAppointmentsViewModel>(
@@ -285,13 +273,15 @@ namespace DentalClinicApplication
             return VirtualizedCollectionComponentViewModel<Appointment>.LoadVirtualizedCollectionComponentViewModel(
                 sp.GetRequiredService<VirtualizationCollection<Appointment>>(),
                 sp.GetRequiredService<MessageService>(),
-                sp.GetRequiredService<IProviderHelper<Appointment>>());
+                sp.GetRequiredService<IProviderHelper<Appointment>>(),
+                sp.GetRequiredService<ICollectionStore<Appointment>>());
         }
 
         
         private IProvider<Appointment> GetAllAppointmentsProvider(IServiceProvider sp)
         {
-            return new AppointmentsProvider(sp.GetRequiredService<DbContext>(),
+            return new AppointmentsProvider(
+                sp.GetRequiredService<DbContext>(),
                 sp.GetRequiredService<IMapper>());
         }
 

@@ -9,9 +9,5 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <StackPanel
-        Visibility="{Binding IsShown, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <TextBlock HorizontalAlignment="Center" Text="{Binding Message}"/>
-        <Button Command="{Binding CloseCommand}">Clear</Button>
-    </StackPanel>
+    <TextBlock HorizontalAlignment="Center" Text="{Binding Message}"/>
 </UserControl>

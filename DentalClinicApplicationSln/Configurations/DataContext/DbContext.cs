@@ -39,42 +39,36 @@ namespace Configurations.DataContext
 
         public T Run<T>(Func<DbConnection,T> func)
         {
-            DbConnection connection = GetConnection();
-            connection.Open();
-            T? result = default;
-            try
+            using (DbConnection connection = GetConnection())
             {
-                result = func(connection);
+                connection.Open();
+                try
+                {
+                    return func(connection);
+
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                connection.Close();
-            }
-            return result;
         }
 
         public async Task<T> RunAsync<T>(Func<DbConnection,Task<T>> func)
         {
-            DbConnection connection = GetConnection();
-            await connection.OpenAsync();
-            T? result = default;
-            try
+            await using (DbConnection connection = GetConnection())
             {
-                result = await func(connection);
+                await connection.OpenAsync();
+                try
+                {
+                    return await (func(connection));
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
             }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-            }
-            return result;
         }
     }
 

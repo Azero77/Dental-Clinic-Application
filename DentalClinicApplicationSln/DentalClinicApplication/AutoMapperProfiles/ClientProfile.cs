@@ -34,10 +34,10 @@ namespace DentalClinicApplication.AutoMapperProfiles
 
         private Gender GetGenderEnum(string gender)
         {
-            return gender switch
+            return gender.ToLower() switch
             {
-                "Male" => Gender.Male,
-                "Female" => Gender.Female,
+                "male" => Gender.Male,
+                "female" => Gender.Female,
                 _ => Gender.Undefinded
             };
         }
