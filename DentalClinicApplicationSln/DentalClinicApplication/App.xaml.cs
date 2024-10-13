@@ -105,17 +105,9 @@ namespace DentalClinicApplication
                     obj => 
                     {
                         if (obj is null)
-                            return sp.GetRequiredService<MakeEditAppointmentViewModel>();
-                        return new MakeEditAppointmentViewModel(
-                                GetVirtualizedClientComponentViewModel(sp),
-                                sp.GetRequiredService<INavigationService<AllAppointmentsViewModel>>(),
-                                sp.GetRequiredService<IDataService<Appointment>>(),
-                                sp.GetRequiredService<MessageService>(),
-                                sp.GetRequiredService<IMapper>(),
-                                obj as Appointment,
-                                //SubmitStatus Should be edit if the factory is not a dependency injection requiredSErvice
-                                SubmitStatus.Edit
-                                );
+                            GetMakeEditAppointmentViewModel(sp, SubmitStatus.Create);
+                        return GetMakeEditAppointmentViewModel(sp, SubmitStatus.Edit, obj);
+
                     });
 
                     sc.AddSingleton<Func<object?, AllAppointmentsViewModel>>(sp =>
@@ -130,15 +122,8 @@ namespace DentalClinicApplication
                     obj =>
                     {
                         if (obj is null)
-                            return sp.GetRequiredService<MakeEditClientViewModel>();
-                        return new MakeEditClientViewModel(
-                                sp.GetRequiredService<IMapper>(),
-                                sp.GetRequiredService<INavigationService<AllClientsViewModel>>(),
-                                sp.GetRequiredService<IDataService<Client>>(),
-                                sp.GetRequiredService<MessageService>(),
-                                obj as Client,
-                                SubmitStatus.Edit
-                                );
+                            return GetMakeEditClientViewModel(sp,SubmitStatus.Create);
+                        return GetMakeEditClientViewModel(sp, SubmitStatus.Edit, obj);
                     });
 
                     sc.AddSingleton<MessageViewModel>();
@@ -251,6 +236,30 @@ namespace DentalClinicApplication
                 sp.GetRequiredService<INavigationService<MakeEditAppointmentViewModel>>());
         }
         
+        private MakeEditAppointmentViewModel GetMakeEditAppointmentViewModel(IServiceProvider sp,SubmitStatus submitStatus,object? obj = null)
+        {
+            return new MakeEditAppointmentViewModel(
+                                GetVirtualizedClientComponentViewModel(sp),
+                                sp.GetRequiredService<INavigationService<AllAppointmentsViewModel>>(),
+                                sp.GetRequiredService<IDataService<Appointment>>(),
+                                sp.GetRequiredService<MessageService>(),
+                                sp.GetRequiredService<IMapper>(),
+                                obj as Appointment,
+                                //SubmitStatus Should be edit if the factory is not a dependency injection requiredSErvice
+                                submitStatus
+                                );
+        }
+        private MakeEditClientViewModel GetMakeEditClientViewModel(IServiceProvider sp, SubmitStatus submitStatus, object? obj = null)
+        {
+            return new MakeEditClientViewModel(
+                                sp.GetRequiredService<IMapper>(),
+                                sp.GetRequiredService<INavigationService<AllClientsViewModel>>(),
+                                sp.GetRequiredService<IDataService<Client>>(),
+                                sp.GetRequiredService<MessageService>(),
+                                obj as Client,
+                                submitStatus
+                                );
+        }
         private Func<object?, ClientProfileViewModel> GetClientProfileViewModel(IServiceProvider sp)
         {
             return (obj) =>

@@ -86,14 +86,7 @@ namespace DentalClinicApplication.ViewModels
             Appointments.Clear();
             CollectionChanged -= OnCollectionChanged;
             ProviderChangerService.ProviderChanged -= OnProviderChanged;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
             base.Dispose();
-        }
-        ~HomePageViewModel()
-        {
-
         }
     }
 }

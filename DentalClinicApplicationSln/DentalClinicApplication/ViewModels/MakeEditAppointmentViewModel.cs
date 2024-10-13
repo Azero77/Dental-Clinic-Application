@@ -187,17 +187,7 @@ namespace DentalClinicApplication.ViewModels
         public override void Dispose()
         {
             ClientSelectionViewModel.ItemSelected -= OnItemSelected;
-            
-            //
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            //
             base.Dispose();
-        }
-        ~MakeEditAppointmentViewModel()
-        {
-
         }
     }
 }

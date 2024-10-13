@@ -35,9 +35,5 @@ namespace DentalClinicApplication.ViewModels
             ItemSelected -= OnItemSelected;
             base.Dispose();
         }
-        ~ClientSelectionViewModel()
-        {
-
-        }
     }
 }
