@@ -20,6 +20,9 @@ namespace DentalClinicApplication.ViewModels
         public NavigationBarViewModel NavigationBarViewModel { get; }
         public MessageViewModel MessageViewModel { get; }
         public ViewModelBase ContentViewModel { get; }
-
+        public override void Dispose()
+        {
+            ContentViewModel.Dispose();
+        }
     }
 }

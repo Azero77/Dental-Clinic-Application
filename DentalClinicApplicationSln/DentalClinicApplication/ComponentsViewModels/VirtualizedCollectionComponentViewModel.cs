@@ -52,8 +52,8 @@ namespace DentalClinicApplication.ComponentsViewModels
             Move = new VirtualizationCollectionMoveCommand<T>(this,collection);
             MoveNext = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Next);
             MovePrevious = new VirtualizationCollectionMoveCommand<T>(this,collection, moveValue: MoveValue.Previous);
-            ProviderChangerService<T> providerChangerService = new(this.CollectionProvider,OnProviderChanged);
-            SearchCommand = new SearchCommand<T>(this,providerChangerService,messageService);
+            ProviderChangerService = new(collection.ItemsProvider,OnProviderChanged);
+            SearchCommand = new SearchCommand<T>(this,ProviderChangerService,messageService);
             ResetCommand = new RelayCommand<object>(ResetDelegate);
         }
 
@@ -86,7 +86,6 @@ namespace DentalClinicApplication.ComponentsViewModels
         public ICommand? SearchCommand { get; set; }
         public ICommand? OrderCommand { get; set; }
         public ICommand? ResetCommand { get; set; }
-
         public int CurrentPageIndex => _collection.CurrentPageIndex;
         public int PageSize
         {
@@ -153,7 +152,16 @@ namespace DentalClinicApplication.ComponentsViewModels
             return result;
         }
 
-
+        public override void Dispose()
+        {
+            _collection.CollectionChanged -= _collection_CollectionChanged;
+            _collection.PropertyChanged -= OnPropertyChanged;
+            (Move as IDisposable)?.Dispose();
+            (MoveNext as IDisposable)?.Dispose();
+            (MovePrevious as IDisposable)?.Dispose();
+            ProviderChangerService.ProviderChanged -= OnProviderChanged;
+            base.Dispose();
+        }
         //initializing a new virtualization view model since there is no constuctor 
         // can be used to pass the view model when view is made
         /// <summary>
@@ -190,18 +198,5 @@ namespace DentalClinicApplication.ComponentsViewModels
         public VirtualizedClientsComponentViewModel(VirtualizationCollection<Client> collection, MessageService messageService,IProviderHelper<Client> ph ,ICollectionStore<Client>? collectionStore = null) : base(collection, messageService,ph, collectionStore)
         {
         }
-    }
-
-    public class VirtualizedCollectionComponentViewModelSearchHelpers
-    {
-        //implement dictionary key for each property
-
-        //implements factory
-        public Func<string, object, Dictionary<string, object>> AppointmentsPropertiesFactory =
-            (propertyName, value) => new();
-
-        public Func<string, object, Dictionary<string, object>> ClientsPropertiesFactory =
-           (propertyName, value) => new();
-
     }
 }

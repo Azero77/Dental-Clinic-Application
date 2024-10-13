@@ -11,7 +11,7 @@ using System.Windows.Input;
 namespace DentalClinicApplication.Commands
 {
     public class VirtualizationCollectionMoveCommand<T>
-        : AsyncCommandBase
+        : AsyncCommandBase, IDisposable
     {
         private readonly MoveValue _moveValue;
 
@@ -41,6 +41,12 @@ namespace DentalClinicApplication.Commands
             return _collection.CanMoveToPage(_collection.CurrentPageIndex, _moveValue)
                 && base.CanExecute(null);
         }
+
+        public void Dispose()
+        {
+            _collection.PageChanged -= OnCanExecuteChanged;
+        }
+
         public override async Task ExecuteAsync(object? parameter)
         {
             int pageNumber;

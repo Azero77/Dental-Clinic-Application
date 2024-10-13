@@ -22,9 +22,7 @@ namespace DentalClinicApp.Commands
 
         public override void Execute(object? parameter)
         {
-            Task.Run(async () => {
-                NavigationService.Navigate(parameter); }
-           );
+                NavigationService.Navigate(parameter);
         }
     }
 }

@@ -90,7 +90,6 @@ namespace DentalClinicApplication
                         sp => GetAllAppointmentsViewModel(sp));
                     sc.AddTransient<AllClientsViewModel>(
                         sp => GetAllClientsViewModel(sp));
-                    sc.AddSingleton<INavigationService>(sp => MakeLayoutNavigationService<HomePageViewModel>(sp));
                     sc.AddSingleton<INavigationService<ClientsManipulationViewModel>,LayoutNavigationService<ClientsManipulationViewModel>>();
                     sc.AddSingleton<INavigationService<MakeEditAppointmentViewModel>,
                         LayoutNavigationService<MakeEditAppointmentViewModel>>();
@@ -108,7 +107,7 @@ namespace DentalClinicApplication
                         if (obj is null)
                             return sp.GetRequiredService<MakeEditAppointmentViewModel>();
                         return new MakeEditAppointmentViewModel(
-                                sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Client>>(),
+                                GetVirtualizedClientComponentViewModel(sp),
                                 sp.GetRequiredService<INavigationService<AllAppointmentsViewModel>>(),
                                 sp.GetRequiredService<IDataService<Appointment>>(),
                                 sp.GetRequiredService<MessageService>(),
@@ -120,13 +119,13 @@ namespace DentalClinicApplication
                     });
 
                     sc.AddSingleton<Func<object?, AllAppointmentsViewModel>>(sp =>
-                    obj => sp.GetRequiredService<AllAppointmentsViewModel>());
+                    obj => GetAllAppointmentsViewModel(sp));
                     sc.AddSingleton<Func<object?, NavigationBarViewModel>>(
                         sp => obj => sp.GetRequiredService<NavigationBarViewModel>());
                     sc.AddSingleton<Func<object?, MessageViewModel>>(sp => 
                     obj => sp.GetRequiredService<MessageViewModel>());
                     sc.AddSingleton<Func<object?, AllClientsViewModel>>(sp =>
-                    obj => sp.GetRequiredService<AllClientsViewModel>());
+                    obj => GetAllClientsViewModel(sp));
                     sc.AddSingleton<Func<object?, MakeEditClientViewModel>>(sp => 
                     obj =>
                     {
@@ -160,7 +159,7 @@ namespace DentalClinicApplication
                             sp.GetRequiredService<IDataManipulator>());
                     });
                     sc.AddSingleton<Func<object?, HomePageViewModel>>(sp =>
-                    (obj) => sp.GetRequiredService<HomePageViewModel>());
+                    (obj) =>GetHomePageViewModel(sp));
                     sc.AddSingleton<NavigationBarViewModel>(sp =>
                         new(
                             sp.GetRequiredService<NavigationStore>(),
@@ -181,7 +180,7 @@ namespace DentalClinicApplication
         {
             _host.Start();
             AddConfigurationResourceDictionary(_host.Services);
-            INavigationService InitialNavigatioService = _host.Services.GetRequiredService<INavigationService>();
+            INavigationService InitialNavigatioService = _host.Services.GetRequiredService<INavigationService<HomePageViewModel>>();
             InitialNavigatioService.Navigate(null);
             MainWindow window = _host.Services.GetRequiredService<MainWindow>();
             window.Show();
@@ -227,7 +226,7 @@ namespace DentalClinicApplication
         private AllClientsViewModel GetAllClientsViewModel(IServiceProvider sp)
         {
             return new AllClientsViewModel(
-                sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Client>>(),
+                GetVirtualizedClientComponentViewModel(sp),
                 sp.GetRequiredService<INavigationService<MakeEditClientViewModel>>(),
                 sp.GetRequiredService<INavigationService<ClientProfileViewModel>>());
         }
@@ -248,7 +247,7 @@ namespace DentalClinicApplication
         private AllAppointmentsViewModel GetAllAppointmentsViewModel(IServiceProvider sp)
         {
             return new AllAppointmentsViewModel(
-                sp.GetRequiredService<VirtualizedCollectionComponentViewModel<Appointment>>(),
+                GetVirtualizedAppointmentsComponentViewModel(sp),
                 sp.GetRequiredService<INavigationService<MakeEditAppointmentViewModel>>());
         }
         

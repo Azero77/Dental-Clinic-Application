@@ -23,6 +23,7 @@ namespace DentalClinicApplication.ViewModels
         MakeEditItemViewModel<Appointment>
     {
         #region props
+        public ClientSelectionViewModel ClientSelectionViewModel { get; }
         private int _id = 0;
         //Date of the day (yyyy-MM-dd)
         private DateTime _dayDate = DateTime.Now;
@@ -141,7 +142,7 @@ namespace DentalClinicApplication.ViewModels
 
         public MakeEditAppointmentViewModel(
             VirtualizedCollectionComponentViewModel<Client> collectionViewModel,
-            INavigationService navigationService,
+            INavigationService<AllAppointmentsViewModel> navigationService,
             IDataService<Appointment> dataService,
             MessageService messageService,
             IMapper mapper,
@@ -149,9 +150,9 @@ namespace DentalClinicApplication.ViewModels
             SubmitStatus submitStatus = SubmitStatus.Create)
             : base(mapper,dataService,navigationService,messageService)
         {
-            ClientSelectionViewModel clientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel, OnItemSelected);
+            ClientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel, OnItemSelected);
             ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(
-                (obj) => new ClientSelectionWindow(clientSelectionViewModel));
+                (obj) => new ClientSelectionWindow(ClientSelectionViewModel));
             SubmitCommand = new SubmitItemCommand<Appointment>(
                 this,
                 navigationService,
@@ -182,6 +183,21 @@ namespace DentalClinicApplication.ViewModels
             {
                 Client = client;
             }
+        }
+        public override void Dispose()
+        {
+            ClientSelectionViewModel.ItemSelected -= OnItemSelected;
+            
+            //
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            //
+            base.Dispose();
+        }
+        ~MakeEditAppointmentViewModel()
+        {
+
         }
     }
 }

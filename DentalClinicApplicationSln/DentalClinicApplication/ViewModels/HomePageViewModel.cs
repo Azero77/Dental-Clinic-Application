@@ -4,6 +4,7 @@ using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataProvider;
+using Microsoft.Extensions.Logging.Abstractions;
 using ResourceDictionariesContainer.Resources;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace DentalClinicApplication.ViewModels
     public class HomePageViewModel : CollectionViewModelBase<Appointment>
     {
         public ObservableCollection<Appointment> Appointments { get; } = new();
+        ProviderChangerService<Appointment> ProviderChangerService { get; }
         public ICommand SearchCommand { get; }
         
 
@@ -32,9 +34,10 @@ namespace DentalClinicApplication.ViewModels
             MessageService messageService,
             IProviderHelper<Appointment> providerHelper) : base(collectionProvider,providerHelper)
         {
+            ProviderChangerService = new Services.ProviderChangerService<Appointment, Client>(this.CollectionProvider, OnProviderChanged);
             SearchCommand = new SearchCommand<Appointment>(
                 this,
-                new Services.ProviderChangerService<Appointment,Client>(this.CollectionProvider,OnProviderChanged),
+                    ProviderChangerService,
                     messageService
                 );
             CollectionChanged += OnCollectionChanged;
@@ -76,6 +79,21 @@ namespace DentalClinicApplication.ViewModels
         {
             HomePageViewModel homePageViewModel = new(collectionProvider,navigationService, messageService,providerHelper);
             return (HomePageViewModel) LoadCollectionViewModel(homePageViewModel);
+        }
+
+        public override void Dispose()
+        {
+            Appointments.Clear();
+            CollectionChanged -= OnCollectionChanged;
+            ProviderChangerService.ProviderChanged -= OnProviderChanged;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            base.Dispose();
+        }
+        ~HomePageViewModel()
+        {
+
         }
     }
 }

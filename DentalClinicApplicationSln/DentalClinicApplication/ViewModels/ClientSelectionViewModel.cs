@@ -28,6 +28,16 @@ namespace DentalClinicApplication.ViewModels
         private void OnItemSelected(Client? client)
         {
             ItemSelected?.Invoke(client);
+            Dispose();
+        }
+        public override void Dispose()
+        {
+            ItemSelected -= OnItemSelected;
+            base.Dispose();
+        }
+        ~ClientSelectionViewModel()
+        {
+
         }
     }
 }

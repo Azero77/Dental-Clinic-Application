@@ -26,6 +26,11 @@ namespace DentalClinicApplication.ViewModels
             ComponentViewModel = componentViewModel;
             EditItemNavigationCommand = new NavigationCommand(editItemNavigationService);
         }
+        public override void Dispose()
+        {
+            ComponentViewModel.Dispose();
+            base.Dispose();
+        }
     }
     public class AllAppointmentsViewModel : VirtualizedViewModel<Appointment>
     {

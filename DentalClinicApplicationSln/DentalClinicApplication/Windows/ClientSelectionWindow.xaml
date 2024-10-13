@@ -16,7 +16,8 @@
                     <DataTemplate>
                         <Button Command="{Binding DataContext.SelectClientCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                 CommandParameter="{Binding}"
-                                Content="Select"/>
+                                Content="Select"
+                                Click="Button_Click"/>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>

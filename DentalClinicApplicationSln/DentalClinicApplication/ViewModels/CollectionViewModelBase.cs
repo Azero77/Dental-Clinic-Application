@@ -80,7 +80,7 @@ namespace DentalClinicApplication.ViewModels
 	public abstract class SearchCollectionViewModel<T>
 		:ViewModelBase
 	{
-        public ProviderChangerService<T> ProviderChangerService { get; }
+        public ProviderChangerService<T> ProviderChangerService { get; protected set; }
         public IProviderHelper<T> ProviderHelper { get; }
 
         public SearchCollectionViewModel(
