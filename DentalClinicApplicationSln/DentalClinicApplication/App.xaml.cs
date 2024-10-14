@@ -105,7 +105,7 @@ namespace DentalClinicApplication
                     obj => 
                     {
                         if (obj is null)
-                            GetMakeEditAppointmentViewModel(sp, SubmitStatus.Create);
+                            return GetMakeEditAppointmentViewModel(sp, SubmitStatus.Create);
                         return GetMakeEditAppointmentViewModel(sp, SubmitStatus.Edit, obj);
 
                     });
