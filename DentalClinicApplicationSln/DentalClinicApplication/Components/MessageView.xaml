@@ -3,29 +3,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:DentalClinicApplication.Components"
+             xmlns:local="clr-namespace:DentalClinicApplication.Components" xmlns:converters="clr-namespace:DentalClinicApplication.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <Style TargetType="Border"
-               x:Key="MessageTypeBaseStyle">
-        </Style>
-        <Style TargetType="Border"
-               BasedOn="{StaticResource MessageTypeBaseStyle}"
-               x:Key="MessageTypeErrorStyle">
-            <Setter Property="Background" Value="IndianRed" />
-            <Setter Property="TextBlock.Foreground" Value="white" />
-        </Style>
-        <Style TargetType="Border"
-               BasedOn="{StaticResource MessageTypeBaseStyle}"
-               x:Key="MessageTypeStatusStyle">
-            <Setter Property="Background" Value="Green" />
-            <Setter Property="TextBlock.Foreground" Value="white" />
-        </Style>
+        <converters:TypeToStyleConverter
+            x:Key="TypeToStyleConverter"/>
     </UserControl.Resources>
 
     <Border Style="{Binding MessageType,Converter={StaticResource TypeToStyleConverter}}">
-        <TextBlock Text="{Binding Message}"/>
+        <StackPanel>
+            <TextBlock Text="{Binding Message}"/>
+            <Button Command="{Binding CloseCommand}" Content="X"/>
+        </StackPanel>
+        <Border.Triggers>
+            <DataTrigger Binding="{Binding HasMessage}" Value="false">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard
+                            >
+                            <DoubleAnimation Storyboard.TargetProperty="Height"
+                                             To="0"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Height"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Border.Triggers>
     </Border>
 </UserControl>

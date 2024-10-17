@@ -38,6 +38,7 @@ namespace DentalClinicApplication.ComponentsViewModels
         private void OnCurrentMessageChanged()
         {
             OnPropertyChanged(nameof(Message));
+            OnPropertyChanged(nameof(HasMessage));
         }
     }
 }
