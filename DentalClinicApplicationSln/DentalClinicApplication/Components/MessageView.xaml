@@ -8,6 +8,24 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style TargetType="Border"
+               x:Key="MessageTypeBaseStyle">
+        </Style>
+        <Style TargetType="Border"
+               BasedOn="{StaticResource MessageTypeBaseStyle}"
+               x:Key="MessageTypeErrorStyle">
+            <Setter Property="Background" Value="IndianRed" />
+            <Setter Property="TextBlock.Foreground" Value="white" />
+        </Style>
+        <Style TargetType="Border"
+               BasedOn="{StaticResource MessageTypeBaseStyle}"
+               x:Key="MessageTypeStatusStyle">
+            <Setter Property="Background" Value="Green" />
+            <Setter Property="TextBlock.Foreground" Value="white" />
+        </Style>
     </UserControl.Resources>
-    <TextBlock HorizontalAlignment="Center" Text="{Binding Message}"/>
+
+    <Border Style="{Binding MessageType,Converter={StaticResource TypeToStyleConverter}}">
+        <TextBlock Text="{Binding Message}"/>
+    </Border>
 </UserControl>

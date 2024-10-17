@@ -18,28 +18,16 @@ namespace DentalClinicApplication.ComponentsViewModels
         public MessageStore MessageStore { get; }
         public string Message => MessageStore.CurrentMessage;
         public MessageType MessageType => MessageStore.CurrentMessageType;
-        private bool _isShown = false;
-        public bool IsShown
-        {
-            get
-            {
-                return _isShown;
-            }
-            set
-            {
-                _isShown = value;
-                OnPropertyChanged(nameof(IsShown));
-            }
-        }
+        public bool HasMessage => !string.IsNullOrEmpty(Message);
         public ICommand CloseCommand { get; }
-
         public MessageViewModel(MessageStore messageStore)
         {
             MessageStore = messageStore;
             MessageStore.CurrentMessageChanged += OnCurrentMessageChanged;
             MessageStore.CurrentMessageTypeChanged += OnCurrentMessageTypeChanged;
-            CloseCommand = new RelayCommand<object>((obj) => IsShown = false) ;
-
+            CloseCommand = new RelayCommand<object>(
+                (o) => MessageStore.ClearMessage()
+                );
         }
 
         private void OnCurrentMessageTypeChanged()
@@ -50,10 +38,6 @@ namespace DentalClinicApplication.ComponentsViewModels
         private void OnCurrentMessageChanged()
         {
             OnPropertyChanged(nameof(Message));
-            if (string.IsNullOrEmpty(Message))
-            {
-                IsShown = true;
-            }
         }
     }
 }

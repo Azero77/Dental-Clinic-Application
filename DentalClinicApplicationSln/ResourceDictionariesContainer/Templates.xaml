@@ -439,4 +439,16 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <Style TargetType="Border"
+           BasedOn="{StaticResource MessageTypeBaseStyle}"
+           x:Key="MessageTypeErrorStyle">
+        <Setter Property="Background" Value="IndianRed" />
+        <Setter Property="TextBlock.Foreground" Value="white" />
+    </Style>
+    <Style TargetType="Border"
+           BasedOn="{StaticResource MessageTypeBaseStyle}"
+           x:Key="MessageTypeStatusStyle">
+        <Setter Property="Background" Value="Green" />
+        <Setter Property="TextBlock.Foreground" Value="white" />
+    </Style>
 </ResourceDictionary>
