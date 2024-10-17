@@ -5,6 +5,8 @@
 
 
     <!--DataGrid-->
+    <BooleanToVisibilityConverter
+        x:Key="BooleanToVisibilityConverter"/>
     <Style TargetType="DataGridColumnHeader">
         <!-- Light gray background -->
         <Setter Property="Background" Value="#eeeeee" />

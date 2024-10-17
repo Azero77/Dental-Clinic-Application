@@ -170,7 +170,10 @@
 
                 <!-- Buttons -->
                 <DockPanel Grid.Row="4" LastChildFill="False">
-                    <Button Content="Delete" DockPanel.Dock="Left" VerticalAlignment="Center" Style="{StaticResource ErrorButton}"/>
+                    <Button Content="Delete" DockPanel.Dock="Left" VerticalAlignment="Center" Style="{StaticResource ErrorButton}"
+                            Command="{Binding DeleteCommand}"
+                            CommandParameter="{Binding Appointment}"
+                            Visibility="{Binding IsEdit,Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <Button
                         Content="Submit"
                         DockPanel.Dock="Right"

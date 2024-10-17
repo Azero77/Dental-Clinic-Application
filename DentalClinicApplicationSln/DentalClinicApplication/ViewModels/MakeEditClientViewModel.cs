@@ -113,14 +113,8 @@ namespace DentalClinicApplication.ViewModels
 			MessageService messageService,
 			Client? client = null,
 			SubmitStatus submitStatus = SubmitStatus.Create)
-			: base(mapper,dataCreator,navigationService,messageService)
+			: base(mapper,dataCreator,navigationService,messageService,submitStatus)
         {
-           
-            SubmitCommand = new SubmitItemCommand<Client>(this,
-                                                 navigationService,
-                                                 dataCreator,
-                                                 messageService,
-												 submitStatus);
 			AssignClient(client);
         }
 

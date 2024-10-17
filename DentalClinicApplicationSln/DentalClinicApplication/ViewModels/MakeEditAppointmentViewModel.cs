@@ -148,21 +148,13 @@ namespace DentalClinicApplication.ViewModels
             IMapper mapper,
             Appointment? appointment = null,
             SubmitStatus submitStatus = SubmitStatus.Create)
-            : base(mapper,dataService,navigationService,messageService)
+            : base(mapper,dataService,navigationService,messageService,submitStatus)
         {
             ClientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel, OnItemSelected);
             ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(
                 (obj) => new ClientSelectionWindow(ClientSelectionViewModel));
-            SubmitCommand = new SubmitItemCommand<Appointment>(
-                this,
-                navigationService,
-                dataService,
-                messageService,
-                submitStatus
-                );
             AssignAppointment(appointment);
         }
-
         private void AssignAppointment(Appointment? appointment)
         {
             if (appointment is not null)

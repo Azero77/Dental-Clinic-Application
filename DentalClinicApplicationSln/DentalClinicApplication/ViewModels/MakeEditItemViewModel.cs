@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using DentalClinicApp.Commands;
+using DentalClinicApp.Models;
+using DentalClinicApplication.Commands;
 using DentalClinicApplication.Services;
 using DentalClinicApplication.Services.DataManiplator;
 using System;
@@ -15,15 +17,31 @@ namespace DentalClinicApplication.ViewModels
         : ErrorViewModelBase
     {
         protected MakeEditItemViewModel(IMapper mapper,
-                                        IDataService<T> dataCreator,
+                                        IDataService<T> dataService,
                                         INavigationService navigationService,
-                                        MessageService messageService
+                                        MessageService messageService,
+                                        SubmitStatus submitStatus
                                         )
         {
             Mapper = mapper;
-            DataCreator = dataCreator;
+            DataCreator = dataService;
             NavigationService = navigationService;
             MessageService = messageService;
+            SubmitCommand = new SubmitItemCommand<T>(
+                this,
+                navigationService,
+                dataService,
+                messageService,
+                submitStatus
+                );
+            DeleteCommand =
+                submitStatus == SubmitStatus.Edit ?
+                new SubmitItemCommand<T>(this,
+                navigationService,
+                dataService,
+                messageService,
+                SubmitStatus.Delete) : null;
+
         }
 
         public IMapper Mapper { get; }
@@ -31,5 +49,8 @@ namespace DentalClinicApplication.ViewModels
         public INavigationService NavigationService { get; }
         public MessageService MessageService { get; }
         public ICommand? SubmitCommand { get;protected set; }
+        public ICommand? DeleteCommand { get; protected set; }
+        //to determine to show Delete button or not
+        public bool IsEdit => DeleteCommand != null;
     }
 }
