@@ -3,39 +3,73 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:DentalClinicApplication.Components" xmlns:converters="clr-namespace:DentalClinicApplication.Converters"
+             xmlns:local="clr-namespace:DentalClinicApplication.Components"
+             xmlns:converters="clr-namespace:DentalClinicApplication.Converters" xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             HorizontalAlignment="Stretch"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <converters:TypeToStyleConverter
-            x:Key="TypeToStyleConverter"/>
+        <converters:TypeToStyleConverter x:Key="TypeToStyleConverter"/>
     </UserControl.Resources>
 
-    <Border Style="{Binding MessageType,Converter={StaticResource TypeToStyleConverter}}">
-        <StackPanel>
-            <TextBlock Text="{Binding Message}"/>
-            <Button Command="{Binding CloseCommand}" Content="X"/>
-        </StackPanel>
-        <Border.Triggers>
-            <DataTrigger Binding="{Binding HasMessage}" Value="false">
-                <DataTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard
-                            >
-                            <DoubleAnimation Storyboard.TargetProperty="Height"
-                                             To="0"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.EnterActions>
-                <DataTrigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Height"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.ExitActions>
-            </DataTrigger>
-        </Border.Triggers>
+    <UserControl.RenderTransform>
+        <ScaleTransform ScaleY="0" />
+    </UserControl.RenderTransform>
+
+    <UserControl.Style>
+        <Style TargetType="UserControl">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding HasMessage}" Value="true">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                 To="1"
+                                                 Duration="0:0:0.5" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                                                 To="0"
+                                                 Duration="0:0:0.5" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
+
+    <Border Style="{Binding MessageType, Converter={StaticResource TypeToStyleConverter}}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                HorizontalAlignment="Center"
+                Padding="20"
+                Grid.Column="0"
+                FontSize="24"
+                Text="{Binding Message}" TextWrapping="Wrap"/>
+            <Button
+                Style="{StaticResource ButtonStyle}"
+                FontSize="20"
+                HorizontalAlignment="Left"
+                Foreground="White"
+                BorderThickness="0"
+                Padding="10"
+                Background="Transparent"
+                Grid.Column="1"
+                Command="{Binding CloseCommand}">
+                <fa:FontAwesome Icon="Remove"/>
+            </Button>
+        </Grid>
     </Border>
 </UserControl>

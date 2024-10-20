@@ -68,5 +68,5 @@ StyleCopReport.xml
 #database
 */Database/
 
-#zip files
+# files
 *.zip

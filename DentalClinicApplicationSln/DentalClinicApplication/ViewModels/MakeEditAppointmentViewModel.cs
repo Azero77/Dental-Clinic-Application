@@ -142,13 +142,13 @@ namespace DentalClinicApplication.ViewModels
 
         public MakeEditAppointmentViewModel(
             VirtualizedCollectionComponentViewModel<Client> collectionViewModel,
-            INavigationService<AllAppointmentsViewModel> navigationService,
+            INavigationService navigationBackService,
             IDataService<Appointment> dataService,
             MessageService messageService,
             IMapper mapper,
             Appointment? appointment = null,
             SubmitStatus submitStatus = SubmitStatus.Create)
-            : base(mapper,dataService,navigationService,messageService,submitStatus)
+            : base(mapper,dataService,navigationBackService,messageService,submitStatus)
         {
             ClientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel, OnItemSelected);
             ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(

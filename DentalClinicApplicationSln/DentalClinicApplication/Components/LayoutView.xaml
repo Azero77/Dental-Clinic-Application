@@ -21,12 +21,10 @@
         </Grid.RowDefinitions>
         <ContentControl Content="{Binding MessageViewModel}"
                         Grid.Row="0"
-                        Grid.ColumnSpan="2"
-                        HorizontalAlignment="Center"/>
+                        Grid.Column="1"/>
         <ContentControl Content="{Binding NavigationBarViewModel}"
-                        Grid.Row="1"
+                        Grid.RowSpan="2"
                         Grid.Column="0"/>
-        <TextBox Text="{x:Static resx:Resources.Greeting}"/>
         <ContentControl Content="{Binding ContentViewModel}"
                         Margin="50"
                         Grid.Row="1"
