@@ -73,6 +73,7 @@ namespace DentalClinicApplication
                     sc.AddSingleton<ICollectionStore<Client>,VirtualizedCollectionStore<Client>>();
                     sc.AddSingleton<ICollectionStore<Appointment>, VirtualizedCollectionStore<Appointment>>();
                     sc.AddSingleton<NavigationStore>();
+                    sc.AddSingleton<ModalNavigationStore>();
                     sc.AddSingleton<IDataManipulator,DataManipulator>();
                     sc.AddSingleton<IDataService<Appointment>, AppointmentsDataService>();
                     sc.AddSingleton<IDataService<Client>, ClientsDataService>();
@@ -98,6 +99,8 @@ namespace DentalClinicApplication
                     sc.AddSingleton<INavigationService<MakeEditClientViewModel>, LayoutNavigationService<MakeEditClientViewModel>>();
                     sc.AddSingleton<INavigationService<AllAppointmentsViewModel>,LayoutNavigationService<AllAppointmentsViewModel>>();
                     sc.AddSingleton<INavigationService<ClientProfileViewModel>,LayoutNavigationService<ClientProfileViewModel>>();
+                    sc.AddSingleton<INavigationService<DeleteValidationModalViewModel>, ModalNavigationService<DeleteValidationModalViewModel>>();
+                    sc.AddSingleton<CloseModalNavigationService>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
                     );
@@ -125,6 +128,18 @@ namespace DentalClinicApplication
                             return GetMakeEditClientViewModel(sp,SubmitStatus.Create);
                         return GetMakeEditClientViewModel(sp, SubmitStatus.Edit, obj);
                     });
+                    sc.AddSingleton<Func<object?, DeleteValidationModalViewModel>>(sp =>
+                    obj => 
+                    new DeleteValidationModalViewModel(
+                        sp.GetRequiredService<IDataService<Appointment>>(),
+                        new CompositeNavigationService(
+                            sp.GetRequiredService<CloseModalNavigationService>(),
+                            sp.GetRequiredService<INavigationService<HomePageViewModel>>()
+                            ),
+                        sp.GetRequiredService<CloseModalNavigationService>(),
+                        obj as Appointment ?? throw new InvalidCastException("forget to add parameter"),
+                        sp.GetRequiredService<MessageService>()
+                        ));
 
                     sc.AddSingleton<MessageViewModel>();
 
@@ -241,6 +256,7 @@ namespace DentalClinicApplication
             return new MakeEditAppointmentViewModel(
                                 GetVirtualizedClientComponentViewModel(sp),
                                 sp.GetRequiredService<INavigationService<AllAppointmentsViewModel>>(),
+                                sp.GetRequiredService<INavigationService<DeleteValidationModalViewModel>>(),
                                 sp.GetRequiredService<IDataService<Appointment>>(),
                                 sp.GetRequiredService<MessageService>(),
                                 sp.GetRequiredService<IMapper>(),

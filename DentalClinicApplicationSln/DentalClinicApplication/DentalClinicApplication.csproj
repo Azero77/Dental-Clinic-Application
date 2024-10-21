@@ -23,8 +23,10 @@
     <ProjectReference Include="..\FormattedDatePicker\FormattedDatePicker.csproj" />
     <ProjectReference Include="..\HeaderedTextBox\HeaderedTextBox.csproj" />
     <ProjectReference Include="..\IconRadioButton\IconRadioButton.csproj" />
+    <ProjectReference Include="..\ModalPopupControl\ModalPopupControl.csproj" />
     <ProjectReference Include="..\PlaceHolderTextControl\PlaceHolderTextControl.csproj" />
     <ProjectReference Include="..\ResourceDictionariesContainer\ResourceDictionariesContainer.csproj" />
+	  
   </ItemGroup>
   
 </Project>

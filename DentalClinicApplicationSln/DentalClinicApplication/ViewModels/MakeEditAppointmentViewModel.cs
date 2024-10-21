@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DentalClinicApp.Commands;
 using DentalClinicApp.Models;
 using DentalClinicApp.ViewModels;
 using DentalClinicApplication.Commands;
@@ -137,12 +138,14 @@ namespace DentalClinicApplication.ViewModels
         #endregion
         #region Commands
         public ICommand ClientSelectionCommand { get; }
+        public ICommand DeleteValidationNavigationCommand { get; }
         
         #endregion
 
         public MakeEditAppointmentViewModel(
             VirtualizedCollectionComponentViewModel<Client> collectionViewModel,
             INavigationService navigationBackService,
+            INavigationService modalNavigationService,
             IDataService<Appointment> dataService,
             MessageService messageService,
             IMapper mapper,
@@ -153,6 +156,7 @@ namespace DentalClinicApplication.ViewModels
             ClientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel, OnItemSelected);
             ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(
                 (obj) => new ClientSelectionWindow(ClientSelectionViewModel));
+            DeleteValidationNavigationCommand = new NavigationCommand(modalNavigationService);
             AssignAppointment(appointment);
         }
         private void AssignAppointment(Appointment? appointment)

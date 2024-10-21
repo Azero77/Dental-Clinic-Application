@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DentalClinicApplication"
         xmlns:vms ="clr-namespace:DentalClinicApplication.ViewModels"
         xmlns:views="clr-namespace:DentalClinicApplication.Views" xmlns:components="clr-namespace:DentalClinicApplication.Components"
-        xmlns:cvms="clr-namespace:DentalClinicApplication.ComponentsViewModels"
+        xmlns:cvms="clr-namespace:DentalClinicApplication.ComponentsViewModels" xmlns:modalpopupcontrol="clr-namespace:ModalPopupControl;assembly=ModalPopupControl"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
@@ -49,7 +49,15 @@
             <DataTemplate DataType="{x:Type vms:ClientProfileViewModel}">
                 <views:ClientProfileView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type cvms:DeleteValidationModalViewModel}">
+                <components:DeleteValidationModalView/>
+            </DataTemplate>
         </Grid.Resources>
+        <modalpopupcontrol:ModalControl
+            Panel.ZIndex="100"
+            Content="{Binding CurrentModal}"
+            IsOpen="{Binding IsOpen}"
+            />
         <ContentControl
             Content="{Binding CurrentViewModel}">
         </ContentControl>
