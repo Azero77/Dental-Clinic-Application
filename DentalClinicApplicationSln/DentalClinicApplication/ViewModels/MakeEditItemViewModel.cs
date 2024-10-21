@@ -19,6 +19,7 @@ namespace DentalClinicApplication.ViewModels
         protected MakeEditItemViewModel(IMapper mapper,
                                         IDataService<T> dataService,
                                         INavigationService navigationService,
+                                        INavigationService modalNavigationService,
                                         MessageService messageService,
                                         SubmitStatus submitStatus
                                         )
@@ -41,6 +42,8 @@ namespace DentalClinicApplication.ViewModels
                 dataService,
                 messageService,
                 SubmitStatus.Delete) : null;
+            DeleteValidationNavigationCommand = new NavigationCommand(modalNavigationService);
+
 
         }
 
@@ -50,6 +53,7 @@ namespace DentalClinicApplication.ViewModels
         public MessageService MessageService { get; }
         public ICommand? SubmitCommand { get;protected set; }
         public ICommand? DeleteCommand { get; protected set; }
+        public ICommand? DeleteValidationNavigationCommand { get; protected set; }
         //to determine to show Delete button or not
         public bool IsEdit => DeleteCommand != null;
     }

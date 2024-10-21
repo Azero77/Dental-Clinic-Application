@@ -105,15 +105,16 @@ namespace DentalClinicApplication.ViewModels
 		public int Age => (int) ((DateTime.Now - DateOfBirth).TotalDays / 365.25);
 
 		public Client? Client => Mapper?.Map<Client>(this);
-       
+		
 
         public MakeEditClientViewModel(IMapper mapper,
 			INavigationService navigationService,
+			INavigationService modalNavigationService,
 			IDataService<Client> dataCreator,
 			MessageService messageService,
 			Client? client = null,
 			SubmitStatus submitStatus = SubmitStatus.Create)
-			: base(mapper,dataCreator,navigationService,messageService,submitStatus)
+			: base(mapper,dataCreator,navigationService,modalNavigationService,messageService,submitStatus)
         {
 			AssignClient(client);
         }

@@ -138,7 +138,6 @@ namespace DentalClinicApplication.ViewModels
         #endregion
         #region Commands
         public ICommand ClientSelectionCommand { get; }
-        public ICommand DeleteValidationNavigationCommand { get; }
         
         #endregion
 
@@ -151,12 +150,11 @@ namespace DentalClinicApplication.ViewModels
             IMapper mapper,
             Appointment? appointment = null,
             SubmitStatus submitStatus = SubmitStatus.Create)
-            : base(mapper,dataService,navigationBackService,messageService,submitStatus)
+            : base(mapper,dataService,navigationBackService,modalNavigationService,messageService,submitStatus)
         {
             ClientSelectionViewModel = new ClientSelectionViewModel(collectionViewModel, OnItemSelected);
             ClientSelectionCommand = new ShowWindowCommand<ClientSelectionWindow>(
                 (obj) => new ClientSelectionWindow(ClientSelectionViewModel));
-            DeleteValidationNavigationCommand = new NavigationCommand(modalNavigationService);
             AssignAppointment(appointment);
         }
         private void AssignAppointment(Appointment? appointment)

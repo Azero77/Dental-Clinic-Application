@@ -49,8 +49,11 @@
             <DataTemplate DataType="{x:Type vms:ClientProfileViewModel}">
                 <views:ClientProfileView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type cvms:DeleteValidationModalViewModel}">
-                <components:DeleteValidationModalView/>
+            <DataTemplate DataType="{x:Type cvms:DeleteValidationAppointmentModalViewModel}">
+                <components:DeleteValidationAppointmentModalView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type cvms:DeleteValidationClientModalViewModel}">
+                <components:DeleteValidationClientModalView/>
             </DataTemplate>
         </Grid.Resources>
         <modalpopupcontrol:ModalControl

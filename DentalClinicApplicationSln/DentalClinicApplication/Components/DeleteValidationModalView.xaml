@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DentalClinicApplication.Components"
              Padding="30"
+             Name="Root"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Name="Container">
@@ -13,11 +14,7 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock
-            Padding="30"
-            FontSize="24"
-            Text="{Binding Appointment.Client.FirstName, StringFormat='{} Delete {0} appointment'}"/>
-
+        <ContentControl Content="{Binding Message,RelativeSource={RelativeSource AncestorType={x:Type local:DeleteValidationModalView}}}"/>
         <DockPanel LastChildFill="False"
                    Name="DockPanelContainer"
                    VerticalAlignment="Bottom"
@@ -31,7 +28,7 @@
                     VerticalAlignment="Bottom"
                     Style="{StaticResource ErrorButton}"
                     Command="{Binding DeleteCommand}"
-                    CommandParameter="{Binding Appointment}"
+                    CommandParameter="{Binding BindedObject,RelativeSource={RelativeSource AncestorType={x:Type local:DeleteValidationModalView}}}"
                     >
                 Delete
             </Button>

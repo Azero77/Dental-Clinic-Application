@@ -63,7 +63,7 @@
                 Style="{StaticResource EditButtonStyle}"
                 Content="Submit"/>
         <Button Content="Delete" DockPanel.Dock="Left" VerticalAlignment="Center" Style="{StaticResource ErrorButton}"
-                Command="{Binding DeleteCommand}"
+                Command="{Binding DeleteValidationNavigationCommand}"
                 CommandParameter="{Binding Client}"
                 Visibility="{Binding IsEdit,Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </StackPanel>

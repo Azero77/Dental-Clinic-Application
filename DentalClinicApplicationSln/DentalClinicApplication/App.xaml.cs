@@ -99,7 +99,9 @@ namespace DentalClinicApplication
                     sc.AddSingleton<INavigationService<MakeEditClientViewModel>, LayoutNavigationService<MakeEditClientViewModel>>();
                     sc.AddSingleton<INavigationService<AllAppointmentsViewModel>,LayoutNavigationService<AllAppointmentsViewModel>>();
                     sc.AddSingleton<INavigationService<ClientProfileViewModel>,LayoutNavigationService<ClientProfileViewModel>>();
-                    sc.AddSingleton<INavigationService<DeleteValidationModalViewModel>, ModalNavigationService<DeleteValidationModalViewModel>>();
+                    sc.AddSingleton<INavigationService<DeleteValidationModalViewModel<Appointment>>, ModalNavigationService<DeleteValidationModalViewModel<Appointment>>>();
+                    sc.AddSingleton<INavigationService<DeleteValidationModalViewModel<Client>>, ModalNavigationService<DeleteValidationModalViewModel<Client>>>();
+
                     sc.AddSingleton<CloseModalNavigationService>();
                     sc.AddSingleton<Func<object?, ClientsListingViewModel>>(sp => 
                     (obj) => sp.GetRequiredService<ClientsListingViewModel>()
@@ -128,9 +130,9 @@ namespace DentalClinicApplication
                             return GetMakeEditClientViewModel(sp,SubmitStatus.Create);
                         return GetMakeEditClientViewModel(sp, SubmitStatus.Edit, obj);
                     });
-                    sc.AddSingleton<Func<object?, DeleteValidationModalViewModel>>(sp =>
+                    sc.AddSingleton<Func<object?, DeleteValidationModalViewModel<Appointment>>>(sp =>
                     obj => 
-                    new DeleteValidationModalViewModel(
+                    new DeleteValidationAppointmentModalViewModel(
                         sp.GetRequiredService<IDataService<Appointment>>(),
                         new CompositeNavigationService(
                             sp.GetRequiredService<CloseModalNavigationService>(),
@@ -138,6 +140,18 @@ namespace DentalClinicApplication
                             ),
                         sp.GetRequiredService<CloseModalNavigationService>(),
                         obj as Appointment ?? throw new InvalidCastException("forget to add parameter"),
+                        sp.GetRequiredService<MessageService>()
+                        ));
+                    sc.AddSingleton<Func<object?, DeleteValidationModalViewModel<Client>>>(sp =>
+                    obj =>
+                    new DeleteValidationClientModalViewModel(
+                        sp.GetRequiredService<IDataService<Client>>(),
+                        new CompositeNavigationService(
+                            sp.GetRequiredService<CloseModalNavigationService>(),
+                            sp.GetRequiredService<INavigationService<AllClientsViewModel>>()
+                            ),
+                        sp.GetRequiredService<CloseModalNavigationService>(),
+                        obj as Client ?? throw new InvalidCastException("forget to add parameter"),
                         sp.GetRequiredService<MessageService>()
                         ));
 
@@ -256,7 +270,7 @@ namespace DentalClinicApplication
             return new MakeEditAppointmentViewModel(
                                 GetVirtualizedClientComponentViewModel(sp),
                                 sp.GetRequiredService<INavigationService<AllAppointmentsViewModel>>(),
-                                sp.GetRequiredService<INavigationService<DeleteValidationModalViewModel>>(),
+                                sp.GetRequiredService<INavigationService<DeleteValidationModalViewModel<Appointment>>>(),
                                 sp.GetRequiredService<IDataService<Appointment>>(),
                                 sp.GetRequiredService<MessageService>(),
                                 sp.GetRequiredService<IMapper>(),
@@ -270,6 +284,7 @@ namespace DentalClinicApplication
             return new MakeEditClientViewModel(
                                 sp.GetRequiredService<IMapper>(),
                                 sp.GetRequiredService<INavigationService<AllClientsViewModel>>(),
+                                sp.GetRequiredService<INavigationService<DeleteValidationModalViewModel<Client>>>(),
                                 sp.GetRequiredService<IDataService<Client>>(),
                                 sp.GetRequiredService<MessageService>(),
                                 obj as Client,
